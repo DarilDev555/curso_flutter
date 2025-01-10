@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no/domain/entities/message.dart';
 
 class TomasMessageBuble extends StatelessWidget {
-  const TomasMessageBuble({super.key});
+  final Message message;
+
+  const TomasMessageBuble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +18,20 @@ class TomasMessageBuble extends StatelessWidget {
             color: colors.secondary,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
-              'Occaecat consequat Tomi11.',
-              style: TextStyle(color: Colors.white),
+              message.text,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ),
         const SizedBox(
           height: 5,
         ),
-        _ImageBuble(),
+        _ImageBuble(
+          imageUrl: message.imageUril!,
+        ),
         const SizedBox(
           height: 10,
         )
@@ -36,6 +41,10 @@ class TomasMessageBuble extends StatelessWidget {
 }
 
 class _ImageBuble extends StatelessWidget {
+  final String imageUrl;
+
+  const _ImageBuble({required this.imageUrl});
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -43,7 +52,7 @@ class _ImageBuble extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Image.network(
-        'https://yesno.wtf/assets/no/4-122be48db47678331dbef3dd6ac6ff56.gif',
+        imageUrl,
         width: size.width * 0.7,
         height: 150,
         fit: BoxFit.cover,
