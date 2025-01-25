@@ -12,7 +12,7 @@ class TextFrave extends StatelessWidget {
   final double? letterSpacing;
 
   const TextFrave({
-    Key? key,
+    super.key,
     required this.text,
     this.fontSize = 18,
     this.fontWeight = FontWeight.normal,
@@ -21,7 +21,7 @@ class TextFrave extends StatelessWidget {
     this.overflow = TextOverflow.visible,
     this.textAlign = TextAlign.left,
     this.letterSpacing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

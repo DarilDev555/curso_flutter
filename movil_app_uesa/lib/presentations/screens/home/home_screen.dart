@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 // import 'package:movil_app_uesa/config/router/app_router.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:google_fonts/google_fonts.dart';
-import 'package:movil_app_uesa/presentations/widgets/header_login.dart';
-import 'package:movil_app_uesa/presentations/widgets/text_frave.dart';
+import 'package:movil_app_uesa/presentations/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String name = 'home_screen';

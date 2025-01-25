@@ -1,29 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:movil_app_uesa/presentations/widgets/widgets.dart';
 import 'dart:math' show Random;
 
-import 'package:movil_app_uesa/presentations/widgets/text_frave.dart';
-
-class AttendanceRecordScreen extends StatefulWidget {
+class AttendanceRecordScreen extends StatelessWidget {
   static const String name = 'attendance-record-screen';
-  List<Page> pages = [Page(), Page()];
 
-  AttendanceRecordScreen({super.key}) {
-    rellenarLista();
-  }
+  const AttendanceRecordScreen({super.key});
 
-  @override
-  State<AttendanceRecordScreen> createState() => _AttendanceRecordScreenState();
-
-  rellenarLista() {
-    for (var i = 0; i < 5; i++) {
-      pages.add(Page());
-    }
-  }
-}
-
-class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -36,23 +21,13 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
               decoration: BoxDecoration(color: colors.surface),
               width: double.infinity,
               height: 300,
-              child: PageView(
-                onPageChanged: (pageIndex) {
-                  print(pageIndex);
-                },
-                reverse: true,
-                controller: PageController(
-                  viewportFraction: 0.8,
-                ),
-                physics: const BouncingScrollPhysics(),
-                children: widget.pages,
-              ),
+              child: TechearSlideshow(),
             ),
           ),
           TextButton(
             onPressed: () {},
             child: Padding(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: ElevatedButton.icon(
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(colors.onPrimary),
@@ -72,7 +47,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
           TextButton(
             onPressed: () {},
             child: Padding(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: ElevatedButton.icon(
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(colors.onPrimary),
