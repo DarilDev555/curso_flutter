@@ -13,59 +13,72 @@ class AttendanceRecordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 100),
-            child: Container(
-              decoration: BoxDecoration(color: colors.surface),
-              width: double.infinity,
-              height: 300,
-              child: TechearSlideshow(),
-            ),
+      body: _ViewTeachers(colors: colors),
+    );
+  }
+}
+
+class _ViewTeachers extends StatelessWidget {
+  const _ViewTeachers({
+    required this.colors,
+  });
+
+  final ColorScheme colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 100),
+          child: Container(
+            decoration: BoxDecoration(color: colors.surface),
+            width: double.infinity,
+            height: 300,
+            child: TechearSlideshow(),
           ),
-          TextButton(
-            onPressed: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(colors.onPrimary),
-                ),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.person_add_alt_1_outlined,
-                  size: 30.0,
-                ),
-                label: const Text(
-                  'Agregar',
-                  textScaler: TextScaler.linear(1.2),
-                ),
+        ),
+        TextButton(
+          onPressed: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(colors.onPrimary),
+              ),
+              onPressed: () {},
+              icon: const Icon(
+                Icons.person_add_alt_1_outlined,
+                size: 30.0,
+              ),
+              label: const Text(
+                'Agregar',
+                textScaler: TextScaler.linear(1.2),
               ),
             ),
           ),
-          TextButton(
-            onPressed: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(colors.onPrimary),
-                ),
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.group_add_outlined,
-                  size: 30.0,
-                ),
-                label: const Text(
-                  'Registrar Asistencias',
-                  textScaler: TextScaler.linear(1.2),
-                ),
+        ),
+        TextButton(
+          onPressed: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: ElevatedButton.icon(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(colors.onPrimary),
+              ),
+              onPressed: () {},
+              icon: const Icon(
+                Icons.group_add_outlined,
+                size: 30.0,
+              ),
+              label: const Text(
+                'Registrar Asistencias',
+                textScaler: TextScaler.linear(1.2),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
