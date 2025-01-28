@@ -9,7 +9,7 @@ String teachersauResponseToJson(TeachersauResponse data) =>
     json.encode(data.toJson());
 
 class TeachersauResponse {
-  final List<TeacherAU> teachers;
+  final List<TeacherResponseAU> teachers;
   final int status;
 
   TeachersauResponse({
@@ -19,8 +19,8 @@ class TeachersauResponse {
 
   factory TeachersauResponse.fromJson(Map<String, dynamic> json) =>
       TeachersauResponse(
-        teachers: List<TeacherAU>.from(
-            json["teachers"].map((x) => TeacherAU.fromJson(x))),
+        teachers: List<TeacherResponseAU>.from(
+            json["teachers"].map((x) => TeacherResponseAU.fromJson(x))),
         status: json["status"],
       );
 

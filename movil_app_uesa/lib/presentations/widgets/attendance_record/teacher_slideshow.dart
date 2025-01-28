@@ -2,7 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movil_app_uesa/domain/entities/institution.dart';
 import 'package:movil_app_uesa/domain/entities/teacher.dart';
+import 'package:movil_app_uesa/presentations/providers/teachers/institutionTeacher_provider.dart';
 import 'package:movil_app_uesa/presentations/providers/teachers/teachers_provider.dart';
 import 'package:movil_app_uesa/presentations/widgets/shared/text_frave.dart';
 
@@ -26,7 +28,14 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
   @override
   Widget build(BuildContext context) {
     final getTeachers = ref.watch(getTeachersProvider);
+    final getInstitutionTeacher = ref.watch(getinstitutionTeacherProvider);
     final colors = Theme.of(context).colorScheme;
+
+    for (var teacher in getTeachers) {
+      ref
+          .read(getinstitutionTeacherProvider.notifier)
+          .loadInstitution('${teacher.id}');
+    }
 
     return SizedBox(
       height: 300,
@@ -45,7 +54,9 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
         itemCount: getTeachers.length,
         itemBuilder: (context, index) {
           final teacher = getTeachers[index];
-          return _Slide(teacher);
+
+          Institution? institution = getInstitutionTeacher['${teacher.id}'];
+          return _Slide(teacher, institution);
         },
       ),
     );
@@ -54,8 +65,9 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
 
 class _Slide extends StatelessWidget {
   final Teacher teacher;
+  final Institution? institution;
 
-  const _Slide(this.teacher);
+  const _Slide(this.teacher, this.institution);
 
   @override
   Widget build(BuildContext context) {
@@ -128,8 +140,7 @@ class _Slide extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           TextFrave(
-                            text:
-                                'Unidad de Estudios Superiores de Alotepec sadojasdjalsasdsaaaaaaaaaaaaaaaaaaaadl',
+                            text: institution?.name ?? 's',
                             maxLines: 2,
                             color: colors.secondary,
                             fontSize: 15,

@@ -2,7 +2,7 @@ import 'package:movil_app_uesa/domain/entities/teacher.dart';
 import 'package:movil_app_uesa/infrastructure/models/teacherau/teacher_teachersau.dart';
 
 class TeacherMapper {
-  static Teacher teacherAUToEntity(TeacherAU teacherAU,
+  static Teacher teacherAUToEntity(TeacherResponseAU teacherAU,
           {required String baseUrlImage}) =>
       Teacher(
         id: teacherAU.id,

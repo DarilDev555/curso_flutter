@@ -16,6 +16,7 @@ typedef TeacherCallback = Future<List<Teacher>> Function();
 class TeachersNotifier extends StateNotifier<List<Teacher>> {
   bool isLoading = false;
   TeacherCallback fetchgetTeachers;
+
   TeachersNotifier({required this.fetchgetTeachers}) : super([]);
 
   Future<void> loadTeachers() async {

@@ -1,4 +1,4 @@
-class TeacherAU {
+class TeacherResponseAU {
   final int id;
   final int institutionId;
   final String firstName;
@@ -13,7 +13,7 @@ class TeacherAU {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  TeacherAU({
+  TeacherResponseAU({
     required this.id,
     required this.institutionId,
     required this.firstName,
@@ -29,7 +29,8 @@ class TeacherAU {
     required this.updatedAt,
   });
 
-  factory TeacherAU.fromJson(Map<String, dynamic> json) => TeacherAU(
+  factory TeacherResponseAU.fromJson(Map<String, dynamic> json) =>
+      TeacherResponseAU(
         id: json["id"],
         institutionId: json["institution_id"],
         firstName: json["first_name"],

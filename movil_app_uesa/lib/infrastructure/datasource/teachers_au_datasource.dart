@@ -2,7 +2,9 @@ import 'package:movil_app_uesa/domain/datasources/teachers_datasource.dart';
 import 'package:movil_app_uesa/domain/entities/institution.dart';
 import 'package:movil_app_uesa/domain/entities/teacher.dart';
 import 'package:dio/dio.dart';
+import 'package:movil_app_uesa/infrastructure/mappers/institution_mapper.dart';
 import 'package:movil_app_uesa/infrastructure/mappers/teacher_mapper.dart';
+import 'package:movil_app_uesa/infrastructure/models/teacherau/teacherinstitution_response.dart';
 import 'package:movil_app_uesa/infrastructure/models/teacherau/teachersau_response.dart';
 
 class TeachersauDatasource extends TeachersDatasource {
@@ -37,8 +39,21 @@ class TeachersauDatasource extends TeachersDatasource {
 
 // TODO implementar tamben en repositorio
   @override
-  Future<Institution> getInstitutionTeacher() {
-    // TODO: implement getInstitutionTeacher
-    throw UnimplementedError();
+  Future<Institution> getInstitutionTeacher({String? id}) async {
+    final response = await dio.get(
+      '/teacherInstitution/$id',
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Teacher with id: $id not found');
+    }
+
+    // final institutionAU = InstitutionAU.fromJson(response.data);
+    final institutionAU =
+        TeacherInstitutionResponse.fromJson(response.data).institution;
+
+    final institution = InstitutionMapper.institutionAUToEntity(institutionAU);
+
+    return institution;
   }
 }
