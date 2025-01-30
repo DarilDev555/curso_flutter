@@ -87,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {
                   print(
                       'usuario: ${_usernameController.text} contraseña: ${_passwordController.text}');
-                  context.push('/attendance-record-screen');
+                  context.push('/dashboard-screen');
                 },
                 borderRadius: BorderRadius.circular(7.0),
                 child: Container(
