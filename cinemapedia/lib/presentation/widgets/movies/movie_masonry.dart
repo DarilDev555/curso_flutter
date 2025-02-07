@@ -20,12 +20,30 @@ class MovieMasonry extends StatefulWidget {
 class _MovieMasonryState extends State<MovieMasonry> {
   @override
   Widget build(BuildContext context) {
-    return MasonryGridView.count(
-      crossAxisCount: 3,
-      itemCount: widget.movies.length,
-      itemBuilder: (context, index) {
-        return MoviePosterLink(movie: widget.movies[index]);
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: MasonryGridView.count(
+        crossAxisCount: 3,
+        itemCount: widget.movies.length,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        itemBuilder: (context, index) {
+          if (index == 1) {
+            return Column(
+              children: [
+                const SizedBox(
+                  height: 40,
+                ),
+                MoviePosterLink(
+                  movie: widget.movies[index],
+                ),
+              ],
+            );
+          }
+
+          return MoviePosterLink(movie: widget.movies[index]);
+        },
+      ),
     );
   }
 }
