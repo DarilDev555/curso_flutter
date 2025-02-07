@@ -38,7 +38,7 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
     }
 
     return SizedBox(
-      height: 300,
+      height: 250,
       width: double.infinity,
       child: Swiper(
         viewportFraction: 0.8,
@@ -87,11 +87,12 @@ class _Slide extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            width: 250,
+            width: 200,
             decoration: BoxDecoration(color: Colors.white),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -117,6 +118,7 @@ class _Slide extends StatelessWidget {
                       width: 150,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           TextFrave(
                             text: 'Nombre',
@@ -140,7 +142,7 @@ class _Slide extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                           TextFrave(
-                            text: institution?.name ?? 's',
+                            text: institution?.name ?? 'null',
                             maxLines: 2,
                             color: colors.secondary,
                             fontSize: 15,

@@ -26,7 +26,8 @@ class AccesTokenNotifier extends StateNotifier<String> {
     if (isLoading) return;
 
     isLoading = true;
-    final String accesToken = await getAccessTokenCallBack();
+    final String accesToken =
+        await getAccessTokenCallBack(email: email, password: password);
     state = accesToken;
     isLoading = false;
   }

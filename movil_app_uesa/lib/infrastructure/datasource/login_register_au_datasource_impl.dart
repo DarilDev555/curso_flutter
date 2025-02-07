@@ -11,11 +11,12 @@ class LoginRegisterAuDatasourceImpl extends LoginRegisterDatasource {
 
   @override
   Future<String> login({String? email, String? password}) async {
-    final response = await dio.post('/login',
-        queryParameters: {'email': email, 'password': password});
+    print('$email $password');
+    final response =
+        await dio.post('/login', data: {'email': email, 'password': password});
 
     if (response.statusCode != 200) {
-      throw Exception('Error al iniar sesion');
+      throw Exception('Error al inicar sesion');
     }
 
     final loginResponse = LoginResponse.fromJson(response.data).accessToken;

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+// import 'package:movil_app_uesa/presentations/providers/login/access_token_provider.dart';
 // import 'package:movil_app_uesa/config/router/app_router.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:movil_app_uesa/presentations/widgets/widgets.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   static const String name = 'home_screen';
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -13,8 +15,10 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
+
+    // final accesToken = ref.watch(accessTokenProvider);
 
     return Scaffold(
       backgroundColor: colors.surface,
@@ -85,9 +89,15 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: InkWell(
                 onTap: () {
-                  print(
-                      'usuario: ${_usernameController.text} contraseña: ${_passwordController.text}');
-                  context.push('/dashboard-screen');
+                  // ref.read(accessTokenProvider.notifier).getToken(
+                  //     _usernameController.text, _passwordController.text);
+
+                  if (_usernameController.text != 'Daril') {
+                    context.push('/dashboard-screen');
+                    return;
+                  }
+
+                  context.push('/attendance-record-screen');
                 },
                 borderRadius: BorderRadius.circular(7.0),
                 child: Container(

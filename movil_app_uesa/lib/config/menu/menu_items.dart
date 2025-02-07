@@ -24,7 +24,7 @@ const appMenuItemss = <MenuItems>[
   MenuItems(
     title: 'Asistentes',
     subTitle: 'Control de asistencia',
-    link: '/',
+    link: '/teachers-dashboard-screen',
     icon: Icons.people_outline_sharp,
   ),
   MenuItems(
