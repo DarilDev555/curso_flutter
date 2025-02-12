@@ -9,8 +9,8 @@ class TeachersauRepositoryImpl extends TeachersRepository {
   TeachersauRepositoryImpl(this.teachersDatasource);
 
   @override
-  Future<List<Teacher>> getTeachers() {
-    return teachersDatasource.getTeachers();
+  Future<List<Teacher>> getTeachers({int page = 0}) {
+    return teachersDatasource.getTeachers(page: page);
   }
 
   @override

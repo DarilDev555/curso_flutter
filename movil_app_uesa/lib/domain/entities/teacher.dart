@@ -1,4 +1,11 @@
+import 'package:isar/isar.dart';
+
+part 'teacher.g.dart';
+
+@collection
 class Teacher {
+  Id? isarId;
+
   final int id;
   final int institutionId;
   final String firstName;

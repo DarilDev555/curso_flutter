@@ -1,83 +1,58 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:movil_app_uesa/domain/entities/teacher.dart';
 import 'package:movil_app_uesa/domain/entities/institution.dart';
-import 'package:movil_app_uesa/presentations/providers/teachers/institutionTeacher_provider.dart';
+import 'package:movil_app_uesa/domain/entities/teacher.dart';
 import 'package:movil_app_uesa/presentations/widgets/shared/text_frave.dart';
 
-import '../../../providers/teachers/teachers_provider.dart';
-
-class TeachersDashboardScreen extends StatelessWidget {
-  static const name = 'teachers-dashboard-screen';
-
-  const TeachersDashboardScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textStyle = Theme.of(context).textTheme;
-    final size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://media.licdn.com/dms/image/v2/D4E03AQG9vivTumsTUQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1729615646699?e=1741824000&v=beta&t=AmdFYtf9vHHVlFQg9hB0Q--c2zUxvvTMpAdjb7gxUSs'),
-          ),
-        ),
-        title: const Text(
-          'Asistentes',
-          textAlign: TextAlign.center,
-        ),
-      ),
-      body: Column(
-        children: [
-          _TeachersListVew(
-            colors: colors,
-            textStyle: textStyle,
-            size: size,
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class _TeachersListVew extends ConsumerStatefulWidget {
+class TeachersListVew extends StatefulWidget {
   final ColorScheme colors;
   final TextTheme textStyle;
   final Size size;
+  final VoidCallback? loadNextPage;
+  final List<Teacher> teachers;
+  final Map<String, Institution> institutionTeacher;
 
-  const _TeachersListVew({
+  const TeachersListVew({
+    super.key,
     required this.colors,
     required this.textStyle,
     required this.size,
+    this.loadNextPage,
+    required this.teachers,
+    required this.institutionTeacher,
   });
 
   @override
-  _TeachersListVewState createState() => _TeachersListVewState();
+  State<TeachersListVew> createState() => _TeachersListVewState();
 }
 
-class _TeachersListVewState extends ConsumerState<_TeachersListVew> {
+class _TeachersListVewState extends State<TeachersListVew> {
+  final scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
-    ref.read(getTeachersProvider.notifier).loadTeachers();
+    scrollController.addListener(
+      () {
+        if (widget.loadNextPage == null) return;
+        if ((scrollController.position.pixels + 200) >=
+            scrollController.position.maxScrollExtent) {
+          widget.loadNextPage!();
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final getTeachers = ref.watch(getTeachersProvider);
-    final getInstitutionTeacher = ref.watch(getinstitutionTeacherProvider);
-
-    for (var teacher in getTeachers) {
-      ref
-          .read(getinstitutionTeacherProvider.notifier)
-          .loadInstitution('${teacher.id}');
-    }
+    final teachers = widget.teachers;
+    final institutionTeacher = widget.institutionTeacher;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -85,10 +60,11 @@ class _TeachersListVewState extends ConsumerState<_TeachersListVew> {
         height: widget.size.height * 0.85,
         width: double.infinity,
         child: ListView.builder(
+          controller: scrollController,
           scrollDirection: Axis.vertical,
-          itemCount: getTeachers.length,
+          itemCount: teachers.length,
           itemBuilder: (BuildContext context, int index) {
-            final teacher = getTeachers[index];
+            final teacher = teachers[index];
 
             return SizedBox(
               height: 100,
@@ -96,7 +72,7 @@ class _TeachersListVewState extends ConsumerState<_TeachersListVew> {
                 teacher: teacher,
                 colors: widget.colors,
                 textStyle: widget.textStyle,
-                institution: getInstitutionTeacher['${teacher.id}'],
+                institution: institutionTeacher['${teacher.id}'],
               ),
             );
           },

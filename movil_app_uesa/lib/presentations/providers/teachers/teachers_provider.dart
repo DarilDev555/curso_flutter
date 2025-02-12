@@ -11,10 +11,12 @@ final getTeachersProvider =
   },
 );
 
-typedef TeacherCallback = Future<List<Teacher>> Function();
+typedef TeacherCallback = Future<List<Teacher>> Function({int page});
 
 class TeachersNotifier extends StateNotifier<List<Teacher>> {
+  int currentPage = 0;
   bool isLoading = false;
+  int ultimaPeticon = 10;
   TeacherCallback fetchgetTeachers;
 
   TeachersNotifier({required this.fetchgetTeachers}) : super([]);
@@ -23,8 +25,40 @@ class TeachersNotifier extends StateNotifier<List<Teacher>> {
     if (isLoading) return;
 
     isLoading = true;
-    final List<Teacher> teachers = await fetchgetTeachers();
-    state = teachers;
+    final List<Teacher> teachers = await fetchgetTeachers(page: currentPage);
+    print(
+        'teachers ${teachers.length} ultimapeticion ${ultimaPeticon} currentpage $currentPage');
+
+    if (teachers.isEmpty) {
+      isLoading = false;
+      return;
+    }
+
+    if (teachers.length == 10 && ultimaPeticon == 10) {
+      currentPage++;
+      ultimaPeticon = teachers.length;
+      state.addAll(teachers);
+      isLoading = false;
+      return;
+    }
+    if (teachers.length > ultimaPeticon) {
+      for (var i = ultimaPeticon; i < teachers.length; i++) {
+        state = [...state, teachers[i]];
+      }
+
+      ultimaPeticon = teachers.length;
+      isLoading = false;
+      teachers.length == 10 ? currentPage++ : 0;
+      return;
+    }
+    // ultima ueron 10 pero la entrega son menores
+    if (ultimaPeticon == 10) {
+      state.addAll(teachers);
+
+      ultimaPeticon = teachers.length;
+      isLoading = false;
+      return;
+    }
     isLoading = false;
   }
 }

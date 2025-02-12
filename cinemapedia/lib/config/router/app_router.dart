@@ -1,5 +1,5 @@
 import 'package:cinemapedia/presentation/screens/prueba_login_screen.dart';
-import 'package:cinemapedia/presentation/views/home_views/favorites_views.dart';
+import 'package:cinemapedia/presentation/views/home_views/favorites_view.dart';
 import 'package:cinemapedia/presentation/views/home_views/home_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cinemapedia/presentation/screens/screens.dart';
@@ -40,7 +40,7 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/favorites',
-              builder: (context, state) => const FavoritesViews(),
+              builder: (context, state) => const FavoritesView(),
             ),
           ],
         ),
@@ -48,7 +48,7 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: '/favorites',
-              builder: (context, state) => const FavoritesViews(),
+              builder: (context, state) => const FavoritesView(),
             ),
           ],
         ),

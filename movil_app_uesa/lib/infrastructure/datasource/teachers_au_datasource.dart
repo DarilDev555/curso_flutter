@@ -10,10 +10,10 @@ import 'package:movil_app_uesa/infrastructure/models/teacherau/teachersau_respon
 class TeachersauDatasource extends TeachersDatasource {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.0.227:8000/api',
+      baseUrl: 'http://10.42.0.1:8000/api',
       headers: {
         'Authorization':
-            'Bearer 1|z1crjFEDqaFuh9wPxKNu8yhxob1aPdqjirKPpT7s9e299862',
+            'Bearer 1|lxv2adJZ5rrNL0qDT10eF8LNE2ZuYixEUlSyWIbjb8a3a5cf',
       },
     ),
   );
@@ -22,17 +22,17 @@ class TeachersauDatasource extends TeachersDatasource {
     final teacherAUResponse = TeachersauResponse.fromJson(json);
     final List<Teacher> teachers = teacherAUResponse.teachers
         .map((teacherAU) => TeacherMapper.teacherAUToEntity(teacherAU,
-            baseUrlImage: 'http://192.168.0.227:8000/'))
+            baseUrlImage: 'http://10.42.0.1:8000/'))
         .toList();
 
     return teachers;
   }
 
   @override
-  Future<List<Teacher>> getTeachers() async {
-    final response = await dio.get(
-      '/teacher',
-    );
+  Future<List<Teacher>> getTeachers({int page = 0}) async {
+    final response = await dio.get('/teacher', queryParameters: {
+      'page': page,
+    });
 
     return _jsonToTeacher(response.data);
   }

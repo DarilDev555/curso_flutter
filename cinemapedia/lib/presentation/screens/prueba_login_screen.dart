@@ -11,7 +11,7 @@ class PruebaLoginScreen extends StatelessWidget {
       body: Center(
         child: TextButton(
           onPressed: () => context.push('/'),
-          child: Text('Ir a Peliculas'),
+          child: const Text('Ir a Peliculas'),
         ),
       ),
     );

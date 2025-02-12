@@ -5,7 +5,7 @@ import 'package:movil_app_uesa/infrastructure/models/login/login_response.dart';
 class LoginRegisterAuDatasourceImpl extends LoginRegisterDatasource {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.0.227:8000/api',
+      baseUrl: 'http://10.42.0.1:8000/api',
     ),
   );
 

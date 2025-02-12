@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:movil_app_uesa/presentations/screens/attendance_record/attendance_record_screen.dart';
 import 'package:movil_app_uesa/presentations/screens/dashboard/dashboard_screen.dart';
-import 'package:movil_app_uesa/presentations/screens/dashboard/menu_dashboard/teachers_dashboard_screen.dart';
+import 'package:movil_app_uesa/presentations/screens/dashboard/menu_dashboard/teacher/teachers_dashboard_screen.dart';
 import 'package:movil_app_uesa/presentations/screens/home/home_screen.dart';
 
 final appRouter = GoRouter(
