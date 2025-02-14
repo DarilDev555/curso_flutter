@@ -35,9 +35,10 @@ class TeachersNotifier extends StateNotifier<List<Teacher>> {
     }
 
     if (teachers.length == 10 && ultimaPeticon == 10) {
+      print('entro 1');
       currentPage++;
       ultimaPeticon = teachers.length;
-      state.addAll(teachers);
+      state = [...state, ...teachers];
       isLoading = false;
       return;
     }
@@ -53,7 +54,7 @@ class TeachersNotifier extends StateNotifier<List<Teacher>> {
     }
     // ultima ueron 10 pero la entrega son menores
     if (ultimaPeticon == 10) {
-      state.addAll(teachers);
+      state = [...state, ...teachers];
 
       ultimaPeticon = teachers.length;
       isLoading = false;

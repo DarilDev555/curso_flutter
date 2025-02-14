@@ -36,10 +36,10 @@ class IsarDatasource extends LocalStorageDatasource {
   }
 
   @override
-  Future<List<Teacher>> loadTeachers({int limit = 10, offset = 0}) async {
+  Future<List<Teacher>> loadTeachers() async {
     final isar = await db;
 
-    return isar.teachers.where().offset(offset).limit(limit).findAll();
+    return isar.teachers.where().findAll();
   }
 
   @override

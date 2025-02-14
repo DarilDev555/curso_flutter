@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:movil_app_uesa/domain/entities/institution.dart';
 import 'package:movil_app_uesa/domain/entities/teacher.dart';
+import 'package:movil_app_uesa/presentations/providers/storage/local_teachers_provider.dart';
 import 'package:movil_app_uesa/presentations/providers/teachers/institutionTeacher_provider.dart';
-import 'package:movil_app_uesa/presentations/providers/teachers/teachers_provider.dart';
 import 'package:movil_app_uesa/presentations/widgets/shared/text_frave.dart';
 
 class TechearSlideshow extends ConsumerStatefulWidget {
@@ -22,16 +22,16 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
   void initState() {
     super.initState();
 
-    ref.read(getTeachersProvider.notifier).loadTeachers();
+    ref.read(localTecahersProvider.notifier).loadTeachers();
   }
 
   @override
   Widget build(BuildContext context) {
-    final getTeachers = ref.watch(getTeachersProvider);
+    final getTeachers = ref.watch(localTecahersProvider);
     final getInstitutionTeacher = ref.watch(getinstitutionTeacherProvider);
     final colors = Theme.of(context).colorScheme;
 
-    for (var teacher in getTeachers) {
+    for (var teacher in getTeachers.values) {
       ref
           .read(getinstitutionTeacherProvider.notifier)
           .loadInstitution('${teacher.id}');
@@ -53,7 +53,7 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
         ),
         itemCount: getTeachers.length,
         itemBuilder: (context, index) {
-          final teacher = getTeachers[index];
+          final teacher = getTeachers.values.toList()[index];
 
           Institution? institution = getInstitutionTeacher['${teacher.id}'];
           return _Slide(teacher, institution);
@@ -88,7 +88,7 @@ class _Slide extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Container(
             width: 200,
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: const BoxDecoration(color: Colors.white),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(

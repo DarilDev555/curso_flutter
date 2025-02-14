@@ -92,7 +92,7 @@ class HomeScreen extends ConsumerWidget {
                   // ref.read(accessTokenProvider.notifier).getToken(
                   //     _usernameController.text, _passwordController.text);
 
-                  if (_usernameController.text != 'Daril') {
+                  if (_usernameController.text.trim() != 'Daril') {
                     context.push('/dashboard-screen');
                     return;
                   }
