@@ -4,7 +4,7 @@ part 'movie.g.dart';
 
 @collection
 class Movie {
-  Id? isarId;
+  Id? isarId = Isar.autoIncrement;
 
   final bool adult;
   final String backdropPath;

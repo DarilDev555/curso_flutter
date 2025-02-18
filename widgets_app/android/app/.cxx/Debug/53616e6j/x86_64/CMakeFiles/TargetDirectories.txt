@@ -1,0 +1,2 @@
+C:/Users/OneAn/Documents/GitHub/curso_flutter/widgets_app/android/app/.cxx/Debug/53616e6j/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/OneAn/Documents/GitHub/curso_flutter/widgets_app/android/app/.cxx/Debug/53616e6j/x86_64/CMakeFiles/rebuild_cache.dir
