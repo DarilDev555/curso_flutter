@@ -1,3 +1,4 @@
+import 'package:app_cseiio/config/const/environment.dart';
 import 'package:app_cseiio/domain/datasources/teachers_datasource.dart';
 import 'package:app_cseiio/domain/entities/institution.dart';
 import 'package:app_cseiio/domain/entities/teacher.dart';
@@ -10,10 +11,10 @@ import 'package:app_cseiio/infrastructure/models/teacherau/teachersau_response.d
 class TeachersauDatasource extends TeachersDatasource {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://172.31.162.15:8000/api',
+      baseUrl: Environment.apiUrl,
       headers: {
         'Authorization':
-            'Bearer 1|SPhBaRcecpshcRfwP7eYbLYce2CYZj8iVLoIoBoi3925f42a',
+            'Bearer 1|i0061BhQGYd2PuxcCM0yb2AFpyEmZhQLk8IVfw7S0c53c322',
       },
     ),
   );
@@ -25,7 +26,7 @@ class TeachersauDatasource extends TeachersDatasource {
             .map(
               (teacherAU) => TeacherMapper.teacherAUToEntity(
                 teacherAU,
-                baseUrlImage: 'http://172.31.162.15:8000/',
+                baseUrlImage: Environment.apiUrl,
               ),
             )
             .toList();

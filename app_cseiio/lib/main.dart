@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_cseiio/config/router/app_router.dart';
-import 'package:app_cseiio/config/theme/app_theme.dart';
+import 'package:app_cseiio/config/config.dart';
 
-void main() {
+void main() async {
+  await Environment.initEnvironment();
+
   runApp(const ProviderScope(child: MainApp()));
 }
 

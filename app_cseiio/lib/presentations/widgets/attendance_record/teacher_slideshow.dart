@@ -1,11 +1,9 @@
-import 'package:animate_do/animate_do.dart';
+// import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_cseiio/domain/entities/institution.dart';
 import 'package:app_cseiio/domain/entities/teacher.dart';
 import 'package:app_cseiio/presentations/providers/storage/local_teachers_provider.dart';
-import 'package:app_cseiio/presentations/providers/teachers/institutionTeacher_provider.dart';
 import 'package:app_cseiio/presentations/widgets/shared/text_frave.dart';
 
 class TechearSlideshow extends ConsumerStatefulWidget {
@@ -26,14 +24,7 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
   @override
   Widget build(BuildContext context) {
     final getTeachers = ref.watch(localTecahersProvider);
-    final getInstitutionTeacher = ref.watch(getinstitutionTeacherProvider);
     final colors = Theme.of(context).colorScheme;
-
-    for (var teacher in getTeachers.values) {
-      ref
-          .read(getinstitutionTeacherProvider.notifier)
-          .loadInstitution('${teacher.id}');
-    }
 
     return SizedBox(
       height: 250,
@@ -52,9 +43,7 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
         itemCount: getTeachers.length,
         itemBuilder: (context, index) {
           final teacher = getTeachers.values.toList()[index];
-
-          Institution? institution = getInstitutionTeacher['${teacher.id}'];
-          return _Slide(teacher, institution);
+          return _Slide(teacher);
         },
       ),
     );
@@ -63,9 +52,8 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
 
 class _Slide extends StatelessWidget {
   final Teacher teacher;
-  final Institution? institution;
 
-  const _Slide(this.teacher, this.institution);
+  const _Slide(this.teacher);
 
   @override
   Widget build(BuildContext context) {
@@ -97,16 +85,10 @@ class _Slide extends StatelessWidget {
                     child: Image.network(
                       height: 100,
                       width: 100,
-                      teacher.avatar ??
-                          'https://static.thenounproject.com/png/1669490-200.png',
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress != null) {
-                          return const DecoratedBox(
-                            decoration: BoxDecoration(color: Colors.black12),
-                          );
-                        }
-                        return FadeIn(child: child);
+                      teacher.avatar!,
+                      headers: {
+                        "Authorization":
+                            "Bearer 1|i0061BhQGYd2PuxcCM0yb2AFpyEmZhQLk8IVfw7S0c53c322",
                       },
                     ),
                   ),
@@ -133,14 +115,14 @@ class _Slide extends StatelessWidget {
                             fontSize: 15,
                           ),
                           TextFrave(
-                            text: 'Institucción',
+                            text: 'Email',
                             maxLines: 1,
                             color: colors.secondary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                           TextFrave(
-                            text: institution?.name ?? 'null',
+                            text: teacher.email,
                             maxLines: 2,
                             color: colors.secondary,
                             fontSize: 15,

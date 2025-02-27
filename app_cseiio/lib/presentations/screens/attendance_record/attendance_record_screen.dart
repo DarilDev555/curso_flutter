@@ -36,7 +36,6 @@ class _ViewTeachers extends StatelessWidget {
               child: const TechearSlideshow(),
             ),
           ),
-          TextButtonQr(colors: colors),
           TextButton(
             onPressed: () {},
             child: Padding(
@@ -54,6 +53,7 @@ class _ViewTeachers extends StatelessWidget {
               ),
             ),
           ),
+          TextButtonQr(colors: colors),
         ],
       ),
     );
@@ -78,7 +78,6 @@ class TextButtonQrState extends ConsumerState<TextButtonQr> {
 
     return Column(
       children: [
-        Form(child: TextFormField(controller: controller)),
         Padding(
           padding: const EdgeInsets.all(0),
           child: ElevatedButton.icon(
@@ -103,6 +102,7 @@ class TextButtonQrState extends ConsumerState<TextButtonQr> {
             label: const Text('Agregar', textScaler: TextScaler.linear(1.2)),
           ),
         ),
+        Form(child: TextFormField(controller: controller)),
       ],
     );
   }

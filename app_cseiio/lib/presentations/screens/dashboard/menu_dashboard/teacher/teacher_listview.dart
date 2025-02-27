@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:app_cseiio/domain/entities/institution.dart';
 import 'package:app_cseiio/domain/entities/teacher.dart';
 import 'package:app_cseiio/presentations/widgets/shared/text_frave.dart';
 
@@ -10,7 +9,6 @@ class TeachersListVew extends StatefulWidget {
   final Size size;
   final VoidCallback? loadNextPage;
   final List<Teacher> teachers;
-  final Map<String, Institution> institutionTeacher;
 
   const TeachersListVew({
     super.key,
@@ -19,7 +17,6 @@ class TeachersListVew extends StatefulWidget {
     required this.size,
     this.loadNextPage,
     required this.teachers,
-    required this.institutionTeacher,
   });
 
   @override
@@ -50,7 +47,6 @@ class _TeachersListVewState extends State<TeachersListVew> {
   @override
   Widget build(BuildContext context) {
     final teachers = widget.teachers;
-    final institutionTeacher = widget.institutionTeacher;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -70,7 +66,6 @@ class _TeachersListVewState extends State<TeachersListVew> {
                 teacher: teacher,
                 colors: widget.colors,
                 textStyle: widget.textStyle,
-                institution: institutionTeacher['${teacher.id}'],
               ),
             );
           },
@@ -82,14 +77,12 @@ class _TeachersListVewState extends State<TeachersListVew> {
 
 class _ItemList extends StatelessWidget {
   final Teacher teacher;
-  final Institution? institution;
   final ColorScheme colors;
   final TextTheme textStyle;
   const _ItemList({
     required this.teacher,
     required this.colors,
     required this.textStyle,
-    this.institution,
   });
 
   @override
@@ -134,6 +127,10 @@ class _ItemList extends StatelessWidget {
                           teacher.avatar ??
                               'https://static.thenounproject.com/png/1669490-200.png',
                           fit: BoxFit.cover,
+                          headers: {
+                            "Authorization":
+                                "Bearer 1|i0061BhQGYd2PuxcCM0yb2AFpyEmZhQLk8IVfw7S0c53c322",
+                          },
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress != null) {
                               return const DecoratedBox(
@@ -161,7 +158,7 @@ class _ItemList extends StatelessWidget {
                             textAlign: TextAlign.left,
                           ),
                           TextFrave(
-                            text: institution?.name ?? 'null',
+                            text: teacher.email,
                             maxLines: 2,
                             color: colors.secondary,
                             fontSize: 12,

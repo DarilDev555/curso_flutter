@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_cseiio/presentations/providers/teachers/institutionTeacher_provider.dart';
 import 'package:app_cseiio/presentations/screens/dashboard/menu_dashboard/teacher/teacher_listview.dart';
 
 import '../../../../providers/teachers/teachers_provider.dart';
@@ -19,25 +18,15 @@ class TeachersDashboardScreenState
   @override
   void initState() {
     super.initState();
-    final getInstitutionTeacher = ref.read(getinstitutionTeacherProvider);
-    if (getInstitutionTeacher.isEmpty) {
-      ref.read(getTeachersProvider.notifier).loadTeachers();
-    }
+    ref.read(getTeachersProvider.notifier).loadTeachers();
   }
 
   @override
   Widget build(BuildContext context) {
     final getTeachers = ref.watch(getTeachersProvider);
-    final getInstitutionTeacher = ref.watch(getinstitutionTeacherProvider);
     final colors = Theme.of(context).colorScheme;
     final textStyle = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
-
-    for (var teacher in getTeachers) {
-      ref
-          .read(getinstitutionTeacherProvider.notifier)
-          .loadInstitution('${teacher.id}');
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +51,6 @@ class TeachersDashboardScreenState
               ref.read(getTeachersProvider.notifier).loadTeachers();
             },
             teachers: getTeachers,
-            institutionTeacher: getInstitutionTeacher,
           ),
         ],
       ),

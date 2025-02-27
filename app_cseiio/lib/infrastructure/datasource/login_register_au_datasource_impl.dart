@@ -1,9 +1,10 @@
+import 'package:app_cseiio/config/const/environment.dart';
 import 'package:dio/dio.dart';
 import 'package:app_cseiio/domain/datasources/login_register_datasource.dart';
 import 'package:app_cseiio/infrastructure/models/login/login_response.dart';
 
 class LoginRegisterAuDatasourceImpl extends LoginRegisterDatasource {
-  final dio = Dio(BaseOptions(baseUrl: 'http://172.31.162.15:8000/api'));
+  final dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
 
   @override
   Future<String> login({String? email, String? password}) async {
