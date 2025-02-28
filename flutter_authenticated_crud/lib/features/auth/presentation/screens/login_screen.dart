@@ -109,9 +109,10 @@ class _LoginForm extends ConsumerWidget {
             child: CustomFilledButton(
               text: 'Ingresar',
               buttonColor: Colors.black,
-              onPressed: () {
-                ref.watch(loginFormProvider.notifier).onFormSumit();
-              },
+              onPressed:
+                  loginForm.isPosting
+                      ? null
+                      : ref.watch(loginFormProvider.notifier).onFormSumit,
             ),
           ),
 

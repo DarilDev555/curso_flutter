@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_authenticated_crud/features/auth/providers/auth_provider.dart';
 //import 'package:go_router/go_router.dart';
 import 'package:flutter_authenticated_crud/features/shared/shared.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SideMenu extends StatefulWidget {
+class SideMenu extends ConsumerStatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const SideMenu({super.key, required this.scaffoldKey});
 
   @override
-  State<SideMenu> createState() => _SideMenuState();
+  SideMenuState createState() => SideMenuState();
 }
 
-class _SideMenuState extends State<SideMenu> {
+class SideMenuState extends ConsumerState<SideMenu> {
   int navDrawerIndex = 0;
 
   @override
@@ -54,7 +56,12 @@ class _SideMenuState extends State<SideMenu> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: CustomFilledButton(onPressed: () {}, text: 'Cerrar sesión'),
+          child: CustomFilledButton(
+            onPressed: () {
+              ref.read(authProvider.notifier).logout();
+            },
+            text: 'Cerrar sesión',
+          ),
         ),
       ],
     );
