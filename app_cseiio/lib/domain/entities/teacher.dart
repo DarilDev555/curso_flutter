@@ -5,6 +5,8 @@ part 'teacher.g.dart';
 @collection
 class Teacher {
   Id isarId = Isar.autoIncrement;
+  final int? idEvent;
+  final int? idDayEvent;
 
   final int id;
   final int institutionId;
@@ -21,6 +23,9 @@ class Teacher {
   final DateTime updatedAt;
 
   Teacher({
+    this.idEvent = -1,
+    this.idDayEvent = -1,
+
     required this.id,
     required this.institutionId,
     required this.firstName,

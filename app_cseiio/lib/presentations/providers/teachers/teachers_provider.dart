@@ -2,32 +2,42 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_cseiio/domain/entities/teacher.dart';
 import 'package:app_cseiio/presentations/providers/teachers/teachers_repository_provider.dart';
 
+//Provider
 final getTeachersProvider =
     StateNotifierProvider<TeachersNotifier, List<Teacher>>((ref) {
       final fetchgetTeachers2 =
           ref.watch(teacherRepositoryProvider).getTeachers;
 
-      return TeachersNotifier(fetchgetTeachers: fetchgetTeachers2);
+      final getTeacherByIdCallback =
+          ref.read(teacherRepositoryProvider).getTeacherById;
+
+      return TeachersNotifier(
+        fetchgetTeachers: fetchgetTeachers2,
+        getTeacherByIdCallback: getTeacherByIdCallback,
+      );
     });
 
-typedef TeacherCallback = Future<List<Teacher>> Function({int page});
+typedef TeachersCallback = Future<List<Teacher>> Function({int page});
+typedef GetTeacherByIdCallback = Future<Teacher> Function({required String id});
 
+//Notifier
 class TeachersNotifier extends StateNotifier<List<Teacher>> {
   int currentPage = 0;
   bool isLoading = false;
   int ultimaPeticon = 10;
-  TeacherCallback fetchgetTeachers;
+  TeachersCallback fetchgetTeachers;
+  GetTeacherByIdCallback getTeacherByIdCallback;
 
-  TeachersNotifier({required this.fetchgetTeachers}) : super([]);
+  TeachersNotifier({
+    required this.fetchgetTeachers,
+    required this.getTeacherByIdCallback,
+  }) : super([]);
 
   Future<void> loadTeachers() async {
     if (isLoading) return;
 
     isLoading = true;
     final List<Teacher> teachers = await fetchgetTeachers(page: currentPage);
-    print(
-      'teachers ${teachers.length} ultimapeticion ${ultimaPeticon} currentpage $currentPage',
-    );
 
     if (teachers.isEmpty) {
       isLoading = false;
@@ -35,7 +45,6 @@ class TeachersNotifier extends StateNotifier<List<Teacher>> {
     }
 
     if (teachers.length == 10 && ultimaPeticon == 10) {
-      print('entro 1');
       currentPage++;
       ultimaPeticon = teachers.length;
       state = [...state, ...teachers];
@@ -61,5 +70,9 @@ class TeachersNotifier extends StateNotifier<List<Teacher>> {
       return;
     }
     isLoading = false;
+  }
+
+  Future<Teacher> getTeacher({required String id}) async {
+    return getTeacherByIdCallback(id: id);
   }
 }

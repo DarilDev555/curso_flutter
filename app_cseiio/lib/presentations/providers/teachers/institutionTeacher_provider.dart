@@ -31,7 +31,6 @@ class InstitutionTeacherMapNotifier
     if (state[teacherId] != null) return;
 
     isLoading = true;
-    print('peticion institutos');
     final institution = await getInstitutoionTeacher(id: teacherId);
 
     isLoading = false;

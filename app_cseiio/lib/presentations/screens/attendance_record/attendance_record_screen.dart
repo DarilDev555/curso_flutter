@@ -1,3 +1,4 @@
+import 'package:app_cseiio/presentations/widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_cseiio/presentations/providers/storage/local_teachers_provider.dart';
@@ -12,7 +13,10 @@ class AttendanceRecordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Scaffold(body: _ViewTeachers(colors: colors));
+    return Scaffold(
+      appBar: AppBar(leading: CustomAvatarAppbar(), title: Text('Registro')),
+      body: _ViewTeachers(colors: colors),
+    );
   }
 }
 
@@ -28,7 +32,7 @@ class _ViewTeachers extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 100),
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Container(
               decoration: BoxDecoration(color: colors.surface),
               width: double.infinity,
@@ -72,8 +76,6 @@ class TextButtonQr extends ConsumerStatefulWidget {
 class TextButtonQrState extends ConsumerState<TextButtonQr> {
   @override
   Widget build(BuildContext context) {
-    final getTeachers = ref.watch(getTeachersProvider);
-
     TextEditingController controller = TextEditingController();
 
     return Column(
@@ -85,14 +87,9 @@ class TextButtonQrState extends ConsumerState<TextButtonQr> {
               backgroundColor: WidgetStateProperty.all(widget.colors.onPrimary),
             ),
             onPressed: () async {
-              /*
-  TODO Esto esta mal por que esta poneniendo el Teacher del provider que ya estan cargados
-  Necesitas hacerlo con una peticion port que mandes un code y regrese el 
-
-*/
-              final tempTeacher = getTeachers.firstWhere(
-                (element) => element.id == int.parse(controller.text),
-              );
+              final tempTeacher = await ref
+                  .read(getTeachersProvider.notifier)
+                  .getTeacher(id: controller.text);
 
               await ref
                   .read(localTecahersProvider.notifier)

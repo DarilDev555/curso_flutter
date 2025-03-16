@@ -1,21 +1,21 @@
 import 'package:app_cseiio/domain/entities/role.dart';
 
 class User {
-  final int id;
-  final int roleId;
+  final String id;
+  final String roleId;
+  final String userName;
   final String email;
   final String profilePicture;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final Role role;
+  final String token;
 
   User({
     required this.id,
     required this.roleId,
+    required this.userName,
     required this.email,
     required this.profilePicture,
-    required this.createdAt,
-    required this.updatedAt,
     required this.role,
+    required this.token,
   });
 }

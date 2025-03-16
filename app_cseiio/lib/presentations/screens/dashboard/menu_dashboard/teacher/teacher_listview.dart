@@ -1,7 +1,9 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:app_cseiio/domain/entities/teacher.dart';
 import 'package:app_cseiio/presentations/widgets/shared/text_frave.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TeachersListVew extends StatefulWidget {
   final ColorScheme colors;
@@ -75,7 +77,7 @@ class _TeachersListVewState extends State<TeachersListVew> {
   }
 }
 
-class _ItemList extends StatelessWidget {
+class _ItemList extends ConsumerWidget {
   final Teacher teacher;
   final ColorScheme colors;
   final TextTheme textStyle;
@@ -86,7 +88,8 @@ class _ItemList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String accessToken = ref.watch(authProvider).user!.token;
     final decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(20),
       // boxShadow: const [
@@ -127,10 +130,7 @@ class _ItemList extends StatelessWidget {
                           teacher.avatar ??
                               'https://static.thenounproject.com/png/1669490-200.png',
                           fit: BoxFit.cover,
-                          headers: {
-                            "Authorization":
-                                "Bearer 1|i0061BhQGYd2PuxcCM0yb2AFpyEmZhQLk8IVfw7S0c53c322",
-                          },
+                          headers: {"Authorization": "Bearer $accessToken"},
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress != null) {
                               return const DecoratedBox(

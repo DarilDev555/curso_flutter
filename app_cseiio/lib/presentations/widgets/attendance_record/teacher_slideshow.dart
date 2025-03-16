@@ -1,4 +1,5 @@
 // import 'package:animate_do/animate_do.dart';
+import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,9 @@ import 'package:app_cseiio/presentations/providers/storage/local_teachers_provid
 import 'package:app_cseiio/presentations/widgets/shared/text_frave.dart';
 
 class TechearSlideshow extends ConsumerStatefulWidget {
-  const TechearSlideshow({super.key});
+  final int idEvent;
+  final int idDayEvent;
+  const TechearSlideshow({super.key, this.idEvent = -1, this.idDayEvent = -1});
 
   @override
   TechearSlideshowState createState() => TechearSlideshowState();
@@ -18,12 +21,15 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
   void initState() {
     super.initState();
 
-    ref.read(localTecahersProvider.notifier).loadTeachers();
+    ref
+        .read(localTecahersProvider.notifier)
+        .loadTeachers(widget.idEvent, widget.idDayEvent);
   }
 
   @override
   Widget build(BuildContext context) {
     final getTeachers = ref.watch(localTecahersProvider);
+    final String accessToken = ref.watch(authProvider).user!.token;
     final colors = Theme.of(context).colorScheme;
 
     return SizedBox(
@@ -43,7 +49,7 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
         itemCount: getTeachers.length,
         itemBuilder: (context, index) {
           final teacher = getTeachers.values.toList()[index];
-          return _Slide(teacher);
+          return _Slide(teacher, accessToken);
         },
       ),
     );
@@ -52,8 +58,9 @@ class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
 
 class _Slide extends StatelessWidget {
   final Teacher teacher;
+  final String accessToken;
 
-  const _Slide(this.teacher);
+  const _Slide(this.teacher, this.accessToken);
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +93,7 @@ class _Slide extends StatelessWidget {
                       height: 100,
                       width: 100,
                       teacher.avatar!,
-                      headers: {
-                        "Authorization":
-                            "Bearer 1|i0061BhQGYd2PuxcCM0yb2AFpyEmZhQLk8IVfw7S0c53c322",
-                      },
+                      headers: {"Authorization": "Bearer $accessToken"},
                     ),
                   ),
                   Padding(

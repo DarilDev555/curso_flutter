@@ -1,3 +1,4 @@
+import 'package:app_cseiio/presentations/widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_cseiio/presentations/screens/dashboard/menu_dashboard/teacher/teacher_listview.dart';
@@ -30,14 +31,7 @@ class TeachersDashboardScreenState
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(
-              'https://media.licdn.com/dms/image/v2/D4E03AQG9vivTumsTUQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1729615646699?e=1741824000&v=beta&t=AmdFYtf9vHHVlFQg9hB0Q--c2zUxvvTMpAdjb7gxUSs',
-            ),
-          ),
-        ),
+        leading: CustomAvatarAppbar(),
         title: const Text('Asistentes', textAlign: TextAlign.center),
       ),
       body: Column(

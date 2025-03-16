@@ -1,3 +1,4 @@
+import 'package:app_cseiio/presentations/widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_cseiio/config/menu/menu_items.dart';
@@ -14,14 +15,7 @@ class DashboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(
-              'https://media.licdn.com/dms/image/v2/D4E03AQG9vivTumsTUQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1729615646699?e=1741824000&v=beta&t=AmdFYtf9vHHVlFQg9hB0Q--c2zUxvvTMpAdjb7gxUSs',
-            ),
-          ),
-        ),
+        leading: CustomAvatarAppbar(),
         title: const Text('Dashboard', textAlign: TextAlign.center),
       ),
       body: Column(
@@ -71,7 +65,7 @@ class DashboardScreen extends StatelessWidget {
               children:
                   appMenuItemss
                       .map(
-                        (e) => itemMenu(
+                        (e) => ItemMenu(
                           icon: e.icon,
                           title: e.title,
                           subTitle: e.subTitle,
@@ -89,14 +83,14 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
-class itemMenu extends StatelessWidget {
+class ItemMenu extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subTitle;
   final String link;
   final ColorScheme colors;
   final TextTheme textStyle;
-  const itemMenu({
+  const ItemMenu({
     super.key,
     required this.icon,
     required this.title,

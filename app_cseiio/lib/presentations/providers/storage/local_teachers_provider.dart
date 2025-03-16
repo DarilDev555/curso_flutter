@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_cseiio/domain/entities/teacher.dart';
-import 'package:app_cseiio/domain/repositories/local_storage_repository.dart';
+import 'package:app_cseiio/domain/repositories/local/local_storage_repository.dart';
 import 'package:app_cseiio/presentations/providers/storage/local_storage_provider.dart';
 
 final localTecahersProvider =
@@ -17,8 +17,11 @@ class StorageTeachersNotifier extends StateNotifier<Map<int, Teacher>> {
 
   StorageTeachersNotifier({required this.localStorageRepository}) : super({});
 
-  Future<List<Teacher>> loadTeachers() async {
-    final teachers = await localStorageRepository.loadTeachers();
+  Future<List<Teacher>> loadTeachers(int idEvent, int idDayEvent) async {
+    final teachers = await localStorageRepository.loadTeachers(
+      idEvent,
+      idDayEvent,
+    );
 
     final tempTeacherMap = <int, Teacher>{};
     for (var teacher in teachers) {
