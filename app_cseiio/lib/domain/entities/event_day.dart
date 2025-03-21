@@ -3,8 +3,8 @@ class EventDay {
   final int eventId;
   final int numDay;
   final DateTime dateDayEvent;
-  final DateTime startTime;
-  final DateTime endTime;
+  final String startTime;
+  final String endTime;
 
   EventDay({
     required this.id,

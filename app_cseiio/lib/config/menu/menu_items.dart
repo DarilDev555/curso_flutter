@@ -18,7 +18,7 @@ const appMenuItemss = <MenuItems>[
   MenuItems(
     title: 'Eventos',
     subTitle: 'Gestion de eventos',
-    link: '/',
+    link: '/events-screen',
     icon: Icons.calendar_month_outlined,
   ),
   MenuItems(

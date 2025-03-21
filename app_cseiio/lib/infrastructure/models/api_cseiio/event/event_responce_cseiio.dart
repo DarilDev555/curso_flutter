@@ -15,7 +15,7 @@ class EventResponceCseiio {
 
   factory EventResponceCseiio.fromJson(Map<String, dynamic> json) =>
       EventResponceCseiio(
-        id: json["id"],
+        id: json["id"].toString(),
         name: json["name"],
         startDate: DateTime.parse(json["start_date"]),
         endDate: DateTime.parse(json["end_date"]),

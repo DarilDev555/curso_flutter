@@ -1,6 +1,8 @@
 import 'package:app_cseiio/config/router/app_router_notifier.dart';
 import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
 import 'package:app_cseiio/presentations/screens/auth/check_auth_status_screen.dart';
+import 'package:app_cseiio/presentations/screens/event/event_days_screen.dart';
+import 'package:app_cseiio/presentations/screens/event/events_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_cseiio/presentations/screens/attendance_record/attendance_record_screen.dart';
@@ -42,6 +44,20 @@ final goRouterProvider = Provider((ref) {
         name: TeachersDashboardScreen.name,
         builder: (context, state) => TeachersDashboardScreen(),
       ),
+      GoRoute(
+        path: '/events-screen',
+        name: EventsScreen.name,
+        builder: (context, state) => EventsScreen(),
+      ),
+      GoRoute(
+        path: '/event-days-screen/:event',
+        name: EventDaysScreen.name,
+        builder: (context, state) {
+          final idEvent = state.pathParameters['event'] ?? 'no-id';
+
+          return EventDaysScreen(idEvent: idEvent);
+        },
+      ),
     ],
 
     redirect: (context, state) {
@@ -58,7 +74,6 @@ final goRouterProvider = Provider((ref) {
         }
         return '/login';
       }
-      print("${ref.read(authProvider).user!.role.name}");
       if (authStatus == AuthStatus.authenticated &&
           ref.read(authProvider).user!.role.name == 'Manager') {
         if (isGoingTo == '/login' ||
