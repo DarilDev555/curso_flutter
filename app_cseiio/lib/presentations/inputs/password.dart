@@ -5,8 +5,9 @@ enum PasswordError { empty, length, format, mismatch }
 
 // Clase para validar contraseñas
 class Password extends FormzInput<String, PasswordError> {
+  // RegExp para la validación: al menos un número y un carácter especial.
   static final RegExp passwordRegExp = RegExp(
-    r'(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$',
+    r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{6,}$', // al menos un número y un carácter especial
   );
 
   final String? confirmPassword; // Contraseña para comparar
@@ -23,7 +24,7 @@ class Password extends FormzInput<String, PasswordError> {
     if (displayError == PasswordError.empty) return 'El campo es requerido';
     if (displayError == PasswordError.length) return 'Mínimo 6 caracteres';
     if (displayError == PasswordError.format) {
-      return 'Debe contener mayúscula, minúscula y un número';
+      return 'Debe contener mayúscula, minúscula, \nun número y un carácter especial';
     }
     if (displayError == PasswordError.mismatch) {
       return 'Las contraseñas no coinciden';

@@ -1,10 +1,13 @@
-import 'package:app_cseiio/domain/entities/event.dart';
-import 'package:app_cseiio/presentations/providers/events/events_provider.dart';
-import 'package:app_cseiio/presentations/widgets/shared/custom_avatar_appbar.dart';
+import '../../../domain/entities/event.dart';
+import '../../providers/events/events_provider.dart';
+import 'event_days_screen.dart';
+import '../../widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import '../../providers/events/event_days_provider.dart';
 
 class EventsScreen extends ConsumerStatefulWidget {
   static const name = 'events-screen';
@@ -16,6 +19,7 @@ class EventsScreen extends ConsumerStatefulWidget {
 
 class EventsScreenState extends ConsumerState<EventsScreen> {
   final CalendarController _calendarController = CalendarController();
+  bool _isCalendarView = true;
 
   @override
   void initState() {
@@ -30,64 +34,114 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
     super.initState();
   }
 
+  void _toggleView() {
+    setState(() {
+      _isCalendarView = !_isCalendarView;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final events = ref.watch(getEventsProvider);
 
     return Scaffold(
       appBar: AppBar(
-        leading: CustomAvatarAppbar(),
+        leading: const CustomAvatarAppbar(),
         title: const Text('Eventos'),
+        actions: [
+          IconButton(
+            icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
+            onPressed: _toggleView,
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: SfCalendar(
-            controller: _calendarController,
-            onViewChanged: (viewChangedDetails) {
-              ref
-                  .read(getEventsProvider.notifier)
-                  .loadEvents(
-                    month: _calendarController.displayDate!.month.toString(),
-                    year: _calendarController.displayDate!.year.toString(),
-                  );
-            },
-            view: CalendarView.month,
-            onTap: (calendarTapDetails) {
-              print(calendarTapDetails.targetElement);
-              if (calendarTapDetails.appointments!.isEmpty ||
-                  calendarTapDetails.targetElement !=
-                      CalendarElement.appointment) {
-                return;
-              }
-              final Event meeting =
-                  calendarTapDetails.appointments!.first as Event;
-
-              context.push('/event-days-screen/${meeting.id}');
-
-              return;
-            },
-            dataSource: MeetingDataSource(
-              //events['${_calendarController.displayDate!.month}-${_calendarController.displayDate!.year}']!,
-              events,
-            ),
-            headerStyle: CalendarHeaderStyle(
-              backgroundColor: Colors.transparent,
-              textStyle: TextStyle(fontSize: 25),
-            ),
-            monthViewSettings: MonthViewSettings(
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-              showAgenda: true,
-              agendaItemHeight: 60,
-              dayFormat: 'EEE  ',
-              agendaStyle: AgendaStyle(
-                appointmentTextStyle: TextStyle(
-                  fontSize: 17,
-                  overflow: TextOverflow.visible,
-                ),
-              ),
-            ),
-          ),
+          child:
+              _isCalendarView
+                  ? SfCalendar(
+                    headerDateFormat: 'MMMM',
+                    controller: _calendarController,
+                    onViewChanged: (viewChangedDetails) {
+                      ref
+                          .read(getEventsProvider.notifier)
+                          .loadEvents(
+                            month:
+                                _calendarController.displayDate!.month
+                                    .toString(),
+                            year:
+                                _calendarController.displayDate!.year
+                                    .toString(),
+                          );
+                    },
+                    view: CalendarView.month,
+                    showNavigationArrow: true,
+                    onTap: (calendarTapDetails) {
+                      if (calendarTapDetails.appointments == null) return;
+                      if (calendarTapDetails.appointments!.isEmpty ||
+                          calendarTapDetails.targetElement !=
+                              CalendarElement.appointment) {
+                        return;
+                      }
+                      final Event meeting =
+                          calendarTapDetails.appointments!.first as Event;
+                      ref
+                          .read(getEventDaysProvider.notifier)
+                          .loadEventDays(idEvent: meeting.id);
+                      context.pushNamed(
+                        EventDaysScreen.name,
+                        queryParameters: {'event': meeting.id},
+                      );
+                    },
+                    dataSource: MeetingDataSource(events),
+                    headerStyle: const CalendarHeaderStyle(
+                      backgroundColor: Colors.transparent,
+                      textStyle: TextStyle(fontSize: 25),
+                      textAlign: TextAlign.center,
+                    ),
+                    monthViewSettings: const MonthViewSettings(
+                      appointmentDisplayMode:
+                          MonthAppointmentDisplayMode.appointment,
+                      showAgenda: true,
+                      agendaItemHeight: 60,
+                      dayFormat: 'EEE  ',
+                      agendaStyle: AgendaStyle(
+                        appointmentTextStyle: TextStyle(
+                          fontSize: 17,
+                          overflow: TextOverflow.visible,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  )
+                  : ListView.builder(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      final event = events[index];
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          title: Text(
+                            event.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            '${event.startDate} - ${event.endDate}',
+                          ),
+                          trailing: Icon(Icons.event, color: event.background),
+                          onTap: () {
+                            ref
+                                .read(getEventDaysProvider.notifier)
+                                .loadEventDays(idEvent: event.id);
+                            context.push('/event-days-screen/${event.id}');
+                          },
+                        ),
+                      );
+                    },
+                  ),
         ),
       ),
     );
@@ -116,7 +170,8 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   Color getColor(int index) {
-    return appointments![index].background;
+    final color = (appointments![index] as Event).background;
+    return color;
   }
 
   @override

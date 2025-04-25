@@ -1,6 +1,6 @@
 // 1- State del provider
-import 'package:app_cseiio/presentations/inputs/inputs.dart';
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
+import '../../inputs/inputs.dart';
+import 'auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 
@@ -20,7 +20,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   LoginFormNotifier({required this.loginUserCallback})
     : super(LoginFormState());
 
-  onEmailChange(String value) {
+  void onEmailChange(String value) {
     final newEmail = Email.dirty(value);
     state = state.copyWith(
       email: newEmail,
@@ -28,7 +28,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     );
   }
 
-  onPasswordChange(String value) {
+  void onPasswordChange(String value) {
     final newPassword = Password.dirty(value);
     state = state.copyWith(
       password: newPassword,
@@ -36,7 +36,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     );
   }
 
-  onFormSumit() async {
+  void onFormSumit() async {
     _touchEveryField();
     if (!state.isValid) return;
     state = state.copyWith(isPosting: true);

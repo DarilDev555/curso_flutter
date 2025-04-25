@@ -1,4 +1,4 @@
-import 'package:app_cseiio/service/key_value_storage_service.dart';
+import 'key_value_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KeyValueStorageServiceImpl extends KeyValueStorageService {
@@ -11,9 +11,11 @@ class KeyValueStorageServiceImpl extends KeyValueStorageService {
     final prefs = await getSharePrefs();
 
     switch (T) {
+      // ignore: type_literal_in_constant_pattern
       case int:
         return prefs.getInt(key) as T?;
 
+      // ignore: type_literal_in_constant_pattern
       case String:
         return prefs.getString(key) as T?;
 

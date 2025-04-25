@@ -1,4 +1,4 @@
-import 'package:app_cseiio/domain/entities/role.dart';
+import 'role.dart';
 
 class User {
   final String id;
@@ -16,6 +16,6 @@ class User {
     required this.email,
     required this.profilePicture,
     required this.role,
-    required this.token,
+    this.token = '',
   });
 }

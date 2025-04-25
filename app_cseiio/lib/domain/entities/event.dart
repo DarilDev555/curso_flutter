@@ -1,3 +1,4 @@
+import 'event_day.dart';
 import 'package:flutter/material.dart';
 
 class Event {
@@ -6,6 +7,7 @@ class Event {
   final DateTime startDate;
   final DateTime endDate;
   final String description;
+  final List<EventDay>? eventdays;
   final Color background;
 
   Event({
@@ -14,13 +16,30 @@ class Event {
     required this.startDate,
     required this.endDate,
     required this.description,
+    this.eventdays,
   }) : background = _generateColor(id); // Se genera el color a partir del ID
+
+  static final List<Color> _accentColors = [
+    Colors.redAccent,
+    Colors.pinkAccent,
+    Colors.purpleAccent,
+    Colors.deepPurpleAccent,
+    Colors.indigoAccent,
+    Colors.blueAccent,
+    Colors.lightBlueAccent,
+    Colors.cyanAccent,
+    Colors.tealAccent,
+    Colors.greenAccent,
+    Colors.lightGreenAccent,
+    Colors.limeAccent,
+    Colors.amberAccent,
+    Colors.orangeAccent,
+    Colors.deepOrangeAccent,
+  ];
 
   static Color _generateColor(String input) {
     final int hash = input.hashCode;
-    final int r = (hash & 0xFF0000) >> 16;
-    final int g = (hash & 0x00FF00) >> 8;
-    final int b = (hash & 0x0000FF);
-    return Color.fromARGB(255, r, g, b);
+    final int index = hash.abs() % _accentColors.length;
+    return _accentColors[index];
   }
 }

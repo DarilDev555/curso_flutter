@@ -1,6 +1,9 @@
+import '../api_cseiio.dart';
+
 class TeacherResponseCseiio {
   final int id;
   final int institutionId;
+  final int? userId;
   final String firstName;
   final String paternalLastName;
   final String maternalLastName;
@@ -12,10 +15,12 @@ class TeacherResponseCseiio {
   final String? avatar;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<AttendanceResponseCseiio>? attendances;
 
   TeacherResponseCseiio({
     required this.id,
     required this.institutionId,
+    required this.userId,
     required this.firstName,
     required this.paternalLastName,
     required this.maternalLastName,
@@ -27,12 +32,14 @@ class TeacherResponseCseiio {
     required this.avatar,
     required this.createdAt,
     required this.updatedAt,
+    this.attendances,
   });
 
   factory TeacherResponseCseiio.fromJson(Map<String, dynamic> json) =>
       TeacherResponseCseiio(
         id: json["id"],
         institutionId: json["institution_id"],
+        userId: json["user_id"],
         firstName: json["first_name"],
         paternalLastName: json["paternal_last_name"],
         maternalLastName: json["maternal_last_name"],
@@ -44,11 +51,20 @@ class TeacherResponseCseiio {
         avatar: json["avatar"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        attendances:
+            json["attendances"] != null
+                ? List<AttendanceResponseCseiio>.from(
+                  json["attendances"].map(
+                    (x) => AttendanceResponseCseiio.fromJson(x),
+                  ),
+                )
+                : null,
       );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "institution_id": institutionId,
+    "user_id": userId,
     "first_name": firstName,
     "paternal_last_name": paternalLastName,
     "maternal_last_name": maternalLastName,
@@ -61,5 +77,9 @@ class TeacherResponseCseiio {
     "avatar": avatar,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "attendances":
+        attendances != null
+            ? List<dynamic>.from(attendances!.map((x) => x.toJson()))
+            : null,
   };
 }

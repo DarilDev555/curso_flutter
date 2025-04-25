@@ -1,5 +1,5 @@
-import 'package:app_cseiio/domain/entities/event_day.dart';
-import 'package:app_cseiio/presentations/providers/events/event_days_repository_provider.dart';
+import '../../../domain/entities/event_day.dart';
+import 'event_days_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final getEventDaysProvider =

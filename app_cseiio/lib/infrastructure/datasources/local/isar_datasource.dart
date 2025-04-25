@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
-import 'package:app_cseiio/domain/entities/teacher.dart';
+import '../../../domain/entities/teacher.dart';
 
-import 'package:app_cseiio/domain/datasources/local/local_storage_datasource.dart';
+import '../../../domain/datasources/local/local_storage_datasource.dart';
 import 'package:path_provider/path_provider.dart';
 
 class IsarDatasource extends LocalStorageDatasource {
@@ -28,7 +28,7 @@ class IsarDatasource extends LocalStorageDatasource {
   @override
   Future<bool> isTeacherOnDBs(
     int teacherId,
-    int idEvent,
+    int idAttendance,
     int idDayEvent,
   ) async {
     final isar = await db;
@@ -37,22 +37,17 @@ class IsarDatasource extends LocalStorageDatasource {
         await isar.teachers
             .filter()
             .idEqualTo(teacherId)
-            .idEventEqualTo(idEvent)
-            .idDayEventEqualTo(idDayEvent)
+            .idAttendanceEqualTo(idAttendance)
             .findFirst();
 
     return isTeacherOnDB != null;
   }
 
   @override
-  Future<List<Teacher>> loadTeachers(int idEvent, int idDayEvent) async {
+  Future<List<Teacher>> loadTeachers() async {
     final isar = await db;
 
-    return isar.teachers
-        .filter()
-        .idEventEqualTo(idEvent)
-        .idDayEventEqualTo(idDayEvent)
-        .findAll();
+    return isar.teachers.where().findAll();
   }
 
   @override
@@ -63,8 +58,7 @@ class IsarDatasource extends LocalStorageDatasource {
         await isar.teachers
             .filter()
             .idEqualTo(teacher.id)
-            .idEventEqualTo(teacher.idEvent)
-            .idDayEventEqualTo(teacher.idDayEvent)
+            .idAttendanceEqualTo(teacher.idAttendance)
             .findFirst();
 
     if (isTeacherOnDb != null) {

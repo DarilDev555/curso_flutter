@@ -1,4 +1,5 @@
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
+import '../../inputs/username.dart';
+import 'auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 
@@ -19,8 +20,8 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
   RegisterFormNotifier(this.registerCallback) : super(RegisterFormState());
 
-  onNameChange(String value) {
-    final newName = Name.dirty(value);
+  void onNameChange(String value) {
+    final newName = Username.dirty(value);
     state = state.copyWith(
       name: newName,
       isValid: Formz.validate([
@@ -32,7 +33,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  onEmailChange(String value) {
+  void onEmailChange(String value) {
     final newEmail = Email.dirty(value);
     state = state.copyWith(
       email: newEmail,
@@ -45,7 +46,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  onPasswordChange(String value) {
+  void onPasswordChange(String value) {
     final newPassword = Password.dirty(value);
     state = state.copyWith(
       password: newPassword,
@@ -58,7 +59,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  onSecondPasswordChange(String value) {
+  void onSecondPasswordChange(String value) {
     final newSecondPassword = Password.dirty(
       value,
       confirmPassword: state.password.value,
@@ -74,7 +75,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  onFormSumit() async {
+  void onFormSumit() async {
     _touchEveryField();
     if (!state.isValid) return;
     await registerCallback(
@@ -85,7 +86,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
   }
 
   _touchEveryField() {
-    final name = Name.dirty(state.name.value);
+    final name = Username.dirty(state.name.value);
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final secondPassword = Password.dirty(
@@ -110,7 +111,7 @@ class RegisterFormState {
   final bool isPosting;
   final bool isFormPosted;
   final bool isValid;
-  final Name name;
+  final Username name;
   final Email email;
   final Password password;
   final Password secondPassword;
@@ -119,7 +120,7 @@ class RegisterFormState {
     this.isPosting = false,
     this.isFormPosted = true,
     this.isValid = false,
-    this.name = const Name.pure(),
+    this.name = const Username.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.secondPassword = const Password.pure(),
@@ -129,7 +130,7 @@ class RegisterFormState {
     bool? isPosting,
     bool? isFormPosted,
     bool? isValid,
-    Name? name,
+    Username? name,
     Email? email,
     Password? password,
     Password? secondPassword,

@@ -1,13 +1,5 @@
-import 'dart:convert';
-
 //import 'package:app_cseiio/infraestructure/models/teacherau/teacher_teachersau.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/teachers/teacher_response_cseiio.dart';
-
-TeachersCseiioResponse teachersauResponceFromJson(String str) =>
-    TeachersCseiioResponse.fromJson(json.decode(str));
-
-String teachersResponseToJson(TeachersCseiioResponse data) =>
-    json.encode(data.toJson());
+import 'teacher_response_cseiio.dart';
 
 class TeachersCseiioResponse {
   final List<TeacherResponseCseiio> teachers;

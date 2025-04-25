@@ -62,35 +62,35 @@ const TeacherSchema = CollectionSchema(
       name: r'id',
       type: IsarType.long,
     ),
-    r'idDayEvent': PropertySchema(
+    r'idAttendance': PropertySchema(
       id: 9,
-      name: r'idDayEvent',
-      type: IsarType.long,
-    ),
-    r'idEvent': PropertySchema(
-      id: 10,
-      name: r'idEvent',
+      name: r'idAttendance',
       type: IsarType.long,
     ),
     r'institutionId': PropertySchema(
-      id: 11,
+      id: 10,
       name: r'institutionId',
       type: IsarType.long,
     ),
     r'maternalLastName': PropertySchema(
-      id: 12,
+      id: 11,
       name: r'maternalLastName',
       type: IsarType.string,
     ),
     r'paternalLastName': PropertySchema(
-      id: 13,
+      id: 12,
       name: r'paternalLastName',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 14,
+      id: 13,
       name: r'updatedAt',
       type: IsarType.dateTime,
+    ),
+    r'userId': PropertySchema(
+      id: 14,
+      name: r'userId',
+      type: IsarType.long,
     )
   },
   estimateSize: _teacherEstimateSize,
@@ -144,12 +144,12 @@ void _teacherSerialize(
   writer.writeString(offsets[6], object.firstName);
   writer.writeString(offsets[7], object.gender);
   writer.writeLong(offsets[8], object.id);
-  writer.writeLong(offsets[9], object.idDayEvent);
-  writer.writeLong(offsets[10], object.idEvent);
-  writer.writeLong(offsets[11], object.institutionId);
-  writer.writeString(offsets[12], object.maternalLastName);
-  writer.writeString(offsets[13], object.paternalLastName);
-  writer.writeDateTime(offsets[14], object.updatedAt);
+  writer.writeLong(offsets[9], object.idAttendance);
+  writer.writeLong(offsets[10], object.institutionId);
+  writer.writeString(offsets[11], object.maternalLastName);
+  writer.writeString(offsets[12], object.paternalLastName);
+  writer.writeDateTime(offsets[13], object.updatedAt);
+  writer.writeLong(offsets[14], object.userId);
 }
 
 Teacher _teacherDeserialize(
@@ -168,12 +168,12 @@ Teacher _teacherDeserialize(
     firstName: reader.readString(offsets[6]),
     gender: reader.readString(offsets[7]),
     id: reader.readLong(offsets[8]),
-    idDayEvent: reader.readLongOrNull(offsets[9]),
-    idEvent: reader.readLongOrNull(offsets[10]),
-    institutionId: reader.readLong(offsets[11]),
-    maternalLastName: reader.readString(offsets[12]),
-    paternalLastName: reader.readString(offsets[13]),
-    updatedAt: reader.readDateTime(offsets[14]),
+    idAttendance: reader.readLongOrNull(offsets[9]),
+    institutionId: reader.readLong(offsets[10]),
+    maternalLastName: reader.readString(offsets[11]),
+    paternalLastName: reader.readString(offsets[12]),
+    updatedAt: reader.readDateTime(offsets[13]),
+    userId: reader.readLongOrNull(offsets[14]),
   );
   object.isarId = id;
   return object;
@@ -207,15 +207,15 @@ P _teacherDeserializeProp<P>(
     case 9:
       return (reader.readLongOrNull(offset)) as P;
     case 10:
-      return (reader.readLongOrNull(offset)) as P;
-    case 11:
       return (reader.readLong(offset)) as P;
+    case 11:
+      return (reader.readString(offset)) as P;
     case 12:
       return (reader.readString(offset)) as P;
     case 13:
-      return (reader.readString(offset)) as P;
-    case 14:
       return (reader.readDateTime(offset)) as P;
+    case 14:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1267,59 +1267,60 @@ extension TeacherQueryFilter
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idDayEventIsNull() {
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idAttendanceIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'idDayEvent',
+        property: r'idAttendance',
       ));
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idDayEventIsNotNull() {
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      idAttendanceIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'idDayEvent',
+        property: r'idAttendance',
       ));
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idDayEventEqualTo(
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idAttendanceEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'idDayEvent',
+        property: r'idAttendance',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idDayEventGreaterThan(
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idAttendanceGreaterThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'idDayEvent',
+        property: r'idAttendance',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idDayEventLessThan(
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idAttendanceLessThan(
     int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'idDayEvent',
+        property: r'idAttendance',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idDayEventBetween(
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idAttendanceBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -1327,76 +1328,7 @@ extension TeacherQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'idDayEvent',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEventIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'idEvent',
-      ));
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEventIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'idEvent',
-      ));
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEventEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'idEvent',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEventGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'idEvent',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEventLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'idEvent',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> idEventBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'idEvent',
+        property: r'idAttendance',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1834,6 +1766,75 @@ extension TeacherQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> userIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'userId',
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> userIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'userId',
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> userIdEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> userIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> userIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'userId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition> userIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'userId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension TeacherQueryObject
@@ -1951,27 +1952,15 @@ extension TeacherQuerySortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByIdDayEvent() {
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByIdAttendance() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idDayEvent', Sort.asc);
+      return query.addSortBy(r'idAttendance', Sort.asc);
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByIdDayEventDesc() {
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByIdAttendanceDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idDayEvent', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByIdEvent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idEvent', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByIdEventDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idEvent', Sort.desc);
+      return query.addSortBy(r'idAttendance', Sort.desc);
     });
   }
 
@@ -2020,6 +2009,18 @@ extension TeacherQuerySortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
   QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -2134,27 +2135,15 @@ extension TeacherQuerySortThenBy
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByIdDayEvent() {
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByIdAttendance() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idDayEvent', Sort.asc);
+      return query.addSortBy(r'idAttendance', Sort.asc);
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByIdDayEventDesc() {
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByIdAttendanceDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idDayEvent', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByIdEvent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idEvent', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByIdEventDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'idEvent', Sort.desc);
+      return query.addSortBy(r'idAttendance', Sort.desc);
     });
   }
 
@@ -2215,6 +2204,18 @@ extension TeacherQuerySortThenBy
   QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByUserIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'userId', Sort.desc);
     });
   }
 }
@@ -2282,15 +2283,9 @@ extension TeacherQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Teacher, Teacher, QDistinct> distinctByIdDayEvent() {
+  QueryBuilder<Teacher, Teacher, QDistinct> distinctByIdAttendance() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'idDayEvent');
-    });
-  }
-
-  QueryBuilder<Teacher, Teacher, QDistinct> distinctByIdEvent() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'idEvent');
+      return query.addDistinctBy(r'idAttendance');
     });
   }
 
@@ -2319,6 +2314,12 @@ extension TeacherQueryWhereDistinct
   QueryBuilder<Teacher, Teacher, QDistinct> distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QDistinct> distinctByUserId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'userId');
     });
   }
 }
@@ -2385,15 +2386,9 @@ extension TeacherQueryProperty
     });
   }
 
-  QueryBuilder<Teacher, int?, QQueryOperations> idDayEventProperty() {
+  QueryBuilder<Teacher, int?, QQueryOperations> idAttendanceProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'idDayEvent');
-    });
-  }
-
-  QueryBuilder<Teacher, int?, QQueryOperations> idEventProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'idEvent');
+      return query.addPropertyName(r'idAttendance');
     });
   }
 
@@ -2418,6 +2413,12 @@ extension TeacherQueryProperty
   QueryBuilder<Teacher, DateTime, QQueryOperations> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'updatedAt');
+    });
+  }
+
+  QueryBuilder<Teacher, int?, QQueryOperations> userIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'userId');
     });
   }
 }

@@ -1,22 +1,25 @@
-import 'package:app_cseiio/presentations/widgets/shared/custom_avatar_appbar.dart';
+import '../../../providers/auth/auth_provider.dart';
+import '../../../widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:app_cseiio/config/menu/menu_items.dart';
-import 'package:app_cseiio/presentations/widgets/widgets.dart';
+import '../../../../config/menu/menu_items.dart';
+import '../../../widgets/widgets.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   static const name = 'dashboard_screen.dart';
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authProvider).user!.role.name;
     final colors = Theme.of(context).colorScheme;
     final textStyle = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        leading: CustomAvatarAppbar(),
-        title: const Text('Dashboard', textAlign: TextAlign.center),
+        leading: const CustomAvatarAppbar(),
+        title: const Text('Dashboard'),
       ),
       body: Column(
         children: [
@@ -30,7 +33,7 @@ class DashboardScreen extends StatelessWidget {
                   decoration: BoxDecoration(color: colors.primary),
                   child: Center(
                     child: TextFrave(
-                      text: 'Bienvnido',
+                      text: 'Bienvenido',
                       textAlign: TextAlign.center,
                       color: colors.onPrimary,
                       fontSize: 30,
@@ -60,22 +63,33 @@ class DashboardScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Wrap(
-              direction: Axis.horizontal,
-              children:
-                  appMenuItemss
-                      .map(
-                        (e) => ItemMenu(
-                          icon: e.icon,
-                          title: e.title,
-                          subTitle: e.subTitle,
-                          link: e.link,
-                          colors: colors,
-                          textStyle: textStyle,
-                        ),
-                      )
-                      .toList(),
-            ),
+            child:
+                user == 'Manager'
+                    ? Wrap(
+                      direction: Axis.horizontal,
+                      children:
+                          appMenuItemss
+                              .map(
+                                (e) => ItemMenu(
+                                  icon: e.icon,
+                                  title: e.title,
+                                  subTitle: e.subTitle,
+                                  link: e.link,
+                                  colors: colors,
+                                  textStyle: textStyle,
+                                ),
+                              )
+                              .toList(),
+                    )
+                    : ItemMenu(
+                      icon: Icons.calendar_month_outlined,
+                      title: 'Eventos Asignados',
+                      subTitle: 'Retistrar Asistencias',
+                      link: '/events-screen',
+                      colors: colors,
+                      textStyle: textStyle,
+                      width: 200,
+                    ),
           ),
         ],
       ),
@@ -90,6 +104,8 @@ class ItemMenu extends StatelessWidget {
   final String link;
   final ColorScheme colors;
   final TextTheme textStyle;
+  final double height;
+  final double width;
   const ItemMenu({
     super.key,
     required this.icon,
@@ -98,6 +114,8 @@ class ItemMenu extends StatelessWidget {
     required this.link,
     required this.colors,
     required this.textStyle,
+    this.height = 120,
+    this.width = 170,
   });
 
   @override
@@ -120,8 +138,8 @@ class ItemMenu extends StatelessWidget {
               context.push(link);
             },
             child: Container(
-              width: 170,
-              height: 120,
+              width: width,
+              height: height,
               decoration: BoxDecoration(color: colors.surfaceContainer),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

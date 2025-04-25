@@ -1,28 +1,33 @@
-class InstitutionCseiio {
-  final int id;
+import '../location/location_response_cseiio.dart';
+
+class InstitutionRespondeCseiio {
+  final String id;
   final int locationId;
   final String code;
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final LocationResponseCseiio location;
 
-  InstitutionCseiio({
+  InstitutionRespondeCseiio({
     required this.id,
     required this.locationId,
     required this.code,
     required this.name,
     required this.createdAt,
     required this.updatedAt,
+    required this.location,
   });
 
-  factory InstitutionCseiio.fromJson(Map<String, dynamic> json) =>
-      InstitutionCseiio(
-        id: json["id"],
+  factory InstitutionRespondeCseiio.fromJson(Map<String, dynamic> json) =>
+      InstitutionRespondeCseiio(
+        id: json["id"].toString(),
         locationId: json["location_id"],
         code: json["code"],
         name: json["name"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        location: LocationResponseCseiio.fromJson(json["location"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,5 +37,6 @@ class InstitutionCseiio {
     "name": name,
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
+    "location": location.toJson(),
   };
 }

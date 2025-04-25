@@ -1,143 +1,138 @@
 // import 'package:animate_do/animate_do.dart';
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
+import '../../providers/auth/auth_provider.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_cseiio/domain/entities/teacher.dart';
-import 'package:app_cseiio/presentations/providers/storage/local_teachers_provider.dart';
-import 'package:app_cseiio/presentations/widgets/shared/text_frave.dart';
+import '../../../domain/entities/teacher.dart';
+import '../../providers/storage/local_teachers_provider.dart';
+import '../shared/text_frave.dart';
 
-class TechearSlideshow extends ConsumerStatefulWidget {
-  final int idEvent;
-  final int idDayEvent;
-  const TechearSlideshow({super.key, this.idEvent = -1, this.idDayEvent = -1});
+class TeacherSlideshow extends ConsumerStatefulWidget {
+  final int idAttendance;
+
+  const TeacherSlideshow({super.key, this.idAttendance = -1});
 
   @override
-  TechearSlideshowState createState() => TechearSlideshowState();
+  TeacherSlideshowState createState() => TeacherSlideshowState();
 }
 
-class TechearSlideshowState extends ConsumerState<TechearSlideshow> {
+class TeacherSlideshowState extends ConsumerState<TeacherSlideshow> {
+  final SwiperController controller = SwiperController();
   @override
   void initState() {
     super.initState();
+    ref.read(localTeachersProvider.notifier).loadTeachers();
+  }
 
-    ref
-        .read(localTecahersProvider.notifier)
-        .loadTeachers(widget.idEvent, widget.idDayEvent);
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final getTeachers = ref.watch(localTecahersProvider);
+    final List<Teacher> teachers =
+        ref
+            .watch(localTeachersProvider)
+            .values
+            .where((teacher) => teacher.idAttendance == widget.idAttendance)
+            .toList();
     final String accessToken = ref.watch(authProvider).user!.token;
     final colors = Theme.of(context).colorScheme;
 
     return SizedBox(
-      height: 250,
+      height: double.infinity,
       width: double.infinity,
       child: Swiper(
-        viewportFraction: 0.8,
-        scale: 0.9,
+        controller: controller,
+        index: teachers.length - 1,
+        viewportFraction: 0.85,
+        scale: 0.95,
         autoplay: true,
+        loop: false,
+        autoplayDisableOnInteraction: false,
         pagination: SwiperPagination(
-          margin: const EdgeInsets.only(top: 0),
+          margin: const EdgeInsets.all(20),
           builder: DotSwiperPaginationBuilder(
             activeColor: colors.primary,
-            color: colors.secondary,
+            color: Colors.grey.shade300,
           ),
         ),
-        itemCount: getTeachers.length,
+        itemCount: teachers.length,
         itemBuilder: (context, index) {
-          final teacher = getTeachers.values.toList()[index];
-          return _Slide(teacher, accessToken);
+          return _TeacherCard(
+            teacher: teachers[index],
+            accessToken: accessToken,
+          );
         },
       ),
     );
   }
 }
 
-class _Slide extends StatelessWidget {
+class _TeacherCard extends StatelessWidget {
   final Teacher teacher;
   final String accessToken;
 
-  const _Slide(this.teacher, this.accessToken);
+  const _TeacherCard({required this.teacher, required this.accessToken});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    final decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: const [
-        BoxShadow(color: Colors.black45, blurRadius: 10, offset: Offset(0, 15)),
-      ],
-    );
-
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30),
-      child: DecoratedBox(
-        decoration: decoration,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            width: 200,
-            decoration: const BoxDecoration(color: Colors.white),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      height: 100,
-                      width: 100,
-                      teacher.avatar!,
-                      headers: {"Authorization": "Bearer $accessToken"},
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                    child: SizedBox(
-                      width: 150,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextFrave(
-                            text: 'Nombre',
-                            maxLines: 1,
-                            color: colors.secondary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          TextFrave(
-                            text:
-                                '${teacher.firstName} ${teacher.paternalLastName} ${teacher.maternalLastName}',
-                            maxLines: 1,
-                            color: colors.secondary,
-                            fontSize: 15,
-                          ),
-                          TextFrave(
-                            text: 'Email',
-                            maxLines: 1,
-                            color: colors.secondary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          TextFrave(
-                            text: teacher.email,
-                            maxLines: 2,
-                            color: colors.secondary,
-                            fontSize: 15,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: Colors.white,
+          boxShadow: [
+            const BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(0, 5),
             ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  teacher.avatar ?? '',
+                  height: 100,
+                  width: 100,
+                  fit: BoxFit.cover,
+                  headers: {"Authorization": "Bearer $accessToken"},
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFrave(
+                      text:
+                          '${teacher.firstName} ${teacher.paternalLastName} ${teacher.maternalLastName}',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colors.primary,
+                    ),
+                    const SizedBox(height: 5),
+                    TextFrave(
+                      text: teacher.email,
+                      fontSize: 15,
+                      color: Colors.grey[700] ?? Colors.grey,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

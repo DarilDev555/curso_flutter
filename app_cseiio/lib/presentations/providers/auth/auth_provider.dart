@@ -1,9 +1,9 @@
-import 'package:app_cseiio/domain/entities/user.dart';
-import 'package:app_cseiio/domain/repositories/auth/auth_repository.dart';
-import 'package:app_cseiio/infrastructure/repositories/auth/auth_repository_impl.dart';
-import 'package:app_cseiio/presentations/errors/auth_errors.dart';
-import 'package:app_cseiio/service/key_value_storage_service.dart';
-import 'package:app_cseiio/service/key_value_storage_service_impl.dart';
+import '../../../domain/entities/user.dart';
+import '../../../domain/repositories/auth/auth_repository.dart';
+import '../../../infrastructure/repositories/auth/auth_repository_impl.dart';
+import '../../errors/auth_errors.dart';
+import '../../../service/key_value_storage_service.dart';
+import '../../../service/key_value_storage_service_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //  PROVIDER
@@ -37,7 +37,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       _setLoggedUser(user);
     } on CustomError catch (e) {
       logout(e.message);
-    } catch (e) {
+    } on Exception catch (_) {
       logout('Error no controlado');
     }
   }
@@ -49,7 +49,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       _setLoggedUser(user);
     } on CustomError catch (e) {
       logout(e.message);
-    } catch (e) {
+    } on Exception catch (_) {
       logout('Error no controlado');
     }
   }

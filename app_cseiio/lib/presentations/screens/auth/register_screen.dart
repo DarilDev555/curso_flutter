@@ -1,6 +1,6 @@
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
-import 'package:app_cseiio/presentations/providers/auth/register_form_provider.dart';
-import 'package:app_cseiio/presentations/widgets/widgets.dart';
+import '../../providers/auth/auth_provider.dart';
+import '../../providers/auth/register_form_provider.dart';
+import '../../widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -104,7 +104,7 @@ class _RegisterForm extends ConsumerWidget {
           const SizedBox(height: 20),
 
           CustomTextFormField(
-            label: 'Nombre completo',
+            label: 'Nombre de usuario',
             keyboardType: TextInputType.text,
             onChanged: (value) {
               ref.read(registerFormProvider.notifier).onNameChange(value);

@@ -1,4 +1,4 @@
-import 'package:app_cseiio/infrastructure/models/api_cseiio/event/event_responce_cseiio.dart';
+import 'event_responce_cseiio.dart';
 
 class EventsCseiioResponse {
   final List<EventResponceCseiio> events;

@@ -1,7 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:app_cseiio/domain/entities/institution.dart';
-import 'package:app_cseiio/presentations/providers/teachers/teachers_repository_provider.dart';
+// ignore_for_file: file_names
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../domain/entities/institution.dart';
+import 'teachers_repository_provider.dart';
+
+// ignore: non_constant_identifier_names
 final getinstitutionTeacherProvider_sinfuncionamiento = StateNotifierProvider<
   InstitutionTeacherMapNotifier,
   Map<String, Institution>

@@ -1,5 +1,5 @@
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
-import 'package:app_cseiio/presentations/widgets/shared/custom_filled_button.dart';
+import '../../providers/auth/auth_provider.dart';
+import 'custom_filled_button.dart';
 import 'package:flutter/material.dart';
 //import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

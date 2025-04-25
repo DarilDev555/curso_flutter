@@ -1,8 +1,8 @@
-import 'package:app_cseiio/config/const/environment.dart';
-import 'package:app_cseiio/domain/datasources/events/event_days_datasource.dart';
-import 'package:app_cseiio/domain/entities/event_day.dart';
-import 'package:app_cseiio/infrastructure/mappers/event_day_mapper.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/event/event_day_response_cseiio.dart';
+import '../../../config/const/environment.dart';
+import '../../../domain/datasources/events/event_days_datasource.dart';
+import '../../../domain/entities/event_day.dart';
+import '../../mappers/event_day_mapper.dart';
+import '../../models/api_cseiio/event/event_day_response_cseiio.dart';
 import '../../models/api_cseiio/event/event_days_response_cseiio.dart';
 import 'package:dio/dio.dart';
 
@@ -35,7 +35,7 @@ class EventDaysDatasourceImpl extends EventDaysDatasource {
     final EventDaysResponseCseiio eventDaysResponseCseiio =
         EventDaysResponseCseiio.fromJson(response.data);
     return eventDaysResponseCseiio.eventDays
-        .map((e) => EventDayMapper.eventDayCseiioToEntity(e))
+        .map(EventDayMapper.eventDayCseiioToEntity)
         .toList();
   }
 }

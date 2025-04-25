@@ -1,5 +1,6 @@
-import 'package:app_cseiio/domain/entities/teacher.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/teachers/teacher_response_cseiio.dart';
+import '../../domain/entities/teacher.dart';
+import 'attendance_mapper.dart';
+import '../models/api_cseiio/teachers/teacher_response_cseiio.dart';
 
 class TeacherMapper {
   static Teacher teacherCseiioToEntity(
@@ -8,6 +9,7 @@ class TeacherMapper {
   }) => Teacher(
     id: teacherResponseCseiio.id,
     institutionId: teacherResponseCseiio.institutionId,
+    userId: teacherResponseCseiio.userId,
     firstName: teacherResponseCseiio.firstName,
     paternalLastName: teacherResponseCseiio.paternalLastName,
     maternalLastName: teacherResponseCseiio.maternalLastName,
@@ -23,5 +25,9 @@ class TeacherMapper {
             : 'https://tnsatlanta.org/wp-content/themes/tns-sixteen/images/img_headshot.png',
     createdAt: teacherResponseCseiio.createdAt,
     updatedAt: teacherResponseCseiio.updatedAt,
+    attendance:
+        teacherResponseCseiio.attendances
+            ?.map(AttendanceMapper.attendanceCseiioToEntity)
+            .toList(),
   );
 }

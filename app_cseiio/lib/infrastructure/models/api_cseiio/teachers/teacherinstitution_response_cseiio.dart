@@ -1,7 +1,7 @@
-import 'package:app_cseiio/infrastructure/models/api_cseiio/institution/institution_response_cseiio.dart';
+import '../institution/institution_response_cseiio.dart';
 
 class TeacherInstitutionResponseCseiio {
-  final InstitutionCseiio institution;
+  final InstitutionRespondeCseiio institution;
   final int status;
 
   TeacherInstitutionResponseCseiio({
@@ -13,7 +13,7 @@ class TeacherInstitutionResponseCseiio {
     Map<String, dynamic> json,
   ) => TeacherInstitutionResponseCseiio(
     // institution: InstitutionAU.fromJson(json["institution"]),
-    institution: InstitutionCseiio.fromJson(json["institution"]),
+    institution: InstitutionRespondeCseiio.fromJson(json["institution"]),
     status: json["status"],
   );
 

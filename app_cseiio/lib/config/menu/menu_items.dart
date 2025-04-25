@@ -30,13 +30,13 @@ const appMenuItemss = <MenuItems>[
   MenuItems(
     title: 'Operadores',
     subTitle: 'Usuarios registradores',
-    link: '/',
+    link: '/register-screen',
     icon: Icons.how_to_reg_outlined,
   ),
   MenuItems(
     title: 'Instituciones',
     subTitle: 'Entidades educativas',
-    link: '/',
+    link: '/institution-screen',
     icon: Icons.school_outlined,
   ),
 ];

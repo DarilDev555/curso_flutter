@@ -1,1 +1,13 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    file_names: true
+    avoid_catches_without_on_clauses: true
+    avoid_equals_and_hash_code_on_mutable_classes: true
+    prefer_relative_imports: true
+    type_annotate_public_apis: true
+    prefer_generic_function_type_aliases: true
+    unnecessary_lambdas: true
+    avoid_print: true

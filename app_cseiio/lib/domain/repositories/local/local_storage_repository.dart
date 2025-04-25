@@ -1,9 +1,9 @@
-import 'package:app_cseiio/domain/entities/teacher.dart';
+import '../../entities/teacher.dart';
 
 abstract class LocalStorageRepository {
   Future<void> toggleSaveOrRemove(Teacher teacher);
 
-  Future<List<Teacher>> loadTeachers(int idEvent, int idDayEvent);
+  Future<List<Teacher>> loadTeachers();
 
   Future<bool> isTeacherOnDBs(int teacherId, int idEvent, int idDayEvent);
 }

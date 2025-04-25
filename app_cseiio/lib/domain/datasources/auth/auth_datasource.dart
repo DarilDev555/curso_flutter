@@ -1,4 +1,4 @@
-import 'package:app_cseiio/domain/entities/user.dart';
+import '../../entities/user.dart';
 
 abstract class AuthDatasource {
   Future<User> login(String email, String password);

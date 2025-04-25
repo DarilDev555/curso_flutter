@@ -1,6 +1,6 @@
-import 'package:app_cseiio/domain/datasources/auth/auth_datasource.dart';
-import 'package:app_cseiio/domain/entities/user.dart';
-import 'package:app_cseiio/domain/repositories/auth/auth_repository.dart';
+import '../../../domain/datasources/auth/auth_datasource.dart';
+import '../../../domain/entities/user.dart';
+import '../../../domain/repositories/auth/auth_repository.dart';
 
 import '../../datasources/auth/auth_datasource_impl.dart';
 

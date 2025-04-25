@@ -1,9 +1,9 @@
-import 'package:app_cseiio/config/const/environment.dart';
-import 'package:app_cseiio/domain/datasources/events/events_datasource.dart';
-import 'package:app_cseiio/domain/entities/event.dart';
-import 'package:app_cseiio/infrastructure/mappers/event_mapper.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/event/event_responce_cseiio.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/event/events_responce_cseiio.dart';
+import '../../../config/const/environment.dart';
+import '../../../domain/datasources/events/events_datasource.dart';
+import '../../../domain/entities/event.dart';
+import '../../mappers/event_mapper.dart';
+import '../../models/api_cseiio/event/event_responce_cseiio.dart';
+import '../../models/api_cseiio/event/events_responce_cseiio.dart';
 import 'package:dio/dio.dart';
 
 class EventsDatasourceImpl extends EventsDatasource {
@@ -43,7 +43,7 @@ class EventsDatasourceImpl extends EventsDatasource {
 
     final List<Event> events =
         eventsCseiioResponse.events
-            .map((e) => EventMapper.eventCseiioToEntity(e))
+            .map(EventMapper.eventCseiioToEntity)
             .toList();
     return events;
   }

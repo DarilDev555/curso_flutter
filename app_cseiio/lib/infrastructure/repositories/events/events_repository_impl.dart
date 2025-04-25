@@ -1,6 +1,6 @@
-import 'package:app_cseiio/domain/datasources/events/events_datasource.dart';
-import 'package:app_cseiio/domain/entities/event.dart';
-import 'package:app_cseiio/domain/repositories/events/events_repository.dart';
+import '../../../domain/datasources/events/events_datasource.dart';
+import '../../../domain/entities/event.dart';
+import '../../../domain/repositories/events/events_repository.dart';
 
 class EventsRepositoryImpl extends EventsRepository {
   final EventsDatasource eventsDatasource;

@@ -1,15 +1,20 @@
-import 'package:app_cseiio/domain/entities/institution.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/institution/institution_response_cseiio.dart';
+import '../../domain/entities/institution.dart';
+import 'location_mapper.dart';
+import '../models/api_cseiio/institution/institution_response_cseiio.dart';
 
 class InstitutionMapper {
-  static Institution institutionAUToEntity(InstitutionCseiio institutionAU) {
+  static Institution institutionAUToEntity(
+    InstitutionRespondeCseiio institutioncseiio,
+  ) {
     return Institution(
-      id: institutionAU.id,
-      locationId: institutionAU.locationId,
-      code: institutionAU.code,
-      name: institutionAU.name,
-      createdAt: institutionAU.createdAt,
-      updatedAt: institutionAU.updatedAt,
+      id: institutioncseiio.id,
+      location: LocationMapper.locationCseiioToEntity(
+        institutioncseiio.location,
+      ),
+      code: institutioncseiio.code,
+      name: institutioncseiio.name,
+      createdAt: institutioncseiio.createdAt,
+      updatedAt: institutioncseiio.updatedAt,
     );
   }
 }

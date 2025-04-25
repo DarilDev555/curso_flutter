@@ -1,6 +1,6 @@
-import 'package:app_cseiio/domain/datasources/local/local_storage_datasource.dart';
-import 'package:app_cseiio/domain/entities/teacher.dart';
-import 'package:app_cseiio/domain/repositories/local/local_storage_repository.dart';
+import '../../../domain/datasources/local/local_storage_datasource.dart';
+import '../../../domain/entities/teacher.dart';
+import '../../../domain/repositories/local/local_storage_repository.dart';
 
 class LocalStorageRepositoryImpl extends LocalStorageRepository {
   final LocalStorageDatasource datasource;
@@ -13,8 +13,8 @@ class LocalStorageRepositoryImpl extends LocalStorageRepository {
   }
 
   @override
-  Future<List<Teacher>> loadTeachers(int idEvent, int idDayEvent) {
-    return datasource.loadTeachers(idEvent, idDayEvent);
+  Future<List<Teacher>> loadTeachers() {
+    return datasource.loadTeachers();
   }
 
   @override

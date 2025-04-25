@@ -1,4 +1,4 @@
-import 'package:app_cseiio/domain/entities/event_day.dart';
+import '../../entities/event_day.dart';
 
 abstract class EventDaysRepository {
   Future<List<EventDay>> getEventDaysToEvent(String idEvent);

@@ -1,8 +1,8 @@
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
-import 'package:app_cseiio/presentations/providers/auth/login_form_provider.dart';
-import 'package:app_cseiio/presentations/widgets/shared/custom_filled_button.dart';
-import 'package:app_cseiio/presentations/widgets/shared/custom_text_form_field.dart';
-import 'package:app_cseiio/presentations/widgets/shared/geometrical_background.dart';
+import '../../providers/auth/auth_provider.dart';
+import '../../providers/auth/login_form_provider.dart';
+import '../../widgets/shared/custom_filled_button.dart';
+import '../../widgets/shared/custom_text_form_field.dart';
+import '../../widgets/shared/geometrical_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

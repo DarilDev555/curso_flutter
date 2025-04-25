@@ -1,5 +1,5 @@
-import 'package:app_cseiio/config/const/environment.dart';
-import 'package:app_cseiio/presentations/providers/auth/auth_provider.dart';
+import '../../../config/const/environment.dart';
+import '../../providers/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +14,7 @@ class CustomAvatarAppbar extends ConsumerWidget {
     return GestureDetector(
       onTap: ref.read(authProvider.notifier).logout,
       child: Padding(
-        padding: EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(4.0),
         child: CircleAvatar(
           backgroundImage: NetworkImage(
             '${Environment.apiUrl}/${userAuth.user!.profilePicture}',

@@ -1,7 +1,7 @@
-import 'package:app_cseiio/domain/datasources/teachers/teachers_datasource.dart';
-import 'package:app_cseiio/domain/entities/institution.dart';
-import 'package:app_cseiio/domain/entities/teacher.dart';
-import 'package:app_cseiio/domain/repositories/teachers/teachers_repository.dart';
+import '../../../domain/datasources/teachers/teachers_datasource.dart';
+import '../../../domain/entities/institution.dart';
+import '../../../domain/entities/teacher.dart';
+import '../../../domain/repositories/teachers/teachers_repository.dart';
 
 class TeachersCseiioRepositoryImpl extends TeachersRepository {
   final TeachersDatasource teachersDatasource;
@@ -21,5 +21,21 @@ class TeachersCseiioRepositoryImpl extends TeachersRepository {
   @override
   Future<Teacher> getTeacherById({required String id}) {
     return teachersDatasource.getTeacherById(id: id);
+  }
+
+  @override
+  Future<List<Teacher>> getTeacherToAttendanceOrEvent({
+    required String id,
+    int page = 0,
+  }) {
+    return teachersDatasource.getTeacherToAttendanceOrEvent(id: id, page: page);
+  }
+
+  @override
+  Future<Map<String, dynamic>> getTeacherDetails({
+    required String id,
+    int page = 0,
+  }) {
+    return teachersDatasource.getTeacherDetails(id: id, page: page);
   }
 }

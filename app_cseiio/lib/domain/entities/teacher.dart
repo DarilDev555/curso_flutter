@@ -1,3 +1,4 @@
+import 'attendance.dart';
 import 'package:isar/isar.dart';
 
 part 'teacher.g.dart';
@@ -5,11 +6,11 @@ part 'teacher.g.dart';
 @collection
 class Teacher {
   Id isarId = Isar.autoIncrement;
-  final int? idEvent;
-  final int? idDayEvent;
+  int? idAttendance;
 
   final int id;
   final int institutionId;
+  final int? userId;
   final String firstName;
   final String paternalLastName;
   final String maternalLastName;
@@ -22,12 +23,15 @@ class Teacher {
   final DateTime createdAt;
   final DateTime updatedAt;
 
+  @ignore
+  final List<Attendance>? attendance;
+
   Teacher({
-    this.idEvent = -1,
-    this.idDayEvent = -1,
+    this.idAttendance = -1,
 
     required this.id,
     required this.institutionId,
+    required this.userId,
     required this.firstName,
     required this.paternalLastName,
     required this.maternalLastName,
@@ -39,5 +43,6 @@ class Teacher {
     required this.avatar,
     required this.createdAt,
     required this.updatedAt,
+    this.attendance,
   });
 }

@@ -1,5 +1,6 @@
-import 'package:app_cseiio/domain/entities/event_day.dart';
-import 'package:app_cseiio/infrastructure/models/api_cseiio/event/event_day_response_cseiio.dart';
+import '../../domain/entities/event_day.dart';
+import 'attendance_mapper.dart';
+import '../models/api_cseiio/event/event_day_response_cseiio.dart';
 
 class EventDayMapper {
   static EventDay eventDayCseiioToEntity(
@@ -12,6 +13,10 @@ class EventDayMapper {
       dateDayEvent: eventDayResponseCseiio.dateDayEvent,
       startTime: eventDayResponseCseiio.startTime,
       endTime: eventDayResponseCseiio.endTime,
+      attendances:
+          eventDayResponseCseiio.attendances
+              ?.map(AttendanceMapper.attendanceCseiioToEntity)
+              .toList(),
     );
   }
 }

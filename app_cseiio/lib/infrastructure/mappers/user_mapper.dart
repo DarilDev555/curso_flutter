@@ -1,5 +1,7 @@
-import 'package:app_cseiio/domain/entities/role.dart';
-import 'package:app_cseiio/domain/entities/user.dart';
+import '../../domain/entities/role.dart';
+import '../../domain/entities/user.dart';
+import 'role_mapper.dart';
+import '../models/api_cseiio/users/user_response_cseiio.dart';
 
 class UserMapper {
   static User userjsonToEntity(Map<String, dynamic> json) {
@@ -17,6 +19,17 @@ class UserMapper {
         name: mapUser['role']['name'],
       ),
       token: jsonToken,
+    );
+  }
+
+  static User userCseiioToEntity(UserResponseCseiio userResponseCseiio) {
+    return User(
+      id: userResponseCseiio.id,
+      roleId: userResponseCseiio.roleId,
+      userName: userResponseCseiio.userName,
+      email: userResponseCseiio.email,
+      profilePicture: userResponseCseiio.profilePicture,
+      role: RoleMapper.roleCseiioToEntity(userResponseCseiio.role),
     );
   }
 }

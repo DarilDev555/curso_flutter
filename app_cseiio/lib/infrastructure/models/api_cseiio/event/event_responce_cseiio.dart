@@ -1,9 +1,12 @@
+import '../api_cseiio.dart';
+
 class EventResponceCseiio {
   final String id;
   final String name;
   final DateTime startDate;
   final DateTime endDate;
   final String description;
+  final List<EventDayResponseCseiio>? eventDays;
 
   EventResponceCseiio({
     required this.id,
@@ -11,6 +14,7 @@ class EventResponceCseiio {
     required this.startDate,
     required this.endDate,
     required this.description,
+    this.eventDays,
   });
 
   factory EventResponceCseiio.fromJson(Map<String, dynamic> json) =>
@@ -20,6 +24,14 @@ class EventResponceCseiio {
         startDate: DateTime.parse(json["start_date"]),
         endDate: DateTime.parse(json["end_date"]),
         description: json["description"],
+        eventDays:
+            json["event_days"] != null
+                ? List<EventDayResponseCseiio>.from(
+                  json["event_days"].map(
+                    (x) => EventDayResponseCseiio.fromJson(x),
+                  ),
+                )
+                : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -30,5 +42,9 @@ class EventResponceCseiio {
     "end_date":
         "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
     "description": description,
+    "event_days":
+        eventDays != null
+            ? List<dynamic>.from(eventDays!.map((x) => x.toJson()))
+            : null,
   };
 }
