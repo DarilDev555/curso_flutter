@@ -10,3 +10,9 @@ class CustomError implements Exception {
 
   CustomError({required this.message});
 }
+
+class FormErrors implements Exception {
+  final Map<String, List<String>> errors;
+
+  FormErrors({required this.errors});
+}

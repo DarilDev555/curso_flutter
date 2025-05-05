@@ -1,3 +1,4 @@
+import '../../presentations/screens/auth/register_teacher_user_screen.dart';
 import 'app_router_notifier.dart';
 import '../../presentations/providers/auth/auth_provider.dart';
 import '../../presentations/screens/screens.dart';
@@ -22,12 +23,13 @@ final goRouterProvider = Provider((ref) {
         builder: (context, state) => const LoginScreen(), //
       ),
       GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(), //
+        path: '/register-teacher-user',
+        name: RegisterTeacherUserScreen.name,
+        builder: (context, state) => const RegisterTeacherUserScreen(), //
       ),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const RegisterScreen(),
+        builder: (context, state) => const RegisterUserScreen(),
       ),
 
       GoRoute(
@@ -120,11 +122,21 @@ final goRouterProvider = Provider((ref) {
       }
 
       if (authStatus == AuthStatus.notAuthenticated) {
-        if (isGoingTo == '/login' || isGoingTo == '/register') {
+        if (isGoingTo == '/login' || isGoingTo == '/register'
+        // || isGoingTo == '/register-teacher-user'
+        ) {
           return null;
         }
         return '/login';
       }
+
+      if (authStatus == AuthStatus.registering) {
+        if (isGoingTo == '/register-teacher-user') {
+          return null;
+        }
+        return '/register-teacher-user';
+      }
+
       if (authStatus == AuthStatus.authenticated &&
           ref.read(authProvider).user!.role.name == 'Manager') {
         if (isGoingTo == '/login' ||

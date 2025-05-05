@@ -5,8 +5,6 @@ class InstitutionRespondeCseiio {
   final int locationId;
   final String code;
   final String name;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final LocationResponseCseiio location;
 
   InstitutionRespondeCseiio({
@@ -14,8 +12,6 @@ class InstitutionRespondeCseiio {
     required this.locationId,
     required this.code,
     required this.name,
-    required this.createdAt,
-    required this.updatedAt,
     required this.location,
   });
 
@@ -25,8 +21,6 @@ class InstitutionRespondeCseiio {
         locationId: json["location_id"],
         code: json["code"],
         name: json["name"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
         location: LocationResponseCseiio.fromJson(json["location"]),
       );
 
@@ -35,8 +29,6 @@ class InstitutionRespondeCseiio {
     "location_id": locationId,
     "code": code,
     "name": name,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
     "location": location.toJson(),
   };
 }

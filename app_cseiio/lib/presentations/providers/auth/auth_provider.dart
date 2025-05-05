@@ -42,16 +42,62 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void registrerUser(String name, String email, String password) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  Future<Map<String, List<String>>?> registrerUser({
+    required String userName,
+    required String email,
+    required String password,
+    required String firstName,
+    required String paternalLastName,
+    required String maternalLastName,
+    required String electoralKey,
+    required String curp,
+  }) async {
     try {
-      final user = await authRepository.register(name, email, password);
+      final user = await authRepository.register(
+        userName: userName,
+        email: email,
+        password: password,
+        firstName: firstName,
+        paternalLastName: paternalLastName,
+        maternalLastName: maternalLastName,
+        electoralKey: electoralKey,
+        curp: curp,
+      );
       _setLoggedUser(user);
+      return null;
+    } on FormErrors catch (e) {
+      return e.errors;
     } on CustomError catch (e) {
       logout(e.message);
     } on Exception catch (_) {
       logout('Error no controlado');
     }
+    return null;
+  }
+
+  Future<Map<String, List<String>>?> userRegisterCheckIsValid({
+    required String userName,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final errors = await authRepository.userRegisterIsValid(
+        userName: userName,
+        email: email,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      );
+
+      state = state.copyWith(authStatus: AuthStatus.registering);
+
+      return errors;
+    } on FormErrors catch (e) {
+      return e.errors;
+    } on Exception catch (_) {
+      logout('Error no controlado');
+    }
+    return null;
   }
 
   void checkAuthStatus() async {
@@ -89,7 +135,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 }
 
 // STATE el estado mismo, la clase no el objeto
-enum AuthStatus { checking, authenticated, notAuthenticated }
+enum AuthStatus { checking, authenticated, notAuthenticated, registering }
 
 class AuthState {
   final AuthStatus authStatus;

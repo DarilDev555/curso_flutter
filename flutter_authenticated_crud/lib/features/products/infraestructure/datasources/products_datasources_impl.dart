@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_authenticated_crud/config/config.dart';
 import 'package:flutter_authenticated_crud/features/products/domain/domain.dart';
+import 'package:flutter_authenticated_crud/features/products/infraestructure/errors/product_errors.dart';
 import 'package:flutter_authenticated_crud/features/products/infraestructure/mappers/product_mapper.dart';
 
 class ProductsDatasourcesImpl extends ProductsDatasource {
@@ -22,9 +23,17 @@ class ProductsDatasourcesImpl extends ProductsDatasource {
   }
 
   @override
-  Future<Product> getProductsById(String id) {
-    // TODO: implement getProductsById
-    throw UnimplementedError();
+  Future<Product> getProductsById(String id) async {
+    try {
+      final response = await dio.get('/products/$id');
+      final product = ProductMapper.jsonToEntity(response.data);
+      return product;
+    } on DioException catch (e) {
+      if (e.response!.statusCode == 404) throw ProductNotFound();
+      throw Exception();
+    } catch (_) {
+      throw Exception();
+    }
   }
 
   @override

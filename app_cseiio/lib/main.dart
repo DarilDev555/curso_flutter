@@ -17,10 +17,8 @@ class MainApp extends ConsumerWidget {
     final appRouter = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+
       supportedLocales: [
         const Locale('en', 'US'),
         const Locale('es', 'ES'), // Español

@@ -58,4 +58,26 @@ class InstitutionDatasourceImpl extends InstitutionDatasource {
 
     return InstitutionMapper.institutionAUToEntity(institutionRespondeCseiio);
   }
+
+  @override
+  Future<List<Institution>> searchInstitutions({
+    String? name,
+    String? code,
+  }) async {
+    throw Exception();
+    try {
+      final response = await dio.get(
+        '/institutions/search',
+        queryParameters: {'name': name, 'code': code},
+      );
+
+      final institutionCseiioResponse = InstitutionsResponseCseiio.fromJson(
+        response.data,
+      );
+
+      return institutionCseiioResponse.institutions
+          .map(InstitutionMapper.institutionAUToEntity)
+          .toList();
+    } catch (e) {}
+  }
 }

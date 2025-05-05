@@ -2,7 +2,7 @@ export 'attendance/attendance_screen.dart';
 export 'attendance_record/attendance_record_screen.dart';
 export 'auth/check_auth_status_screen.dart';
 export 'auth/login_screen.dart';
-export 'auth/register_screen.dart';
+export 'auth/register_user_screen.dart';
 export 'dashboard/manager_dashboard/dashboard_manager_screen.dart';
 export 'event/event_days_screen.dart';
 export 'event/events_screen.dart';

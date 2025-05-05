@@ -6,8 +6,6 @@ class Institution {
   final Location location;
   final String code;
   final String name;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final Color background;
 
   Institution({
@@ -15,8 +13,6 @@ class Institution {
     required this.location,
     required this.code,
     required this.name,
-    required this.createdAt,
-    required this.updatedAt,
   }) : background = _generateColor(id);
 
   static Color _generateColor(String input) {
