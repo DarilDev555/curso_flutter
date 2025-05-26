@@ -20,8 +20,6 @@ class Teacher {
   final String curp;
   final DateTime dateRegister;
   final String? avatar;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   @ignore
   final List<Attendance>? attendance;
@@ -41,8 +39,6 @@ class Teacher {
     required this.curp,
     required this.dateRegister,
     required this.avatar,
-    required this.createdAt,
-    required this.updatedAt,
     this.attendance,
   });
 }

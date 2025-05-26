@@ -1,6 +1,7 @@
 import '../../../config/helpers/human_formats.dart';
-import '../../../domain/entities/attendance.dart';
 import '../../providers/auth/auth_provider.dart';
+import '../../providers/shared/color_title_provider.dart';
+import '../../widgets/shared/attendace_title.dart';
 import '../event/event_days_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,8 +17,30 @@ import '../../providers/teachers/teachers_provider.dart';
 class TeacherDetailScreen extends ConsumerStatefulWidget {
   static const name = 'teacher-detail-screen';
   final String idTeacher;
+  final colors = [
+    '#0f0206',
+    '#1e050d',
+    '#2d0713',
+    '#3c0a1a',
+    '#4c0c20',
+    '#5b0e26',
+    '#6a112d',
+    '#791333',
+    '#88163a',
+    '#971840',
+    '#a12f53',
+    '#ac4666',
+    '#b65d79',
+    '#c1748c',
+    '#cb8ca0',
+    '#d5a3b3',
+    '#e0bac6',
+    '#ead1d9',
+    '#f5e8ec',
+    '#ffffff',
+  ];
 
-  const TeacherDetailScreen({super.key, required this.idTeacher});
+  TeacherDetailScreen({super.key, required this.idTeacher});
 
   @override
   TeacherDetailScreenState createState() => TeacherDetailScreenState();
@@ -31,6 +54,13 @@ class TeacherDetailScreenState extends ConsumerState<TeacherDetailScreen> {
     super.initState();
     ref.read(teacherDetailsProvider.notifier).loadEvents(widget.idTeacher);
     scrollController.addListener(() {
+      final posicion = scrollController.position.pixels / 16;
+      ref.read(colorTitle.notifier).update((state) {
+        return (posicion.toInt() > 19)
+            ? widget.colors[19]
+            : widget.colors[posicion.toInt()];
+      });
+
       if ((scrollController.position.pixels + 200) >=
           scrollController.position.maxScrollExtent) {
         ref.read(teacherDetailsProvider.notifier).loadEvents(widget.idTeacher);
@@ -60,80 +90,94 @@ class TeacherDetailScreenState extends ConsumerState<TeacherDetailScreen> {
     final List<Event> events = List<Event>.from(data['events']);
 
     return Scaffold(
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          _TeacherAppBar(teacher: teacher, accessToken: accessToken),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  _PersonalInfoSection(teacher: teacher),
-                  const SizedBox(height: 24),
-                  _InstitutionSection(institution: institution),
-                  const SizedBox(height: 24),
-                  _EventsSection(events: events),
-                  const SizedBox(height: 80),
-                ],
+      body: Container(
+        color: TinyColor.fromString('#ead1d9').color,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            _TeacherAppBar(teacher: teacher, accessToken: accessToken),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    _PersonalInfoSection(teacher: teacher),
+                    const SizedBox(height: 24),
+                    _InstitutionSection(institution: institution),
+                    const SizedBox(height: 24),
+                    _EventsSection(events: events),
+                    const SizedBox(height: 80),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class _TeacherAppBar extends StatelessWidget {
+class _TeacherAppBar extends ConsumerWidget {
   final Teacher teacher;
   final String accessToken;
 
   const _TeacherAppBar({required this.teacher, required this.accessToken});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final fullName =
-        '${teacher.paternalLastName} ${teacher.maternalLastName} ${teacher.firstName}';
+        '${teacher.firstName}\n${teacher.paternalLastName} ${teacher.maternalLastName} ';
+    final colorString = ref.watch(colorTitle);
 
     return SliverAppBar(
-      expandedHeight: 220,
+      backgroundColor: TinyColor.fromString('#88163a').color,
+      expandedHeight: 320,
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
+          textAlign: TextAlign.center,
           fullName,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 2,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: TinyColor.fromString(colorString).color,
+          ),
         ),
-        background: Stack(
-          children: [
-            Container(
-              color: const Color.fromARGB(
-                255,
-                65,
-                157,
-                165,
-              ).withValues(alpha: 0.4),
+        centerTitle: true,
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                TinyColor.fromString('#971840').color,
+                TinyColor.fromString('#ead1d9').color,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(60),
-                child:
-                    teacher.avatar != null && teacher.avatar!.isNotEmpty
-                        ? Image.network(
-                          teacher.avatar!,
-                          headers: {"Authorization": "Bearer $accessToken"},
-                          fit: BoxFit.cover,
-                        )
-                        : Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Colors.white.withValues(alpha: 0.7),
-                        ),
-              ),
+          ),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(180),
+              child:
+                  teacher.avatar != null && teacher.avatar!.isNotEmpty
+                      ? Image.network(
+                        height: 150,
+                        width: 150,
+                        teacher.avatar!,
+                        headers: {"Authorization": "Bearer $accessToken"},
+                        fit: BoxFit.cover,
+                      )
+                      : Icon(
+                        Icons.person,
+                        size: 50,
+                        color: Colors.white.withValues(alpha: 0.7),
+                      ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -429,7 +473,7 @@ class _EventDayTile extends StatelessWidget {
       children: [
         if (eventDay.attendances != null && eventDay.attendances!.isNotEmpty)
           ...eventDay.attendances!.map(
-            (att) => _AttendanceTile(
+            (att) => AttendanceTile(
               attendance: att,
               colorBackground: colorBackground,
             ),
@@ -441,202 +485,6 @@ class _EventDayTile extends StatelessWidget {
           ),
       ],
     );
-  }
-}
-
-class _AttendanceTile extends StatelessWidget {
-  final Attendance attendance;
-  final int toleranceMinutes = 10; // Tolerancia de 10 minutos
-  final Color colorBackground;
-
-  const _AttendanceTile({
-    required this.attendance,
-    required this.colorBackground,
-  });
-
-  // Método para determinar el estado de la asistencia
-  String _getAttendanceStatus() {
-    if (attendance.register == null) return 'no_registered';
-
-    final registerTime = attendance.register!.registerTime;
-    final attendanceTime = attendance.attendanceTime;
-    final difference = registerTime.difference(attendanceTime).inMinutes;
-
-    if (difference <= toleranceMinutes && difference >= -toleranceMinutes) {
-      return 'on_time';
-    } else if (registerTime.isAfter(
-      attendanceTime.add(Duration(minutes: toleranceMinutes)),
-    )) {
-      return 'late';
-    } else {
-      return 'on_time'; // Llegó antes del tiempo con tolerancia
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final status = _getAttendanceStatus();
-    final formattedAttendanceTime = HumanFormats.formateHour(
-      attendance.attendanceTime.toString(),
-    );
-    final formattedRegisterTime =
-        attendance.register != null
-            ? HumanFormats.formateHour(
-              attendance.register!.registerTime.toString(),
-            )
-            : null;
-    final Color color = TinyColor.fromColor(
-      colorBackground,
-    ).toColor().lighten(30);
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 1,
-      color: color,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                // Icono según estado
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(status).withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    _getStatusIcon(status),
-                    color: _getStatusColor(status),
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    attendance.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (attendance.descripcion.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  attendance.descripcion,
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hora programada',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    ),
-                    Text(
-                      formattedAttendanceTime,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      status == 'no_registered' ? 'Estado' : 'Hora de registro',
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                    ),
-                    if (status == 'no_registered')
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.red[100],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'Sin registro',
-                          style: TextStyle(color: Colors.red[500]),
-                        ),
-                      )
-                    else
-                      Text(
-                        formattedRegisterTime!,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: _getStatusColor(status),
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            if (status != 'no_registered')
-              Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(status).withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    status == 'on_time' ? 'A tiempo' : 'Con retraso',
-                    style: TextStyle(
-                      color: _getStatusColor(status),
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Métodos auxiliares
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'on_time':
-        return Colors.green;
-      case 'late':
-        return Colors.orange;
-      case 'no_registered':
-      default:
-        return Colors.red;
-    }
-  }
-
-  IconData _getStatusIcon(String status) {
-    switch (status) {
-      case 'on_time':
-        return Icons.check_circle;
-      case 'late':
-        return Icons.watch_later;
-      case 'no_registered':
-      default:
-        return Icons.error_outline;
-    }
   }
 }
 

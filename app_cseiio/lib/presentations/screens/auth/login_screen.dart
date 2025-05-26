@@ -1,3 +1,5 @@
+import 'package:tinycolor2/tinycolor2.dart';
+
 import '../../providers/auth/auth_provider.dart';
 import '../../providers/auth/login_form_provider.dart';
 import '../../widgets/shared/custom_filled_button.dart';
@@ -24,10 +26,14 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 50),
+                SizedBox(height: size.height * 0.1),
                 // Icon Banner
-                const Icon(Icons.school, color: Colors.white, size: 150),
-                const SizedBox(height: 50),
+                // const Icon(Icons.school, color: Colors.white, size: 150),
+                Image.asset(
+                  'assets/images/logo_cseiio.png',
+                  height: size.height * 0.1,
+                ),
+                SizedBox(height: size.height * 0.05),
 
                 Container(
                   height:
@@ -108,7 +114,7 @@ class _LoginForm extends ConsumerWidget {
             height: 60,
             child: CustomFilledButton(
               text: 'Ingresar',
-              buttonColor: Colors.black,
+              buttonColor: TinyColor.fromString('#971840').color,
               onPressed:
                   loginForm.isPosting
                       ? null
@@ -124,7 +130,12 @@ class _LoginForm extends ConsumerWidget {
               const Text('¿No tienes cuenta?'),
               TextButton(
                 onPressed: () => context.push('/register'),
-                child: const Text('Crea una aquí'),
+                child: Text(
+                  'Crea una aquí',
+                  style: TextStyle(
+                    color: TinyColor.fromString('#a12f53').color,
+                  ),
+                ),
               ),
             ],
           ),

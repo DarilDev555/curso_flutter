@@ -11,7 +11,7 @@ class InstitutionDatasourceImpl extends InstitutionDatasource {
   final String accessToken;
   final Dio dio;
 
-  InstitutionDatasourceImpl({required this.accessToken})
+  InstitutionDatasourceImpl({this.accessToken = ''})
     : dio = Dio(
         BaseOptions(
           baseUrl: Environment.apiUrl,
@@ -64,7 +64,6 @@ class InstitutionDatasourceImpl extends InstitutionDatasource {
     String? name,
     String? code,
   }) async {
-    throw Exception();
     try {
       final response = await dio.get(
         '/institutions/search',
@@ -78,6 +77,16 @@ class InstitutionDatasourceImpl extends InstitutionDatasource {
       return institutionCseiioResponse.institutions
           .map(InstitutionMapper.institutionAUToEntity)
           .toList();
-    } catch (e) {}
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw CustomError(message: 'Token incorrecto');
+      }
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError(message: 'Revisar conexion a internet');
+      }
+      throw Exception();
+    } on Exception catch (_) {
+      throw Exception();
+    }
   }
 }

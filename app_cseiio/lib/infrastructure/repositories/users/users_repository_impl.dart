@@ -11,4 +11,9 @@ class UsersRepositoryImpl extends UsersRepository {
   Future<List<User>> getUsersResgiters({int page = 0}) {
     return usersDatasource.getUsersResgiters(page: page);
   }
+
+  @override
+  Future<User> crateUpdateUser(Map<String, dynamic> userLike) {
+    return usersDatasource.crateUpdateUser(userLike);
+  }
 }

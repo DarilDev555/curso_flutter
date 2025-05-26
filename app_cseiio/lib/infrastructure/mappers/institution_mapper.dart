@@ -13,8 +13,6 @@ class InstitutionMapper {
       ),
       code: institutioncseiio.code,
       name: institutioncseiio.name,
-      createdAt: institutioncseiio.createdAt,
-      updatedAt: institutioncseiio.updatedAt,
     );
   }
 }

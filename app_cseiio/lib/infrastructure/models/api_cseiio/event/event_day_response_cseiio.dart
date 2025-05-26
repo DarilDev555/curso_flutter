@@ -28,9 +28,9 @@ class EventDayResponseCseiio {
         startTime: json["start_time"],
         endTime: json["end_time"],
         attendances:
-            json["attendance"] != null
+            json["attendances"] != null
                 ? List<AttendanceResponseCseiio>.from(
-                  json["attendance"].map(
+                  json["attendances"].map(
                     (x) => AttendanceResponseCseiio.fromJson(x),
                   ),
                 )

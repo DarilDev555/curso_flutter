@@ -49,8 +49,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required String firstName,
     required String paternalLastName,
     required String maternalLastName,
+    required String gender,
     required String electoralKey,
     required String curp,
+    required String institutionId,
   }) async {
     try {
       final user = await authRepository.register(
@@ -60,8 +62,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
         firstName: firstName,
         paternalLastName: paternalLastName,
         maternalLastName: maternalLastName,
+        gender: gender,
         electoralKey: electoralKey,
         curp: curp,
+        institutionId: institutionId,
       );
       _setLoggedUser(user);
       return null;
@@ -88,8 +92,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         password: password,
         passwordConfirmation: passwordConfirmation,
       );
-
-      state = state.copyWith(authStatus: AuthStatus.registering);
 
       return errors;
     } on FormErrors catch (e) {
@@ -121,6 +123,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       errorMessage: '',
       authStatus: AuthStatus.authenticated,
     );
+
+    print('state $state ');
   }
 
   Future<void> logout([String? errorMessage]) async {
@@ -132,10 +136,31 @@ class AuthNotifier extends StateNotifier<AuthState> {
       errorMessage: errorMessage,
     );
   }
+
+  bool isLoadingUpdateAvatar = false;
+  Future<bool?> updateAvatarUser(String path) async {
+    if (isLoadingUpdateAvatar) return null;
+    isLoadingUpdateAvatar = true;
+
+    try {
+      final userResponse = await authRepository.updateAvatarUser(
+        path,
+        state.user!.token,
+      );
+      state = state.copyWith(
+        user: state.user!.copyWith(profilePicture: userResponse.profilePicture),
+      );
+      isLoadingUpdateAvatar = false;
+      return true;
+    } catch (e) {
+      isLoadingUpdateAvatar = false;
+      return false;
+    }
+  }
 }
 
-// STATE el estado mismo, la clase no el objeto
-enum AuthStatus { checking, authenticated, notAuthenticated, registering }
+// STATE el estado mismo, la clase no el objeto+
+enum AuthStatus { checking, authenticated, notAuthenticated }
 
 class AuthState {
   final AuthStatus authStatus;

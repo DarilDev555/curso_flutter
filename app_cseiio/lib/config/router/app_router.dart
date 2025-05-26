@@ -122,26 +122,20 @@ final goRouterProvider = Provider((ref) {
       }
 
       if (authStatus == AuthStatus.notAuthenticated) {
-        if (isGoingTo == '/login' || isGoingTo == '/register'
-        // || isGoingTo == '/register-teacher-user'
-        ) {
+        if (isGoingTo == '/login' ||
+            isGoingTo == '/register' ||
+            isGoingTo == '/register-teacher-user') {
           return null;
         }
         return '/login';
-      }
-
-      if (authStatus == AuthStatus.registering) {
-        if (isGoingTo == '/register-teacher-user') {
-          return null;
-        }
-        return '/register-teacher-user';
       }
 
       if (authStatus == AuthStatus.authenticated &&
           ref.read(authProvider).user!.role.name == 'Manager') {
         if (isGoingTo == '/login' ||
             isGoingTo == '/register' ||
-            isGoingTo == '/splash') {
+            isGoingTo == '/splash' ||
+            isGoingTo == '/register-teacher-user') {
           return '/dashboard-screen';
         }
       }
@@ -150,7 +144,18 @@ final goRouterProvider = Provider((ref) {
           ref.read(authProvider).user!.role.name == 'Register') {
         if (isGoingTo == '/login' ||
             isGoingTo == '/register' ||
-            isGoingTo == '/splash') {
+            isGoingTo == '/splash' ||
+            isGoingTo == '/register-teacher-user') {
+          return '/dashboard-screen';
+        }
+      }
+
+      if (authStatus == AuthStatus.authenticated &&
+          ref.read(authProvider).user!.role.name == 'Teacher') {
+        if (isGoingTo == '/login' ||
+            isGoingTo == '/register' ||
+            isGoingTo == '/splash' ||
+            isGoingTo == '/register-teacher-user') {
           return '/dashboard-screen';
         }
       }

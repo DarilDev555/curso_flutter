@@ -23,8 +23,6 @@ class TeacherMapper {
             // ? 'http://192.168.0.227:8000/${teacherAU.avatar}'
             ? '$baseUrlImage/${teacherResponseCseiio.avatar}'
             : 'https://tnsatlanta.org/wp-content/themes/tns-sixteen/images/img_headshot.png',
-    createdAt: teacherResponseCseiio.createdAt,
-    updatedAt: teacherResponseCseiio.updatedAt,
     attendance:
         teacherResponseCseiio.attendances
             ?.map(AttendanceMapper.attendanceCseiioToEntity)

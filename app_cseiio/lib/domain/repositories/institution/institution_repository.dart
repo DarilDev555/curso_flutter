@@ -5,5 +5,5 @@ abstract class InstitutionRepository {
 
   Future<Institution> getInstitutionById({required String id});
 
-  Future<Institution> searchInstitutions({String? name, String? code});
+  Future<List<Institution>> searchInstitutions({String? name, String? code});
 }

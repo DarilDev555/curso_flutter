@@ -1,4 +1,6 @@
 // import 'package:animate_do/animate_do.dart';
+import 'package:tinycolor2/tinycolor2.dart';
+
 import '../../providers/auth/auth_provider.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +8,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/teacher.dart';
 import '../../providers/storage/local_teachers_provider.dart';
 import '../shared/text_frave.dart';
+import 'teacher_card.dart';
 
 class TeacherSlideshow extends ConsumerStatefulWidget {
   final int idAttendance;
+  final double height;
+  final double width;
+  final bool cardIsJustAvatar;
 
-  const TeacherSlideshow({super.key, this.idAttendance = -1});
+  const TeacherSlideshow({
+    super.key,
+    this.idAttendance = -1,
+    this.height = 100,
+    this.width = 100,
+    this.cardIsJustAvatar = false,
+  });
 
   @override
   TeacherSlideshowState createState() => TeacherSlideshowState();
@@ -49,7 +61,7 @@ class TeacherSlideshowState extends ConsumerState<TeacherSlideshow> {
         index: teachers.length - 1,
         viewportFraction: 0.85,
         scale: 0.95,
-        autoplay: true,
+        autoplay: false,
         loop: false,
         autoplayDisableOnInteraction: false,
         pagination: SwiperPagination(
@@ -61,80 +73,14 @@ class TeacherSlideshowState extends ConsumerState<TeacherSlideshow> {
         ),
         itemCount: teachers.length,
         itemBuilder: (context, index) {
-          return _TeacherCard(
+          return TeacherCard(
             teacher: teachers[index],
             accessToken: accessToken,
+            height: widget.height,
+            width: widget.width,
+            isJustAvatar: widget.cardIsJustAvatar,
           );
         },
-      ),
-    );
-  }
-}
-
-class _TeacherCard extends StatelessWidget {
-  final Teacher teacher;
-  final String accessToken;
-
-  const _TeacherCard({required this.teacher, required this.accessToken});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          color: Colors.white,
-          boxShadow: [
-            const BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  teacher.avatar ?? '',
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.cover,
-                  headers: {"Authorization": "Bearer $accessToken"},
-                ),
-              ),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFrave(
-                      text:
-                          '${teacher.firstName} ${teacher.paternalLastName} ${teacher.maternalLastName}',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: colors.primary,
-                    ),
-                    const SizedBox(height: 5),
-                    TextFrave(
-                      text: teacher.email,
-                      fontSize: 15,
-                      color: Colors.grey[700] ?? Colors.grey,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

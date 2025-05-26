@@ -97,8 +97,10 @@ class _RegisterForm extends ConsumerWidget {
 
     ref.listen(registerUserFormProvider, (previous, next) {
       if (previous == null) return;
-      if (next.isValidUser && !(previous.isValidUser)) {
-        // context.push('/register-teacher-user');
+      if (!previous.isValidUser && next.isValidUser) {
+        if (context.mounted) {
+          context.go('/register-teacher-user');
+        }
       }
     });
 
@@ -209,9 +211,7 @@ class _RegisterForm extends ConsumerWidget {
                   text: 'Siguiente',
                   buttonColor: Colors.black,
                   onPressed: () {
-                    ref
-                        .watch(registerUserFormProvider.notifier)
-                        .checkUserForm();
+                    ref.read(registerUserFormProvider.notifier).checkUserForm();
                   },
                 ),
               ),

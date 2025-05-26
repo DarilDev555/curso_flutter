@@ -16,4 +16,9 @@ class InstitutionRepositoryImpl extends InstitutionRepository {
   Future<Institution> getInstitutionById({required String id}) {
     return datasource.getInstitutionById(id: id);
   }
+
+  @override
+  Future<List<Institution>> searchInstitutions({String? name, String? code}) {
+    return datasource.searchInstitutions(code: code, name: name);
+  }
 }

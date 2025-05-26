@@ -18,4 +18,22 @@ class User {
     required this.role,
     this.token = '',
   });
+
+  User copyWith({
+    String? id,
+    String? roleId,
+    String? userName,
+    String? email,
+    String? profilePicture,
+    Role? role,
+    String? token,
+  }) => User(
+    id: id ?? this.id,
+    roleId: roleId ?? this.roleId,
+    userName: userName ?? this.userName,
+    email: email ?? this.email,
+    profilePicture: profilePicture ?? this.profilePicture,
+    role: role ?? this.role,
+    token: token ?? this.token,
+  );
 }

@@ -20,6 +20,46 @@ class UsersDatasourceImpl extends UsersDatasource {
         ),
       );
 
+  Future<String> _uploadFile(String path) async {
+    try {
+      final fileName = path.split('/').last;
+      final FormData data = FormData.fromMap({
+        'file': MultipartFile.fromFileSync(path, filename: fileName),
+      });
+
+      final respose = await dio.post('/img/user', data: data);
+
+      return respose.data['image'];
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<User> crateUpdateUser(Map<String, dynamic> userLike) async {
+    try {
+      final String? userId = userLike['id'];
+      final String method = (userId == null) ? 'POST' : 'PATCH';
+      final String url = (userId == null) ? '/users' : '/users/$userId';
+
+      userLike.remove('id');
+      userLike['profile_picture'] = await _uploadFile(
+        userLike['profile_picture'],
+      );
+
+      final response = await dio.request(
+        url,
+        data: userLike,
+        options: Options(method: method),
+      );
+
+      final user = UserMapper.userjsonToEntity(response.data);
+      return user;
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
   @override
   Future<List<User>> getUsersResgiters({int page = 0}) async {
     final response = await dio.get(

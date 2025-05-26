@@ -13,14 +13,12 @@ class TeacherResponseCseiio {
   final String curp;
   final DateTime dateRegister;
   final String? avatar;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final List<AttendanceResponseCseiio>? attendances;
 
   TeacherResponseCseiio({
     required this.id,
     required this.institutionId,
-    required this.userId,
+    this.userId,
     required this.firstName,
     required this.paternalLastName,
     required this.maternalLastName,
@@ -30,8 +28,6 @@ class TeacherResponseCseiio {
     required this.curp,
     required this.dateRegister,
     required this.avatar,
-    required this.createdAt,
-    required this.updatedAt,
     this.attendances,
   });
 
@@ -49,8 +45,6 @@ class TeacherResponseCseiio {
         curp: json["curp"],
         dateRegister: DateTime.parse(json["date_register"]),
         avatar: json["avatar"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
         attendances:
             json["attendances"] != null
                 ? List<AttendanceResponseCseiio>.from(
@@ -75,8 +69,6 @@ class TeacherResponseCseiio {
     "date_register":
         "${dateRegister.year.toString().padLeft(4, '0')}-${dateRegister.month.toString().padLeft(2, '0')}-${dateRegister.day.toString().padLeft(2, '0')}",
     "avatar": avatar,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
     "attendances":
         attendances != null
             ? List<dynamic>.from(attendances!.map((x) => x.toJson()))

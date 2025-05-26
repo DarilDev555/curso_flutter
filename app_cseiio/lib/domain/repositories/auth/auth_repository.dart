@@ -9,8 +9,10 @@ abstract class AuthRepository {
     required String firstName,
     required String paternalLastName,
     required String maternalLastName,
+    required String gender,
     required String electoralKey,
     required String curp,
+    required String institutionId,
   });
   Future<Map<String, List<String>>> userRegisterIsValid({
     required String userName,
@@ -19,4 +21,5 @@ abstract class AuthRepository {
     required String passwordConfirmation,
   });
   Future<User> checkAuthStatus(String token);
+  Future<User> updateAvatarUser(String urlPhoto, String token);
 }

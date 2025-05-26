@@ -12,6 +12,8 @@ class CustomTextFormField extends StatelessWidget {
   final Function(String)? onFieldSubmitted;
   final bool disableSpace;
   final String inicialValue;
+  final double width;
+  final bool readOnly;
 
   const CustomTextFormField({
     super.key,
@@ -25,6 +27,8 @@ class CustomTextFormField extends StatelessWidget {
     this.onFieldSubmitted,
     this.disableSpace = false,
     this.inicialValue = '',
+    this.width = double.infinity,
+    this.readOnly = false,
   });
 
   @override
@@ -39,6 +43,7 @@ class CustomTextFormField extends StatelessWidget {
     const borderRadius = Radius.circular(15);
 
     return Container(
+      width: width,
       // padding: const EdgeInsets.only(bottom: 0, top: 15),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -61,6 +66,7 @@ class CustomTextFormField extends StatelessWidget {
         validator: validator,
         obscureText: obscureText,
         onFieldSubmitted: onFieldSubmitted,
+        readOnly: readOnly,
         inputFormatters:
             disableSpace
                 ? [FilteringTextInputFormatter.deny(RegExp(r'\s'))]
@@ -87,6 +93,7 @@ class CustomTextFormField extends StatelessWidget {
           errorMaxLines: 2,
           errorText: errorMessage,
           focusColor: colors.primary,
+
           // icon: Icon( Icons.supervised_user_circle_outlined, color: colors.primary, )
         ),
       ),

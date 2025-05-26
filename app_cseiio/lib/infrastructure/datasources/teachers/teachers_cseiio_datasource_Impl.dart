@@ -87,9 +87,7 @@ class TeachersCseiioDatasourceImpl extends TeachersDatasource {
       throw Exception('Teacher with id: $id not found');
     }
 
-    final teacherResponse = TeacherResponseCseiio.fromJson(
-      response.data['teacher'],
-    );
+    final teacherResponse = TeacherResponseCseiio.fromJson(response.data);
 
     final teacher = TeacherMapper.teacherCseiioToEntity(
       teacherResponse,

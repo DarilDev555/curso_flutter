@@ -4,9 +4,11 @@ import '../auth/auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final institutionsRepositoryProvider = Provider((ref) {
-  final String accessToken = ref.watch(authProvider).user!.token;
+  final user = ref.watch(authProvider).user;
 
   return InstitutionRepositoryImpl(
-    datasource: InstitutionDatasourceImpl(accessToken: accessToken),
+    datasource: InstitutionDatasourceImpl(
+      accessToken: user == null ? '' : user.token,
+    ),
   );
 });

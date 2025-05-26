@@ -1,10 +1,13 @@
+import 'package:go_router/go_router.dart';
+import 'package:tinycolor2/tinycolor2.dart';
+
 import '../../../config/helpers/human_formats.dart';
 import '../../providers/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/events/event_days_provider.dart';
 import '../../providers/events/events_provider.dart';
-import 'package:go_router/go_router.dart';
+import '../../widgets/shared/attendace_title.dart';
 
 class EventDaysScreen extends ConsumerWidget {
   static const name = 'event-days-screen';
@@ -56,7 +59,7 @@ class EventDaysScreen extends ConsumerWidget {
                             alpha: 0.9,
                           ), // Primera parte (más oscura)
                           event.background.withValues(
-                            alpha: 0.6,
+                            alpha: 0.1,
                           ), // Segunda parte (más clara)
                         ],
                         begin: Alignment.topCenter,
@@ -168,28 +171,21 @@ class EventDaysScreen extends ConsumerWidget {
                             itemCount: eventDays.length,
                             itemBuilder: (context, index) {
                               final eventDay = eventDays[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  if (user.role.name == 'Register') {
-                                    context.push(
-                                      '/attendance-record-screen?idEventDay=${eventDay.id}&idEvent=${event.id}',
-                                    );
-                                  }
-                                  if (user.role.name == 'Manager') {
-                                    context.push(
-                                      '/attendance-screen/${eventDay.id}',
-                                    );
-                                  }
-                                },
-                                child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 4,
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  child: ListTile(
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 4,
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (user.role.name == 'Manager') {
+                                      context.push(
+                                        '/attendance-events-screen/${eventDay.id}',
+                                      );
+                                    }
+                                  },
+                                  child: ExpansionTile(
                                     leading: CircleAvatar(
                                       backgroundColor: event.background
                                           .withValues(alpha: 0.8),
@@ -211,6 +207,44 @@ class EventDaysScreen extends ConsumerWidget {
                                       size: 16,
                                       color: Colors.grey,
                                     ),
+                                    children:
+                                        (user.role.name == 'Register')
+                                            ? [
+                                              if (eventDay.attendances != null)
+                                                ...eventDay.attendances!.map((
+                                                  attendande,
+                                                ) {
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      context.push(
+                                                        '/attendance-record-screen?idAttendance=${attendande.id}',
+                                                      );
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            8.0,
+                                                          ),
+                                                      child: AttendanceTile(
+                                                        attendance: attendande,
+                                                        colorBackground:
+                                                            TinyColor.fromColor(
+                                                              event.background,
+                                                            ).darken(5).color,
+                                                        isUser: false,
+                                                      ),
+                                                    ),
+                                                  );
+                                                })
+                                              else
+                                                const Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    'Sin días registrados',
+                                                  ),
+                                                ),
+                                            ]
+                                            : [],
                                   ),
                                 ),
                               );

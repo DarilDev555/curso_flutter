@@ -1,3 +1,5 @@
+import '../../../domain/entities/institution.dart';
+import '../../inputs/gender.dart';
 import 'auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
@@ -27,8 +29,10 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
     required String firstName,
     required String paternalLastName,
     required String maternalLastName,
+    required String gender,
     required String electoralKey,
     required String curp,
+    required String institutionId,
   })
   registerCallback;
   final Future<Map<String, List<String>>?> Function({
@@ -105,8 +109,10 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
         newFirstname,
         state.paternalLastName,
         state.maternalLastName,
+        state.gender,
         state.electoralCode,
         state.curp,
+        state.institution,
       ]),
     );
   }
@@ -119,8 +125,10 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
         state.firstName,
         newPaternalLastname,
         state.maternalLastName,
+        state.gender,
         state.electoralCode,
         state.curp,
+        state.institution,
       ]),
     );
   }
@@ -133,8 +141,10 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
         state.firstName,
         state.paternalLastName,
         newMaternalLastname,
+        state.gender,
         state.electoralCode,
         state.curp,
+        state.institution,
       ]),
     );
   }
@@ -147,8 +157,10 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
         state.firstName,
         state.paternalLastName,
         state.maternalLastName,
+        state.gender,
         newElectoralCode,
         state.curp,
+        state.institution,
       ]),
     );
   }
@@ -161,14 +173,50 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
         state.firstName,
         state.paternalLastName,
         state.maternalLastName,
+        state.gender,
         state.electoralCode,
         newCurp,
+        state.institution,
+      ]),
+    );
+  }
+
+  void onGenderChanged(String value) {
+    final newGender = Gender.dirty(value);
+    state = state.copyWith(
+      gender: newGender,
+      isValid: Formz.validate([
+        state.firstName,
+        state.paternalLastName,
+        state.maternalLastName,
+        newGender,
+        state.curp,
+        state.electoralCode,
+        state.institution,
+      ]),
+    );
+  }
+
+  void changeInstitution(Institution value) {
+    final newInstitution = InstitutionInput.dirty(value);
+    state = state.copyWith(
+      institution: newInstitution,
+      isValid: Formz.validate([
+        state.firstName,
+        state.paternalLastName,
+        state.maternalLastName,
+        state.gender,
+        state.curp,
+        state.electoralCode,
+        newInstitution,
       ]),
     );
   }
 
   void onFormSumit() async {
     _touchEveryField();
+
+    ///TODO! Cambiar aqui para que valide todo crear uno nuevo
     if (!state.isValid && !(state.isSumit)) return;
     state = state.copyWith(isSumit: true);
 
@@ -179,19 +227,24 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
       firstName: state.firstName.value,
       paternalLastName: state.paternalLastName.value,
       maternalLastName: state.maternalLastName.value,
+      gender: state.gender.value,
       electoralKey: state.electoralCode.value,
       curp: state.curp.value,
+      institutionId: state.institution.value!.id,
     );
-    if (errors != null &&
-        errors.values.every((element) => element.isNotEmpty)) {
+    if (errors != null && errors.values.any((element) => element.isNotEmpty)) {
       state = state.copyWith(errors: errors, isSumit: false);
       return;
     }
-    state = state.copyWith(isSumit: false);
+    state = state.copyWith(
+      errors: {},
+      isValidUser: true,
+      isCheckingUser: false,
+    );
   }
 
   void checkUserForm() async {
-    _touchEveryField();
+    _touchjustUserField();
     if (!state.isValid || state.isCheckingUser) return;
     state = state.copyWith(isCheckingUser: true);
 
@@ -218,7 +271,7 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
     );
   }
 
-  _touchEveryField() {
+  _touchjustUserField() {
     final userName = Username.dirty(state.userName.value);
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
@@ -238,8 +291,50 @@ class RegisterUserFormNotifier extends StateNotifier<RegisterUserFormState> {
     );
   }
 
-  void switchModal() {
-    state = state.copyWith(openModal: !state.openModal);
+  _touchEveryField() {
+    final userName = Username.dirty(state.userName.value);
+    final email = Email.dirty(state.email.value);
+    final password = Password.dirty(state.password.value);
+    final secondPassword = Password.dirty(
+      state.secondPassword.value,
+      confirmPassword:
+          state.password.value, // Asegurar que tome la contraseña principal
+    );
+    final firstName = Name.dirty(state.firstName.value);
+    final paternalLastName = Name.dirty(state.paternalLastName.value);
+    final maternalLastName = Name.dirty(state.maternalLastName.value);
+    final gender = Gender.dirty(state.gender.value);
+    final curp = Curp.dirty(state.curp.value);
+    final electoralCode = ElectoralCode.dirty(state.electoralCode.value);
+    final institution = InstitutionInput.dirty(state.institution.value);
+
+    state = state.copyWith(
+      isFormPosted: true,
+      userName: userName,
+      email: email,
+      password: password,
+      secondPassword: secondPassword,
+      firstName: firstName,
+      paternalLastName: paternalLastName,
+      maternalLastName: maternalLastName,
+      gender: gender,
+      curp: curp,
+      electoralCode: electoralCode,
+      institution: institution,
+      isValid: Formz.validate([
+        userName,
+        email,
+        password,
+        secondPassword,
+        firstName,
+        paternalLastName,
+        maternalLastName,
+        gender,
+        curp,
+        electoralCode,
+        institution,
+      ]),
+    );
   }
 }
 
@@ -251,7 +346,7 @@ class RegisterUserFormState {
   final bool isValidUser;
   final bool isCheckingUser;
   final bool isSumit;
-  final bool openModal;
+  final Gender gender;
   final Username userName;
   final Email email;
   final Password password;
@@ -261,6 +356,7 @@ class RegisterUserFormState {
   final Name maternalLastName;
   final ElectoralCode electoralCode;
   final Curp curp;
+  final InstitutionInput institution;
   final Map<String, List<String>>? errors;
 
   RegisterUserFormState({
@@ -270,8 +366,7 @@ class RegisterUserFormState {
     this.isValidUser = false,
     this.isCheckingUser = false,
     this.isSumit = false,
-    this.openModal = false,
-
+    this.gender = const Gender.pure(),
     this.userName = const Username.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
@@ -281,6 +376,7 @@ class RegisterUserFormState {
     this.maternalLastName = const Name.pure(),
     this.electoralCode = const ElectoralCode.pure(),
     this.curp = const Curp.pure(),
+    this.institution = const InstitutionInput.pure(),
     this.errors,
   });
 
@@ -291,7 +387,7 @@ class RegisterUserFormState {
     bool? isValidUser,
     bool? isCheckingUser,
     bool? isSumit,
-    bool? openModal,
+    Gender? gender,
     Username? userName,
     Email? email,
     Password? password,
@@ -301,6 +397,7 @@ class RegisterUserFormState {
     Name? maternalLastName,
     ElectoralCode? electoralCode,
     Curp? curp,
+    InstitutionInput? institution,
     Map<String, List<String>>? errors,
   }) {
     return RegisterUserFormState(
@@ -310,7 +407,7 @@ class RegisterUserFormState {
       isValidUser: isValidUser ?? this.isValidUser,
       isCheckingUser: isCheckingUser ?? this.isCheckingUser,
       isSumit: isSumit ?? this.isSumit,
-      openModal: openModal ?? this.openModal,
+      gender: gender ?? this.gender,
       userName: userName ?? this.userName,
       email: email ?? this.email,
       password: password ?? this.password,
@@ -320,6 +417,7 @@ class RegisterUserFormState {
       maternalLastName: maternalLastName ?? this.maternalLastName,
       electoralCode: electoralCode ?? this.electoralCode,
       curp: curp ?? this.curp,
+      institution: institution ?? this.institution,
       errors: errors ?? this.errors,
     );
   }
@@ -338,7 +436,9 @@ class RegisterUserFormState {
     firstName: $firstName
     paternalLastName: $paternalLastName
     maternalLastName: $maternalLastName
+    gender: $gender
     electoralCode: $electoralCode
     curp: $curp
+    institution: ${institution.value != null ? institution.value!.name : ''}
   ''';
 }

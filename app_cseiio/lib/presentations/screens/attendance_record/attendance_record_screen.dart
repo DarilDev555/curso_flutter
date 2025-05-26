@@ -1,10 +1,11 @@
 import '../../../domain/entities/teacher.dart';
+import '../../providers/teachers/teachers_provider.dart';
 import '../../widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/storage/local_teachers_provider.dart';
-import '../../providers/teachers/teachers_provider.dart';
 import '../../widgets/widgets.dart';
+import 'attendance_scanner_qr.dart';
 
 class AttendanceRecordScreen extends StatelessWidget {
   static const String name = 'attendance-record-screen';
@@ -89,7 +90,7 @@ class _ViewTeachers extends ConsumerWidget {
   }
 }
 
-class TextButtonQr extends ConsumerStatefulWidget {
+class TextButtonQr extends ConsumerWidget {
   final int idAttendance;
   final ColorScheme colors;
 
@@ -100,19 +101,12 @@ class TextButtonQr extends ConsumerStatefulWidget {
   });
 
   @override
-  TextButtonQrState createState() => TextButtonQrState();
-}
-
-class TextButtonQrState extends ConsumerState<TextButtonQr> {
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: widget.colors.secondary,
+            backgroundColor: colors.secondary,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
             shape: RoundedRectangleBorder(
@@ -120,15 +114,23 @@ class TextButtonQrState extends ConsumerState<TextButtonQr> {
             ),
           ),
           onPressed: () async {
-            Teacher tempTeacher = await ref
-                .read(getTeachersProvider.notifier)
-                .getTeacher(id: controller.text);
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder:
+                    (context) =>
+                        AttendanceScannerQr(idAttendance: idAttendance),
+              ),
+            );
 
-            tempTeacher.idAttendance = widget.idAttendance;
+            // Teacher tempTeacher = await ref
+            //     .read(getTeachersProvider.notifier)
+            //     .getTeacher(id: '57');
 
-            await ref
-                .read(localTeachersProvider.notifier)
-                .toggleSaveOrRemove(tempTeacher);
+            // tempTeacher.idAttendance = idAttendance;
+
+            // await ref
+            //     .read(localTeachersProvider.notifier)
+            //     .toggleSaveOrRemove(tempTeacher);
           },
           icon: const Icon(
             Icons.person_add_alt_1_outlined,
@@ -144,16 +146,12 @@ class TextButtonQrState extends ConsumerState<TextButtonQr> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: TextFormField(
-            controller: controller,
             decoration: InputDecoration(
               labelText: 'ID del Profesor',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              prefixIcon: Icon(
-                Icons.person_outline,
-                color: widget.colors.primary,
-              ),
+              prefixIcon: Icon(Icons.person_outline, color: colors.primary),
             ),
           ),
         ),

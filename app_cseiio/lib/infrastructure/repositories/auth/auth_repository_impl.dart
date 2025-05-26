@@ -28,8 +28,10 @@ class AuthRepositoryImpl extends AuthRepository {
     required String firstName,
     required String paternalLastName,
     required String maternalLastName,
+    required String gender,
     required String electoralKey,
     required String curp,
+    required String institutionId,
   }) {
     return datasource.register(
       userName: userName,
@@ -38,8 +40,10 @@ class AuthRepositoryImpl extends AuthRepository {
       firstName: firstName,
       paternalLastName: paternalLastName,
       maternalLastName: maternalLastName,
+      gender: gender,
       electoralKey: electoralKey,
       curp: curp,
+      institutionId: institutionId,
     );
   }
 
@@ -56,5 +60,10 @@ class AuthRepositoryImpl extends AuthRepository {
       password: password,
       passwordConfirmation: passwordConfirmation,
     );
+  }
+
+  @override
+  Future<User> updateAvatarUser(String urlPhoto, String token) {
+    return datasource.updateAvatarUser(urlPhoto, token);
   }
 }

@@ -11,7 +11,7 @@ class Product {
   String gender;
   List<String> tags;
   List<String> images;
-  User user;
+  User? user;
 
   Product({
     required this.id,
@@ -24,6 +24,6 @@ class Product {
     required this.gender,
     required this.tags,
     required this.images,
-    required this.user,
+    this.user,
   });
 }

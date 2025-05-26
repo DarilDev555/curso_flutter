@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../domain/entities/institution.dart';
+import '../../delegates/search_institution_delegate.dart';
 import '../../providers/auth/auth_provider.dart';
 import '../../providers/auth/register_user_form_provider.dart';
+import '../../providers/institutions/institutions_search_provider.dart';
 import '../../widgets/widgets.dart';
 
 class RegisterTeacherUserScreen extends StatelessWidget {
@@ -33,8 +36,7 @@ class RegisterTeacherUserScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        if (!context.canPop()) return;
-                        context.pop();
+                        context.go('/register');
                       },
                       icon: const Icon(
                         Icons.arrow_back_rounded,
@@ -54,8 +56,7 @@ class RegisterTeacherUserScreen extends StatelessWidget {
                 SizedBox(height: size.height * 0.01),
 
                 Container(
-                  height:
-                      size.height * 0.83, // 80 los dos sizebox y 100 el ícono
+                  height: size.height, // 80 los dos sizebox y 100 el ícono
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: scaffoldBackgroundColor,
@@ -63,7 +64,7 @@ class RegisterTeacherUserScreen extends StatelessWidget {
                       topLeft: Radius.circular(100),
                     ),
                   ),
-                  child: const _RegisterFormTeacher(),
+                  child: _RegisterFormTeacher(),
                 ),
               ],
             ),
@@ -75,7 +76,8 @@ class RegisterTeacherUserScreen extends StatelessWidget {
 }
 
 class _RegisterFormTeacher extends ConsumerWidget {
-  const _RegisterFormTeacher();
+  final _formKey = GlobalKey<FormState>();
+  _RegisterFormTeacher();
 
   void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -87,7 +89,6 @@ class _RegisterFormTeacher extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final registerForm = ref.watch(registerUserFormProvider);
-    final size = MediaQuery.of(context).size;
 
     final textStyles = Theme.of(context).textTheme;
 
@@ -167,6 +168,37 @@ class _RegisterFormTeacher extends ConsumerWidget {
               ),
               const SizedBox(height: 30),
 
+              Form(
+                key: _formKey,
+                child: DropdownButtonFormField<String>(
+                  value:
+                      [
+                            'male',
+                            'female',
+                            'other',
+                          ].contains(registerForm.gender.value)
+                          ? registerForm.gender.value
+                          : null,
+                  decoration: const InputDecoration(labelText: 'Género'),
+                  items: const [
+                    DropdownMenuItem(value: 'male', child: Text('Masculino')),
+                    DropdownMenuItem(value: 'female', child: Text('Femenino')),
+                    DropdownMenuItem(value: 'other', child: Text('Otro')),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      ref
+                          .read(registerUserFormProvider.notifier)
+                          .onGenderChanged(value);
+                    }
+                  },
+                  validator: (value) {
+                    return registerForm.gender.errorMessage;
+                  },
+                ),
+              ),
+              const SizedBox(height: 30),
+
               CustomTextFormField(
                 label: 'Clave de elector',
                 keyboardType: TextInputType.text,
@@ -205,11 +237,59 @@ class _RegisterFormTeacher extends ConsumerWidget {
 
               const SizedBox(height: 30),
 
-              TextButton(
-                onPressed: () {
-                  ref.read(registerUserFormProvider.notifier).switchModal();
-                },
-                child: const Text('Institucion a la que pertenece'),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomTextFormField(
+                      label:
+                          registerForm.institution.value != null
+                              ? registerForm.institution.value!.name
+                              : 'Institution',
+                      keyboardType: TextInputType.text,
+                      disableSpace: true,
+                      readOnly: true,
+                      errorMessage:
+                          registerForm.isFormPosted
+                              // ? registerForm.email.errorMessage
+                              ? errorMessageToCheckUserApi(
+                                errorMessage:
+                                    registerForm.institution.errorMessage,
+                                errors: registerForm.errors?['institution_id'],
+                              )
+                              : null,
+                    ),
+                  ),
+                  const SizedBox(width: 10), // espacio entre campo y botón
+                  TextButton(
+                    onPressed: () {
+                      final searchInstitutions = ref.read(
+                        searchInstitutionsProvider,
+                      );
+                      final searchQuery = ref.read(searchQueryProvider);
+
+                      showSearch<Institution?>(
+                        query: searchQuery,
+                        context: context,
+                        delegate: SearchInstitutionsDelegate(
+                          searchCallback:
+                              ref
+                                  .read(searchInstitutionsProvider.notifier)
+                                  .searchInstitutionByQuery,
+                          inicialInstitutions: searchInstitutions,
+                        ),
+                      ).then((institution) {
+                        if (institution == null) return;
+
+                        if (context.mounted) {
+                          ref
+                              .read(registerUserFormProvider.notifier)
+                              .changeInstitution(institution);
+                        }
+                      });
+                    },
+                    child: const Text('Seleccionar Institucion'),
+                  ),
+                ],
               ),
 
               const SizedBox(height: 30),
@@ -241,11 +321,10 @@ class _RegisterFormTeacher extends ConsumerWidget {
                       text: 'Crear',
                       buttonColor: Colors.black,
                       onPressed: () {
-                        // ref
-                        //     .watch(registerUserFormProvider.notifier)
-                        //     .checkUserForm();
-
-                        print(registerForm.userName.value);
+                        ref
+                            .watch(registerUserFormProvider.notifier)
+                            .onFormSumit();
+                        _formKey.currentState!.validate();
                       },
                     ),
                   ),
@@ -268,33 +347,6 @@ class _RegisterFormTeacher extends ConsumerWidget {
             ],
           ),
         ),
-
-        if (registerForm.openModal)
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                // Cerrar el modal al tocar fuera
-                ref.read(registerUserFormProvider.notifier).switchModal();
-              },
-              child: Container(
-                color: Colors.black.withValues(
-                  alpha: 0.8,
-                ), // fondo semitransparente
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () {}, // evitar que el tap se propague al fondo
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      color: Colors.white,
-                      height: size.height * 0.7,
-                      width: size.width * 0.8,
-                      child: const Center(child: Text('modal')),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }

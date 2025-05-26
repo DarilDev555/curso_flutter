@@ -7,5 +7,11 @@ class ErrorsMapper {
     'userName': errors.userName,
     'email': errors.email,
     'password': errors.password,
+    'paternalLastName': errors.paternalLastName,
+    'maternalLastName': errors.maternalLastName,
+    'gender': errors.gender,
+    'electoralCode': errors.electoralCode,
+    'curp': errors.curp,
+    'institutionId': errors.institutionId,
   };
 }

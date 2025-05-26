@@ -9,7 +9,12 @@ import '../../mappers/user_mapper.dart';
 import '../../models/api_cseiio/errors/user_register_form_is_valid_response_cseiio.dart';
 
 class AuthDatasourceImpl extends AuthDatasource {
-  final dio = Dio(BaseOptions(baseUrl: Environment.apiUrl));
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: Environment.apiUrl,
+      connectTimeout: const Duration(seconds: 7),
+    ),
+  );
 
   @override
   Future<User> checkAuthStatus(String token) async {
@@ -61,7 +66,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(message: 'Revisar conexion a internet');
       }
       throw Exception();
-    } on Exception catch (_) {
+    } on Exception catch (e) {
       throw Exception();
     }
   }
@@ -74,8 +79,10 @@ class AuthDatasourceImpl extends AuthDatasource {
     required String firstName,
     required String paternalLastName,
     required String maternalLastName,
+    required String gender,
     required String electoralKey,
     required String curp,
+    required String institutionId,
   }) async {
     try {
       final response = await dio.post(
@@ -84,12 +91,16 @@ class AuthDatasourceImpl extends AuthDatasource {
           'userName': userName,
           'email': email,
           'password': password,
+          'password_confirmation': password,
           'firstName': firstName,
           'paternalLastName': paternalLastName,
           'maternalLastName': maternalLastName,
-          'electoralKey': electoralKey,
+          'gender': gender,
+          'electoralCode': electoralKey,
           'curp': curp,
+          'institution_id': institutionId,
         },
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       final user = UserMapper.userjsonToEntity(response.data);
@@ -153,6 +164,32 @@ class AuthDatasourceImpl extends AuthDatasource {
       }
       throw Exception();
     } on Exception catch (_) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<User> updateAvatarUser(String urlPhoto, String token) async {
+    try {
+      final fileName = urlPhoto.split('/').last;
+      final FormData data = FormData.fromMap({
+        'file': MultipartFile.fromFileSync(urlPhoto, filename: fileName),
+      });
+
+      final response = await dio.post(
+        '/img/user',
+        data: data,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      final user = UserMapper.userjsonToEntity(response.data);
+      return user;
+    } catch (e) {
       throw Exception();
     }
   }
