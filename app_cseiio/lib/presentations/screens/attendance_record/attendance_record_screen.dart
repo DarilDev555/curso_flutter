@@ -1,5 +1,3 @@
-import '../../../domain/entities/teacher.dart';
-import '../../providers/teachers/teachers_provider.dart';
 import '../../widgets/shared/custom_avatar_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,7 +47,7 @@ class _ViewTeachers extends ConsumerWidget {
               borderRadius: BorderRadius.circular(15),
             ),
             width: double.infinity,
-            height: 200,
+            height: 220,
             child: TeacherSlideshow(idAttendance: idAttendance),
           ),
           const SizedBox(height: 20),

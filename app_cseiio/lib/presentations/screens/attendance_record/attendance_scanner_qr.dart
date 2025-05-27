@@ -1,95 +1,125 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
+import '../../providers/attendance_record/qr_teacher_provider.dart';
 import '../../providers/auth/auth_provider.dart';
-import '../../providers/storage/local_teachers_provider.dart';
-import '../../providers/teachers/teachers_provider.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import '../../../domain/entities/teacher.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/attendance_record/teacher_card.dart';
 import '../../widgets/attendance_record/teacher_slideshow.dart';
 
 /// Implementation of Mobile Scanner example with simple configuration
-class AttendanceScannerQr extends ConsumerStatefulWidget {
+class AttendanceScannerQr extends ConsumerWidget {
   final int idAttendance;
 
   /// Constructor for simple Mobile Scanner example
   const AttendanceScannerQr({super.key, required this.idAttendance});
 
   @override
-  AttendanceScannerQrState createState() => AttendanceScannerQrState();
-}
-
-class AttendanceScannerQrState extends ConsumerState<AttendanceScannerQr> {
-  Barcode? _barcodePrevius;
-  Barcode? _barcode;
-  bool isLoading = false;
-
-  Future<Widget> _barcodePreview(
-    Barcode? value,
-    idAttendance,
-    accessToken,
-  ) async {
-    if (_barcodePrevius != null &&
-        value != null &&
-        _barcodePrevius!.displayValue == value.displayValue) {}
-    if (value == null) {
-      return const Text(
-        'Escanea Qr para registrar asistencia',
-        overflow: TextOverflow.fade,
-        style: TextStyle(color: Colors.white),
-      );
-    }
-
-    Teacher tempTeacher = await ref
-        .read(getTeachersProvider.notifier)
-        .getTeacher(id: value.displayValue!);
-
-    tempTeacher.idAttendance = idAttendance;
-
-    return TeacherCard(
-      teacher: tempTeacher,
-      accessToken: accessToken,
-      height: 70,
-      width: 70,
-      isJustAvatar: false,
-      backGroundColor: '#4c0c20',
-      callBackAddTEacher: (idTeacher) {
-        setState(() {
-          _barcode = null;
-        });
-        ref
-            .read(localTeachersProvider.notifier)
-            .toggleSaveOrRemove(tempTeacher);
-      },
-      callBackCancelTEacher: () {
-        setState(() {
-          _barcode = null;
-        });
-      },
-    );
-  }
-
-  void _handleBarcode(BarcodeCapture barcodes) {
-    if (mounted) {
-      setState(() {
-        _barcode = barcodes.barcodes.firstOrNull;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // final colors = Theme.of(context).colorScheme;
+  Widget build(BuildContext context, WidgetRef ref) {
     final accessToken = ref.watch(authProvider).user!.token;
+    final qrTeacher = ref.watch(qrTeachaerProvider);
+    final layoutSize = MediaQuery.of(context).size;
+
+    final double scanWindowWidth = layoutSize.width;
+    final double scanWindowHeight = layoutSize.height;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Evento ... dia ... ')),
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          MobileScanner(onDetect: _handleBarcode),
+          MobileScanner(
+            scanWindow: Rect.fromLTWH(
+              scanWindowWidth * 0.25,
+              scanWindowHeight * 0.25,
+              scanWindowWidth * 0.5,
+              scanWindowWidth * 0.5,
+            ),
+            overlayBuilder: (context, _) {
+              final width = layoutSize.width;
+              final height = layoutSize.height;
+
+              final left = width * 0.25;
+              final top = height * 0.25;
+              final size = width * 0.5;
+
+              return Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Container(
+                      height: height * 0.25,
+                      width: height,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  Positioned(
+                    top: height * 0.25,
+                    left: width * 0.75,
+                    child: Container(
+                      height: size,
+                      width: width * 0.25,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  Positioned(
+                    top: height * 0.25 + size,
+                    left: 0,
+                    child: Container(
+                      height: height - (height * 0.25 + width * 0.5),
+                      width: height,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  Positioned(
+                    top: height * 0.25,
+                    left: 0,
+                    child: Container(
+                      height: size,
+                      width: width * 0.25,
+                      color: Colors.black45,
+                    ),
+                  ),
+
+                  // Cuadrado de escaneo
+                  Positioned(
+                    left: left,
+                    top: top,
+                    width: size,
+                    height: size,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: TinyColor.fromString('#a12f53').color,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+
+            placeholderBuilder:
+                (context) => const Center(child: CircularProgressIndicator()),
+            // overlayBuilder:
+            //     (context, constraints) => Container(
+            //       color: const Color.fromARGB(49, 33, 149, 243),
+            //       height: 250,
+            //       width: 250,
+            //     ),
+            onDetect: (barcodes) {
+              final value = barcodes.barcodes.firstOrNull;
+              if (value == null) return;
+              ref
+                  .read(qrTeachaerProvider.notifier)
+                  .changeQr(value.displayValue.toString(), idAttendance);
+            },
+          ),
+
           Align(
             alignment: Alignment.topRight,
             child: Container(
@@ -102,7 +132,7 @@ class AttendanceScannerQrState extends ConsumerState<AttendanceScannerQr> {
                   Expanded(
                     child: Center(
                       child: TeacherSlideshow(
-                        idAttendance: widget.idAttendance,
+                        idAttendance: idAttendance,
                         width: 80,
                         height: 80,
                         cardIsJustAvatar: true,
@@ -117,34 +147,19 @@ class AttendanceScannerQrState extends ConsumerState<AttendanceScannerQr> {
             alignment: Alignment.bottomCenter,
             child: Container(
               alignment: Alignment.bottomCenter,
-              height: 170,
-              width: 350,
+              height: 255,
+              width: 420,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Expanded(
                     child: Center(
-                      child: FutureBuilder(
-                        future: _barcodePreview(
-                          _barcode,
-                          widget.idAttendance,
-                          accessToken,
-                        ),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // mientras espera
-                          } else if (snapshot.hasError) {
-                            return Text(
-                              'Error: ${snapshot.error}',
-                            ); // si ocurre un error
-                          } else if (snapshot.hasData) {
-                            return snapshot.data!;
-                            // si hay datos
-                          } else {
-                            return const Text('No hay datos');
-                          }
-                        },
+                      child: _QrTeacher(
+                        qrTeacherState: qrTeacher,
+                        accessToken: accessToken,
+                        summit: ref.read(qrTeachaerProvider.notifier).summit,
+                        cancelSummit:
+                            ref.read(qrTeachaerProvider.notifier).cancelSummit,
                       ),
                     ),
                   ),
@@ -154,6 +169,58 @@ class AttendanceScannerQrState extends ConsumerState<AttendanceScannerQr> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _QrTeacher extends StatelessWidget {
+  final QrTeacherState qrTeacherState;
+  final String accessToken;
+  final Future<void> Function() summit;
+  final Future<void> Function() cancelSummit;
+
+  const _QrTeacher({
+    required this.qrTeacherState,
+    required this.accessToken,
+    required this.summit,
+    required this.cancelSummit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (qrTeacherState.teacher == null) {
+      return const Text(
+        'Escanea Qr para registrar asistencia',
+        overflow: TextOverflow.fade,
+        style: TextStyle(color: Colors.white),
+      );
+    }
+
+    if (qrTeacherState.isLoading) {
+      return const CircularProgressIndicator();
+    }
+
+    return Stack(
+      children: [
+        TeacherCard(
+          teacher: qrTeacherState.teacher!,
+          accessToken: accessToken,
+          height: 85,
+          width: 85,
+          isJustAvatar: false,
+          backGroundColor: '#4c0c20',
+          callBackAddTEacher: (qrTeacherState.isSummit) ? () {} : summit,
+          callBackCancelTEacher:
+              (qrTeacherState.isSummit) ? () {} : cancelSummit,
+        ),
+
+        (qrTeacherState.isSummit)
+            ? Container(
+              color: Colors.black54,
+              child: const Center(child: CircularProgressIndicator()),
+            )
+            : const SizedBox.shrink(),
+      ],
     );
   }
 }

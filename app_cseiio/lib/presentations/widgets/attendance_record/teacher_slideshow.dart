@@ -1,5 +1,4 @@
 // import 'package:animate_do/animate_do.dart';
-import 'package:tinycolor2/tinycolor2.dart';
 
 import '../../providers/auth/auth_provider.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../domain/entities/teacher.dart';
 import '../../providers/storage/local_teachers_provider.dart';
-import '../shared/text_frave.dart';
 import 'teacher_card.dart';
 
 class TeacherSlideshow extends ConsumerStatefulWidget {
