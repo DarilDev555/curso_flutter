@@ -17,68 +17,73 @@ const TeacherSchema = CollectionSchema(
   name: r'Teacher',
   id: 356616661396274803,
   properties: {
-    r'avatar': PropertySchema(
+    r'attendanceRegister': PropertySchema(
       id: 0,
+      name: r'attendanceRegister',
+      type: IsarType.dateTime,
+    ),
+    r'avatar': PropertySchema(
+      id: 1,
       name: r'avatar',
       type: IsarType.string,
     ),
     r'curp': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'curp',
       type: IsarType.string,
     ),
     r'dateRegister': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'dateRegister',
       type: IsarType.dateTime,
     ),
     r'electoralCode': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'electoralCode',
       type: IsarType.string,
     ),
     r'email': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'email',
       type: IsarType.string,
     ),
     r'firstName': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'firstName',
       type: IsarType.string,
     ),
     r'gender': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'gender',
       type: IsarType.string,
     ),
     r'id': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'id',
       type: IsarType.long,
     ),
     r'idAttendance': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'idAttendance',
       type: IsarType.long,
     ),
     r'institutionId': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'institutionId',
       type: IsarType.long,
     ),
     r'maternalLastName': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'maternalLastName',
       type: IsarType.string,
     ),
     r'paternalLastName': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'paternalLastName',
       type: IsarType.string,
     ),
     r'userId': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'userId',
       type: IsarType.long,
     )
@@ -125,19 +130,20 @@ void _teacherSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.avatar);
-  writer.writeString(offsets[1], object.curp);
-  writer.writeDateTime(offsets[2], object.dateRegister);
-  writer.writeString(offsets[3], object.electoralCode);
-  writer.writeString(offsets[4], object.email);
-  writer.writeString(offsets[5], object.firstName);
-  writer.writeString(offsets[6], object.gender);
-  writer.writeLong(offsets[7], object.id);
-  writer.writeLong(offsets[8], object.idAttendance);
-  writer.writeLong(offsets[9], object.institutionId);
-  writer.writeString(offsets[10], object.maternalLastName);
-  writer.writeString(offsets[11], object.paternalLastName);
-  writer.writeLong(offsets[12], object.userId);
+  writer.writeDateTime(offsets[0], object.attendanceRegister);
+  writer.writeString(offsets[1], object.avatar);
+  writer.writeString(offsets[2], object.curp);
+  writer.writeDateTime(offsets[3], object.dateRegister);
+  writer.writeString(offsets[4], object.electoralCode);
+  writer.writeString(offsets[5], object.email);
+  writer.writeString(offsets[6], object.firstName);
+  writer.writeString(offsets[7], object.gender);
+  writer.writeLong(offsets[8], object.id);
+  writer.writeLong(offsets[9], object.idAttendance);
+  writer.writeLong(offsets[10], object.institutionId);
+  writer.writeString(offsets[11], object.maternalLastName);
+  writer.writeString(offsets[12], object.paternalLastName);
+  writer.writeLong(offsets[13], object.userId);
 }
 
 Teacher _teacherDeserialize(
@@ -147,19 +153,20 @@ Teacher _teacherDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Teacher(
-    avatar: reader.readStringOrNull(offsets[0]),
-    curp: reader.readString(offsets[1]),
-    dateRegister: reader.readDateTime(offsets[2]),
-    electoralCode: reader.readString(offsets[3]),
-    email: reader.readString(offsets[4]),
-    firstName: reader.readString(offsets[5]),
-    gender: reader.readString(offsets[6]),
-    id: reader.readLong(offsets[7]),
-    idAttendance: reader.readLongOrNull(offsets[8]),
-    institutionId: reader.readLong(offsets[9]),
-    maternalLastName: reader.readString(offsets[10]),
-    paternalLastName: reader.readString(offsets[11]),
-    userId: reader.readLongOrNull(offsets[12]),
+    attendanceRegister: reader.readDateTimeOrNull(offsets[0]),
+    avatar: reader.readStringOrNull(offsets[1]),
+    curp: reader.readString(offsets[2]),
+    dateRegister: reader.readDateTime(offsets[3]),
+    electoralCode: reader.readString(offsets[4]),
+    email: reader.readString(offsets[5]),
+    firstName: reader.readString(offsets[6]),
+    gender: reader.readString(offsets[7]),
+    id: reader.readLong(offsets[8]),
+    idAttendance: reader.readLongOrNull(offsets[9]),
+    institutionId: reader.readLong(offsets[10]),
+    maternalLastName: reader.readString(offsets[11]),
+    paternalLastName: reader.readString(offsets[12]),
+    userId: reader.readLongOrNull(offsets[13]),
   );
   object.isarId = id;
   return object;
@@ -173,13 +180,13 @@ P _teacherDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
-    case 3:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readDateTime(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
@@ -187,16 +194,18 @@ P _teacherDeserializeProp<P>(
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readLong(offset)) as P;
-    case 8:
-      return (reader.readLongOrNull(offset)) as P;
-    case 9:
-      return (reader.readLong(offset)) as P;
-    case 10:
       return (reader.readString(offset)) as P;
+    case 8:
+      return (reader.readLong(offset)) as P;
+    case 9:
+      return (reader.readLongOrNull(offset)) as P;
+    case 10:
+      return (reader.readLong(offset)) as P;
     case 11:
       return (reader.readString(offset)) as P;
     case 12:
+      return (reader.readString(offset)) as P;
+    case 13:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -293,6 +302,80 @@ extension TeacherQueryWhere on QueryBuilder<Teacher, Teacher, QWhereClause> {
 
 extension TeacherQueryFilter
     on QueryBuilder<Teacher, Teacher, QFilterCondition> {
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      attendanceRegisterIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'attendanceRegister',
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      attendanceRegisterIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'attendanceRegister',
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      attendanceRegisterEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'attendanceRegister',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      attendanceRegisterGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'attendanceRegister',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      attendanceRegisterLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'attendanceRegister',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterFilterCondition>
+      attendanceRegisterBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'attendanceRegister',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Teacher, Teacher, QAfterFilterCondition> avatarIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1720,6 +1803,18 @@ extension TeacherQueryLinks
     on QueryBuilder<Teacher, Teacher, QFilterCondition> {}
 
 extension TeacherQuerySortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByAttendanceRegister() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attendanceRegister', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByAttendanceRegisterDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attendanceRegister', Sort.desc);
+    });
+  }
+
   QueryBuilder<Teacher, Teacher, QAfterSortBy> sortByAvatar() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'avatar', Sort.asc);
@@ -1879,6 +1974,18 @@ extension TeacherQuerySortBy on QueryBuilder<Teacher, Teacher, QSortBy> {
 
 extension TeacherQuerySortThenBy
     on QueryBuilder<Teacher, Teacher, QSortThenBy> {
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByAttendanceRegister() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attendanceRegister', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByAttendanceRegisterDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'attendanceRegister', Sort.desc);
+    });
+  }
+
   QueryBuilder<Teacher, Teacher, QAfterSortBy> thenByAvatar() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'avatar', Sort.asc);
@@ -2050,6 +2157,12 @@ extension TeacherQuerySortThenBy
 
 extension TeacherQueryWhereDistinct
     on QueryBuilder<Teacher, Teacher, QDistinct> {
+  QueryBuilder<Teacher, Teacher, QDistinct> distinctByAttendanceRegister() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'attendanceRegister');
+    });
+  }
+
   QueryBuilder<Teacher, Teacher, QDistinct> distinctByAvatar(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -2145,6 +2258,13 @@ extension TeacherQueryProperty
   QueryBuilder<Teacher, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isarId');
+    });
+  }
+
+  QueryBuilder<Teacher, DateTime?, QQueryOperations>
+      attendanceRegisterProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'attendanceRegister');
     });
   }
 

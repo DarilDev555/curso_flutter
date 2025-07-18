@@ -13,12 +13,22 @@ class LocalStorageRepositoryImpl extends LocalStorageRepository {
   }
 
   @override
-  Future<List<Teacher>> loadTeachers() {
-    return datasource.loadTeachers();
+  Future<List<Teacher>> loadTeachers(int idAttendance) {
+    return datasource.loadTeachers(idAttendance);
   }
 
   @override
   Future<void> toggleSaveOrRemove(Teacher teacher) {
     return datasource.toggleSaveOrRemove(teacher);
+  }
+
+  @override
+  Future<bool> removeTeacher(Teacher teacher) {
+    return datasource.removeTeacher(teacher);
+  }
+
+  @override
+  Future<bool> saveTeacher(Teacher teacher) {
+    return datasource.saveTeacher(teacher);
   }
 }

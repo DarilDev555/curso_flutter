@@ -8,7 +8,7 @@ abstract class TeachersDatasource {
 
   Future<Teacher> getTeacherById({required String id});
 
-  Future<List<Teacher>> getTeacherToAttendanceOrEvent({
+  Future<List<Teacher>> getTeacherAndAttendanceToEventDay({
     required String id,
     int page = 0,
   });
@@ -17,4 +17,19 @@ abstract class TeachersDatasource {
     required String id,
     int page = 0,
   });
+
+  Future<Teacher> regiterAttendance({
+    required String idTeacher,
+    required String idAttendance,
+  });
+
+  Future<List<Teacher>> getTeachersToattendance({
+    required String idAttendance,
+    int page = 0,
+  });
+
+  Future<Teacher> summitTeacherToAttendance(
+    String idAttendance,
+    String idTeacher,
+  );
 }

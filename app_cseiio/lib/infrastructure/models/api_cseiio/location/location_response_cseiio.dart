@@ -7,8 +7,6 @@ class LocationResponseCseiio {
   final String description;
   final String latitude;
   final String longitude;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   LocationResponseCseiio({
     required this.id,
@@ -19,8 +17,6 @@ class LocationResponseCseiio {
     required this.description,
     required this.latitude,
     required this.longitude,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
   factory LocationResponseCseiio.fromJson(Map<String, dynamic> json) =>
@@ -33,8 +29,6 @@ class LocationResponseCseiio {
         description: json["description"],
         latitude: json["latitude"],
         longitude: json["longitude"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,7 +40,5 @@ class LocationResponseCseiio {
     "description": description,
     "latitude": latitude,
     "longitude": longitude,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
   };
 }

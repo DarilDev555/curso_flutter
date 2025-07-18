@@ -67,6 +67,7 @@ class AuthDatasourceImpl extends AuthDatasource {
       }
       throw Exception();
     } on Exception catch (e) {
+      print(e.toString());
       throw Exception();
     }
   }

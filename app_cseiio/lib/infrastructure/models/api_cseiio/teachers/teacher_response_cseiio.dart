@@ -14,6 +14,7 @@ class TeacherResponseCseiio {
   final DateTime dateRegister;
   final String? avatar;
   final List<AttendanceResponseCseiio>? attendances;
+  final DateTime? attendanceRegister;
 
   TeacherResponseCseiio({
     required this.id,
@@ -29,6 +30,7 @@ class TeacherResponseCseiio {
     required this.dateRegister,
     required this.avatar,
     this.attendances,
+    this.attendanceRegister,
   });
 
   factory TeacherResponseCseiio.fromJson(Map<String, dynamic> json) =>
@@ -53,6 +55,10 @@ class TeacherResponseCseiio {
                   ),
                 )
                 : null,
+        attendanceRegister:
+            json["attendanceRegister"] != null
+                ? DateTime.tryParse(json["attendanceRegister"])
+                : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -73,5 +79,6 @@ class TeacherResponseCseiio {
         attendances != null
             ? List<dynamic>.from(attendances!.map((x) => x.toJson()))
             : null,
+    "attendanceRegister": attendanceRegister,
   };
 }

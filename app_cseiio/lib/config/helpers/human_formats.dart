@@ -45,4 +45,15 @@ class HumanFormats {
 
     return DateFormat('jm').format(date);
   }
+
+  static String hourFormatToDatetime(DateTime dateTime, {bool list = true}) {
+    return (list)
+        ? '  ◉ ${DateFormat.yMMMMd().format(dateTime)} \n  ◉ ${DateFormat.jm().format(dateTime)}'
+        : '${DateFormat.yMMMMd().format(dateTime)} ${DateFormat.jm().format(dateTime)}';
+  }
+
+  static String justhourFormatToDatetime(DateTime? dateTime) {
+    if (dateTime != null) return DateFormat.jm().format(dateTime);
+    return 'S/A';
+  }
 }

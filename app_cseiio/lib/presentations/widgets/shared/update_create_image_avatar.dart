@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 import '../../../config/const/environment.dart';
 import '../../../domain/entities/user.dart';
@@ -123,9 +124,19 @@ class _UserInfo extends ConsumerWidget {
           children: [
             CircleAvatar(
               radius: 70,
-              backgroundImage: NetworkImage(
-                '${Environment.apiUrl}/${user.profilePicture}',
-                headers: {'Authorization': 'Bearer ${user.token}'},
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Image.network(
+                  '${Environment.apiUrl}/${user.profilePicture}',
+                  headers: {'Authorization': 'Bearer ${user.token}'},
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      size: 80,
+                      Icons.image_not_supported_rounded,
+                      color: TinyColor.fromString('#b65d79').color,
+                    );
+                  },
+                ),
               ),
             ),
             Positioned(
@@ -200,9 +211,14 @@ class _UserInfo extends ConsumerWidget {
                   final photoPath =
                       await CameraGalleryServiceImpl().takePhoto();
                   if (photoPath == null) return;
+                  final photoPath2 = await CameraGalleryServiceImpl()
+                      .cropSelectedImage(photoPath);
+                  if (photoPath2 == null) {
+                    return;
+                  }
                   final updatePicture = await ref
                       .read(authProvider.notifier)
-                      .updateAvatarUser(photoPath);
+                      .updateAvatarUser(photoPath2);
                   if (updatePicture != null &&
                       updatePicture &&
                       context.mounted) {
@@ -221,9 +237,12 @@ class _UserInfo extends ConsumerWidget {
                   final photoPath =
                       await CameraGalleryServiceImpl().selectPhoto();
                   if (photoPath == null) return;
+                  final photoPath2 = await CameraGalleryServiceImpl()
+                      .cropSelectedImage(photoPath);
+                  if (photoPath2 == null) return;
                   final updatePicture = await ref
                       .read(authProvider.notifier)
-                      .updateAvatarUser(photoPath);
+                      .updateAvatarUser(photoPath2);
                   if (updatePicture != null &&
                       updatePicture &&
                       context.mounted) {

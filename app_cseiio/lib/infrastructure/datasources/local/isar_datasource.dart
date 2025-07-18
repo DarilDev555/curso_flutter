@@ -44,10 +44,9 @@ class IsarDatasource extends LocalStorageDatasource {
   }
 
   @override
-  Future<List<Teacher>> loadTeachers() async {
+  Future<List<Teacher>> loadTeachers(int idAttendance) async {
     final isar = await db;
-
-    return isar.teachers.where().findAll();
+    return isar.teachers.filter().idAttendanceEqualTo(idAttendance).findAll();
   }
 
   @override
@@ -67,5 +66,37 @@ class IsarDatasource extends LocalStorageDatasource {
     }
 
     isar.writeTxnSync(() => isar.teachers.putSync(teacher));
+  }
+
+  @override
+  Future<bool> removeTeacher(Teacher teacher) async {
+    final isar = await db;
+    final isTeacherOnDb =
+        await isar.teachers
+            .filter()
+            .idEqualTo(teacher.id)
+            .idAttendanceEqualTo(teacher.idAttendance)
+            .findFirst();
+    if (isTeacherOnDb != null) {
+      isar.writeTxnSync(() => isar.teachers.deleteSync(isTeacherOnDb.isarId));
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> saveTeacher(Teacher teacher) async {
+    final isar = await db;
+    final isTeacherOnDb =
+        await isar.teachers
+            .filter()
+            .idEqualTo(teacher.id)
+            .idAttendanceEqualTo(teacher.idAttendance)
+            .findFirst();
+    if (isTeacherOnDb != null) {
+      return false;
+    }
+    isar.writeTxnSync(() => isar.teachers.putSync(teacher));
+    return true;
   }
 }

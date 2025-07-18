@@ -27,5 +27,6 @@ class TeacherMapper {
         teacherResponseCseiio.attendances
             ?.map(AttendanceMapper.attendanceCseiioToEntity)
             .toList(),
+    attendanceRegister: teacherResponseCseiio.attendanceRegister,
   );
 }

@@ -2,7 +2,7 @@ import '../../../domain/entities/event.dart';
 import 'events_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final getEventsProvider = StateNotifierProvider<EventsNotifier, List<Event>>((
+final getEventsProvider = StateNotifierProvider<EventsNotifier, EventsState>((
   ref,
 ) {
   final fetchGetEvents = ref.watch(eventsRepositoryProvider).getEvents;
@@ -19,7 +19,7 @@ typedef EventCallback =
 
 typedef EventByIdCallback = Future<Event> Function(String idEvent);
 
-class EventsNotifier extends StateNotifier<List<Event>> {
+class EventsNotifier extends StateNotifier<EventsState> {
   bool isLoading = false;
   List<String> months = [];
 
@@ -29,11 +29,10 @@ class EventsNotifier extends StateNotifier<List<Event>> {
   EventsNotifier({
     required this.fetchGetEvents,
     required this.fetchGetEventById,
-  }) : super([]);
+  }) : super(EventsState());
 
   Future<void> loadEvents({required String month, required String year}) async {
     if (isLoading) return;
-
     isLoading = true;
 
     if (months.contains('$month-$year')) {
@@ -41,19 +40,50 @@ class EventsNotifier extends StateNotifier<List<Event>> {
       return;
     }
 
+    state = state.copyWith(isLoading: true);
     final List<Event> events = await fetchGetEvents(month: month, year: year);
-
+    for (var event in events) {
+      print(event.name);
+    }
     if (events.isEmpty) {
+      state = state.copyWith(isLoading: false);
       isLoading = false;
       return;
     }
 
-    state = [...state, ...events];
     months.add('$month-$year');
+    state = state.copyWith(
+      events: [...state.events, ...events],
+      isLoading: false,
+    );
     isLoading = false;
     return;
   }
 
+  Future<void> loadFirstEvents({
+    required String month,
+    required String year,
+  }) async {
+    if (isLoading || state.events.isNotEmpty) {
+      return;
+    }
+    isLoading = true;
+    final List<Event> events = await fetchGetEvents(month: month, year: year);
+
+    if (events.isEmpty) {
+      isLoading = false;
+      state = state.copyWith(isLoading: false);
+      return;
+    }
+
+    months.add('$month-$year');
+    state = state.copyWith(
+      events: [...state.events, ...events],
+      isLoading: false,
+    );
+    isLoading = false;
+    return;
+  }
   // Future<void> loadEventById({required String idEvent}) async {
   //   if (isLoading) return;
   //   isLoading = false;
@@ -74,4 +104,19 @@ class EventsNotifier extends StateNotifier<List<Event>> {
   //   isLoading = false;
   //   return;
   // }
+}
+
+class EventsState {
+  final List<Event> events;
+  final bool isLoading;
+
+  EventsState({List<Event>? events, this.isLoading = true})
+    : events = events ?? const [];
+
+  EventsState copyWith({List<Event>? events, bool? isLoading}) {
+    return EventsState(
+      events: events ?? this.events,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
 }

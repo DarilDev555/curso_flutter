@@ -1,6 +1,7 @@
 import '../../../config/helpers/human_formats.dart';
 import '../../providers/auth/auth_provider.dart';
 import '../../providers/shared/color_title_provider.dart';
+import '../../providers/teachers/teacher_provider.dart';
 import '../../widgets/shared/attendace_title.dart';
 import '../event/event_days_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,6 @@ import '../../../domain/entities/event_day.dart';
 import '../../../domain/entities/institution.dart';
 import '../../../domain/entities/teacher.dart';
 import '../../providers/teachers/teacher_details_provider.dart';
-import '../../providers/teachers/teachers_provider.dart';
 
 class TeacherDetailScreen extends ConsumerStatefulWidget {
   static const name = 'teacher-detail-screen';
@@ -52,6 +52,7 @@ class TeacherDetailScreenState extends ConsumerState<TeacherDetailScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(getTeacherProvider.notifier).getTeacher(widget.idTeacher);
     ref.read(teacherDetailsProvider.notifier).loadEvents(widget.idTeacher);
     scrollController.addListener(() {
       final posicion = scrollController.position.pixels / 16;
@@ -77,9 +78,7 @@ class TeacherDetailScreenState extends ConsumerState<TeacherDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final accessToken = ref.watch(authProvider).user!.token;
-    final teacher = ref
-        .watch(getTeachersProvider)
-        .firstWhere((t) => t.id.toString() == widget.idTeacher);
+    final teacher = ref.watch(getTeacherProvider)[widget.idTeacher];
     final data = ref.watch(teacherDetailsProvider)[widget.idTeacher];
 
     if (data == null) {
@@ -90,32 +89,35 @@ class TeacherDetailScreenState extends ConsumerState<TeacherDetailScreen> {
     final List<Event> events = List<Event>.from(data['events']);
 
     return Scaffold(
-      body: Container(
-        color: TinyColor.fromString('#ead1d9').color,
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            _TeacherAppBar(teacher: teacher, accessToken: accessToken),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    _PersonalInfoSection(teacher: teacher),
-                    const SizedBox(height: 24),
-                    _InstitutionSection(institution: institution),
-                    const SizedBox(height: 24),
-                    _EventsSection(events: events),
-                    const SizedBox(height: 80),
+      body:
+          (teacher != null)
+              ? Container(
+                color: TinyColor.fromString('#ead1d9').color,
+                child: CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    _TeacherAppBar(teacher: teacher, accessToken: accessToken),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                            _PersonalInfoSection(teacher: teacher),
+                            const SizedBox(height: 24),
+                            _InstitutionSection(institution: institution),
+                            const SizedBox(height: 24),
+                            _EventsSection(events: events),
+                            const SizedBox(height: 80),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
+              )
+              : const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -170,6 +172,13 @@ class _TeacherAppBar extends ConsumerWidget {
                         teacher.avatar!,
                         headers: {"Authorization": "Bearer $accessToken"},
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.image_not_supported_rounded,
+                            size: 150 - (150 * 0.2),
+                            color: TinyColor.fromString('#b65d79').color,
+                          );
+                        },
                       )
                       : Icon(
                         Icons.person,

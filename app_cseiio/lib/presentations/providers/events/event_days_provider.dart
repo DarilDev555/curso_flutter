@@ -1,19 +1,17 @@
-import '../../../domain/entities/event_day.dart';
+import '../../../domain/entities/entities.dart';
 import 'event_days_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final getEventDaysProvider =
-    StateNotifierProvider<EventDaysNotifier, Map<String, List<EventDay>>>((
-      ref,
-    ) {
+    StateNotifierProvider<EventDaysNotifier, Map<String, Event>>((ref) {
       final fetchgetEventDays =
           ref.watch(eventDaysRepositoryProvider).getEventDaysToEvent;
       return EventDaysNotifier(fetchGetEventDays: fetchgetEventDays);
     });
 
-typedef EventDaysCallback = Future<List<EventDay>> Function(String idEvent);
+typedef EventDaysCallback = Future<Event> Function(String idEvent);
 
-class EventDaysNotifier extends StateNotifier<Map<String, List<EventDay>>> {
+class EventDaysNotifier extends StateNotifier<Map<String, Event>> {
   bool isLoanding = false;
   EventDaysCallback fetchGetEventDays;
 
@@ -21,22 +19,21 @@ class EventDaysNotifier extends StateNotifier<Map<String, List<EventDay>>> {
 
   Future<void> loadEventDays({required String idEvent}) async {
     if (isLoanding) return;
-
     isLoanding = true;
 
-    if (state.containsKey(idEvent)) {
+    if (state[idEvent] != null) {
       isLoanding = false;
       return;
     }
 
-    final List<EventDay> eventDays = await fetchGetEventDays(idEvent);
+    final Event event = await fetchGetEventDays(idEvent);
 
-    if (eventDays.isEmpty) {
+    if (event.eventdays == null || event.eventdays == []) {
       isLoanding = false;
       return;
     }
 
-    state = {...state, idEvent: eventDays};
+    state = {...state, idEvent: event};
     isLoanding = false;
     return;
   }

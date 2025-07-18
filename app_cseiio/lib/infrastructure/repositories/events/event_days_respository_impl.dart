@@ -1,5 +1,5 @@
 import '../../../domain/datasources/events/event_days_datasource.dart';
-import '../../../domain/entities/event_day.dart';
+import '../../../domain/entities/entities.dart';
 import '../../../domain/repositories/events/event_days_repository.dart';
 
 class EventDaysRespositoryImpl extends EventDaysRepository {
@@ -13,7 +13,7 @@ class EventDaysRespositoryImpl extends EventDaysRepository {
   }
 
   @override
-  Future<List<EventDay>> getEventDaysToEvent(String idEvent) {
+  Future<Event> getEventDaysToEvent(String idEvent) {
     return eventDaysDatasource.getEventDaysToEvent(idEvent);
   }
 }

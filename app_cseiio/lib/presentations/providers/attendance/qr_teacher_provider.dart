@@ -1,34 +1,52 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../domain/entities/teacher.dart';
+import '../../../domain/entities/user.dart';
+import '../auth/auth_provider.dart';
 import '../storage/local_teachers_provider.dart';
 import '../teachers/teachers_provider.dart';
+import '../teachers/teachers_repository_provider.dart';
 
 final qrTeachaerProvider =
     StateNotifierProvider<QrTeacherNotifier, QrTeacherState>((ref) {
       final teacherCallback =
           ref.watch(getTeachersProvider.notifier).getTeacher;
 
-      final summitTeacherCallBack =
-          ref.watch(localTeachersProvider.notifier).toggleSaveOrRemove;
+      final saveTeacherCallBack =
+          ref.watch(localTeachersProvider.notifier).saveTeacher;
+
+      final user = ref.watch(authProvider).user!;
+
+      final registerAttendanceCallBack =
+          ref.watch(teacherRepositoryProvider).regiterAttendance;
 
       return QrTeacherNotifier(
         teacherCallback: teacherCallback,
-        summitTeacherCallback: summitTeacherCallBack,
+        saveTeacherCallback: saveTeacherCallBack,
+        user: user,
+        registerAttendanceCallBack: registerAttendanceCallBack,
       );
     });
 
 typedef TeacherCallback = Future<Teacher> Function({required String id});
 typedef SummitTeacherCallback = Future<void> Function(Teacher teacher);
+typedef RegisterAttendanceCallBack =
+    Future<Teacher> Function({
+      required String idAttendance,
+      required String idTeacher,
+    });
 
 class QrTeacherNotifier extends StateNotifier<QrTeacherState> {
   bool isLoading = false;
   TeacherCallback teacherCallback;
-  SummitTeacherCallback summitTeacherCallback;
+  SummitTeacherCallback saveTeacherCallback;
+  User user;
+  RegisterAttendanceCallBack registerAttendanceCallBack;
 
   QrTeacherNotifier({
     required this.teacherCallback,
-    required this.summitTeacherCallback,
+    required this.saveTeacherCallback,
+    required this.user,
+    required this.registerAttendanceCallBack,
   }) : super(QrTeacherState());
 
   Future<void> changeQr(String idTeacher, int idAttendance) async {
@@ -43,9 +61,12 @@ class QrTeacherNotifier extends StateNotifier<QrTeacherState> {
     state = state.copyWith(isLoading: true);
 
     final Teacher getTeacher = await teacherCallback(id: idTeacher);
-    getTeacher.idAttendance = idAttendance;
+    final newTeacher = getTeacher.copyWith(
+      idAttendance: idAttendance,
+      attendanceRegister: DateTime.now(),
+    );
 
-    state = state.copyWith(isLoading: false, teacher: getTeacher);
+    state = state.copyWith(isLoading: false, teacher: newTeacher);
     isLoading = false;
 
     return;
@@ -61,8 +82,7 @@ class QrTeacherNotifier extends StateNotifier<QrTeacherState> {
     }
 
     state = state.copyWith(isSummit: true);
-
-    await summitTeacherCallback(state.teacher!);
+    await saveTeacherCallback(state.teacher!);
 
     state = state.copyWith(isSummit: false, isTeacherNull: true);
     isLoading = false;

@@ -1,12 +1,15 @@
 import 'attendance.dart';
 import 'package:isar/isar.dart';
 
+import 'entities.dart';
+
 part 'teacher.g.dart';
 
 @collection
 class Teacher {
   Id isarId = Isar.autoIncrement;
-  int? idAttendance;
+  final int? idAttendance;
+  final DateTime? attendanceRegister;
 
   final int id;
   final int institutionId;
@@ -26,6 +29,7 @@ class Teacher {
 
   Teacher({
     this.idAttendance = -1,
+    this.attendanceRegister,
 
     required this.id,
     required this.institutionId,
@@ -41,4 +45,41 @@ class Teacher {
     required this.avatar,
     this.attendance,
   });
+
+  Teacher copyWith({
+    int? idAttendance,
+    DateTime? attendanceRegister,
+    int? id,
+    int? institutionId,
+    int? userId,
+    String? firstName,
+    String? paternalLastName,
+    String? maternalLastName,
+    String? gender,
+    String? electoralCode,
+    String? email,
+    String? curp,
+    DateTime? dateRegister,
+    String? avatar,
+    List<Attendance>? attendance,
+  }) {
+    return Teacher(
+      idAttendance: idAttendance ?? this.idAttendance,
+      attendanceRegister: attendanceRegister ?? this.attendanceRegister,
+
+      id: id ?? this.id,
+      institutionId: institutionId ?? this.institutionId,
+      userId: userId ?? this.userId,
+      firstName: firstName ?? this.firstName,
+      paternalLastName: paternalLastName ?? this.paternalLastName,
+      maternalLastName: maternalLastName ?? this.maternalLastName,
+      gender: gender ?? this.gender,
+      electoralCode: electoralCode ?? this.electoralCode,
+      email: email ?? this.email,
+      curp: curp ?? this.curp,
+      dateRegister: dateRegister ?? this.dateRegister,
+      avatar: avatar ?? this.avatar,
+      attendance: attendance ?? this.attendance,
+    );
+  }
 }

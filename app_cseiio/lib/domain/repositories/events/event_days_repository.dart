@@ -1,7 +1,7 @@
-import '../../entities/event_day.dart';
+import '../../entities/entities.dart';
 
 abstract class EventDaysRepository {
-  Future<List<EventDay>> getEventDaysToEvent(String idEvent);
+  Future<Event> getEventDaysToEvent(String idEvent);
 
   Future<EventDay> getEventDay(String idEventDay);
 }

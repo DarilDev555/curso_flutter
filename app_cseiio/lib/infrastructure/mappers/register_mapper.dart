@@ -5,10 +5,9 @@ class RegisterMapper {
   static Register registerCseiioToEntity(
     RegisterResponseCseiio registerResponseCseiio,
   ) => Register(
-    id: registerResponseCseiio.id,
-    attendanceTeacherId: registerResponseCseiio.attendanceTeacherId,
-    userId: registerResponseCseiio.userId,
+    id: registerResponseCseiio.id.toString(),
+    attendanceTeacherId: registerResponseCseiio.attendanceTeacherId.toString(),
+    userId: registerResponseCseiio.userId.toString(),
     registerTime: registerResponseCseiio.registerTime,
-    createdAt: registerResponseCseiio.createdAt,
   );
 }

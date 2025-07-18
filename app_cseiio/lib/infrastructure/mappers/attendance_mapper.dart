@@ -11,8 +11,6 @@ class AttendanceMapper {
     name: attendanceResponseCseiio.name,
     descripcion: attendanceResponseCseiio.descripcion,
     attendanceTime: attendanceResponseCseiio.attendanceTime,
-    createdAt: attendanceResponseCseiio.createdAt,
-    updatedAt: attendanceResponseCseiio.updatedAt,
     register:
         attendanceResponseCseiio.register != null
             ? RegisterMapper.registerCseiioToEntity(

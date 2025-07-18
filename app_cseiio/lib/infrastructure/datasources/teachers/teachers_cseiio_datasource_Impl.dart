@@ -4,6 +4,7 @@ import '../../../config/const/environment.dart';
 import '../../../domain/datasources/teachers/teachers_datasource.dart';
 import '../../../domain/entities/entities.dart';
 import '../../../presentations/errors/auth_errors.dart';
+import '../../../presentations/errors/teacher_summit_error.dart';
 import '../../mappers/mappers.dart';
 import '../../models/api_cseiio/api_cseiio.dart';
 import 'package:dio/dio.dart';
@@ -81,24 +82,28 @@ class TeachersCseiioDatasourceImpl extends TeachersDatasource {
 
   @override
   Future<Teacher> getTeacherById({required String id}) async {
-    final response = await dio.get('/teacher/$id');
+    try {
+      final response = await dio.get('/teacher/$id');
 
-    if (response.statusCode != 200) {
-      throw Exception('Teacher with id: $id not found');
+      if (response.statusCode != 200) {
+        throw Exception('Teacher with id: $id not found');
+      }
+
+      final teacherResponse = TeacherResponseCseiio.fromJson(response.data);
+
+      final teacher = TeacherMapper.teacherCseiioToEntity(
+        teacherResponse,
+        baseUrlImage: Environment.apiUrl,
+      );
+
+      return teacher;
+    } catch (e) {
+      throw Exception();
     }
-
-    final teacherResponse = TeacherResponseCseiio.fromJson(response.data);
-
-    final teacher = TeacherMapper.teacherCseiioToEntity(
-      teacherResponse,
-      baseUrlImage: Environment.apiUrl,
-    );
-
-    return teacher;
   }
 
   @override
-  Future<List<Teacher>> getTeacherToAttendanceOrEvent({
+  Future<List<Teacher>> getTeacherAndAttendanceToEventDay({
     required String id,
     int page = 0,
   }) async {
@@ -154,5 +159,101 @@ class TeachersCseiioDatasourceImpl extends TeachersDatasource {
             .toList();
 
     return {'institution': institution, 'events': events};
+  }
+
+  @override
+  Future<Teacher> regiterAttendance({
+    required String idTeacher,
+    required String idAttendance,
+  }) async {
+    try {
+      final response = await dio.post(
+        '/register-attendance',
+        data: {'id_teacher': idTeacher, 'id_attendance': idAttendance},
+      );
+
+      final teacherResponse = TeacherResponseCseiio.fromJson(response.data);
+
+      final Teacher teacher = TeacherMapper.teacherCseiioToEntity(
+        teacherResponse,
+        baseUrlImage: Environment.apiUrl,
+      );
+
+      return teacher;
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<List<Teacher>> getTeachersToattendance({
+    required String idAttendance,
+    int page = 0,
+  }) async {
+    try {
+      final response = await dio.get(
+        '/teachersToAttendance',
+        queryParameters: {'page': page, 'id_attendance': idAttendance},
+        options: Options(headers: {'Accept': 'application/json'}),
+      );
+
+      return _jsonToTeacher(response.data);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw CustomError(
+          message: e.response?.data['message'] ?? 'Credenciales incorrectas',
+        );
+      }
+      throw Exception();
+    } on Exception catch (_) {
+      throw Exception();
+    }
+  }
+
+  @override
+  Future<Teacher> summitTeacherToAttendance(
+    String idAttendance,
+    String idTeacher,
+  ) async {
+    try {
+      final response = await dio.post(
+        '/summitTeacherToAttendance',
+        data: {'id_attendance': idAttendance, 'id_teacher': idTeacher},
+      );
+      final teacherResponse = TeacherResponseCseiio.fromJson(
+        response.data['teacher'],
+      );
+
+      return TeacherMapper.teacherCseiioToEntity(
+        teacherResponse,
+        baseUrlImage: Environment.apiUrl,
+      );
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw CustomError(
+          message: e.response?.data['message'] ?? 'Sesión expirada',
+        );
+      }
+      if (e.response?.statusCode == 409 &&
+          e.response?.data['message'] == 'Ya hay una asistencia registrada') {
+        final teacherResponse = TeacherResponseCseiio.fromJson(
+          e.response!.data['teacher'],
+        );
+
+        final teacherWithRegister = TeacherMapper.teacherCseiioToEntity(
+          teacherResponse,
+          baseUrlImage: Environment.apiUrl,
+        );
+
+        throw TeacherSummitError(
+          message: e.response?.data['message'],
+          errorCode: e.response!.statusCode.toString(),
+          teahcer: teacherWithRegister,
+        );
+      }
+      throw Exception();
+    } on Exception catch (_) {
+      throw Exception();
+    }
   }
 }

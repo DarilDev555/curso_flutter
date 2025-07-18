@@ -1,3 +1,5 @@
+import 'package:tinycolor2/tinycolor2.dart';
+
 import '../../../config/const/environment.dart';
 import '../../../domain/entities/user.dart';
 import '../../providers/auth/auth_provider.dart';
@@ -81,6 +83,12 @@ class _UserCard extends StatelessWidget {
           child: Image.network(
             '${Environment.apiUrl}/${user.profilePicture}',
             headers: {'Authorization': 'Bearer $accessToken'},
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(
+                Icons.image_not_supported_rounded,
+                color: TinyColor.fromString('#b65d79').color,
+              );
+            },
           ),
         ),
         title: Text(

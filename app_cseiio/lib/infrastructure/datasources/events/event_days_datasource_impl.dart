@@ -1,9 +1,10 @@
 import '../../../config/const/environment.dart';
 import '../../../domain/datasources/events/event_days_datasource.dart';
+import '../../../domain/entities/event.dart';
 import '../../../domain/entities/event_day.dart';
 import '../../mappers/event_day_mapper.dart';
-import '../../models/api_cseiio/event/event_day_response_cseiio.dart';
-import '../../models/api_cseiio/event/event_days_response_cseiio.dart';
+import '../../mappers/event_mapper.dart';
+import '../../models/api_cseiio/api_cseiio.dart';
 import 'package:dio/dio.dart';
 
 class EventDaysDatasourceImpl extends EventDaysDatasource {
@@ -30,12 +31,10 @@ class EventDaysDatasourceImpl extends EventDaysDatasource {
   }
 
   @override
-  Future<List<EventDay>> getEventDaysToEvent(String idEvent) async {
+  Future<Event> getEventDaysToEvent(String idEvent) async {
     final response = await dio.get('/eventDaysToEvent/$idEvent');
-    final EventDaysResponseCseiio eventDaysResponseCseiio =
-        EventDaysResponseCseiio.fromJson(response.data);
-    return eventDaysResponseCseiio.eventDays
-        .map(EventDayMapper.eventDayCseiioToEntity)
-        .toList();
+    final EventResponceCseiio eventResponceCseiio =
+        EventResponceCseiio.fromJson(response.data);
+    return EventMapper.eventCseiioToEntity(eventResponceCseiio);
   }
 }

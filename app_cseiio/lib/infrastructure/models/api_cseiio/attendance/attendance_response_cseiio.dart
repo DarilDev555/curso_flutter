@@ -6,8 +6,6 @@ class AttendanceResponseCseiio {
   final String name;
   final String descripcion;
   final DateTime attendanceTime;
-  final DateTime createdAt;
-  final DateTime updatedAt;
   final RegisterResponseCseiio? register;
 
   AttendanceResponseCseiio({
@@ -16,8 +14,6 @@ class AttendanceResponseCseiio {
     required this.name,
     required this.descripcion,
     required this.attendanceTime,
-    required this.createdAt,
-    required this.updatedAt,
     required this.register,
   });
 
@@ -31,8 +27,6 @@ class AttendanceResponseCseiio {
           json["attendance_time"] == null
               ? DateTime.parse(json["attendancetime"])
               : DateTime.parse(json["attendance_time"]),
-      createdAt: DateTime.parse(json["created_at"]),
-      updatedAt: DateTime.parse(json["updated_at"]),
       register:
           json["register"] == null
               ? null
@@ -46,8 +40,6 @@ class AttendanceResponseCseiio {
     "name": name,
     "descripcion": descripcion,
     "attendance_time": attendanceTime,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
     "register": register?.toJson(),
   };
 }

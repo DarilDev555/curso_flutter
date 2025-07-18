@@ -13,6 +13,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool disableSpace;
   final String inicialValue;
   final double width;
+  final double? heigth;
+  final int maxLines;
   final bool readOnly;
 
   const CustomTextFormField({
@@ -28,6 +30,8 @@ class CustomTextFormField extends StatelessWidget {
     this.disableSpace = false,
     this.inicialValue = '',
     this.width = double.infinity,
+    this.heigth,
+    this.maxLines = 1,
     this.readOnly = false,
   });
 
@@ -44,6 +48,8 @@ class CustomTextFormField extends StatelessWidget {
 
     return Container(
       width: width,
+      height: null,
+
       // padding: const EdgeInsets.only(bottom: 0, top: 15),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -61,6 +67,7 @@ class CustomTextFormField extends StatelessWidget {
         ],
       ),
       child: TextFormField(
+        maxLines: maxLines,
         initialValue: inicialValue,
         onChanged: onChanged,
         validator: validator,

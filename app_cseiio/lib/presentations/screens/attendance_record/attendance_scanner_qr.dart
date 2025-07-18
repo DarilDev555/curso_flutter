@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
-import '../../providers/attendance_record/qr_teacher_provider.dart';
+import '../../providers/attendance/qr_teacher_provider.dart';
 import '../../providers/auth/auth_provider.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,6 @@ class AttendanceScannerQr extends ConsumerWidget {
     final accessToken = ref.watch(authProvider).user!.token;
     final qrTeacher = ref.watch(qrTeachaerProvider);
     final layoutSize = MediaQuery.of(context).size;
-
     final double scanWindowWidth = layoutSize.width;
     final double scanWindowHeight = layoutSize.height;
 
@@ -105,12 +104,7 @@ class AttendanceScannerQr extends ConsumerWidget {
 
             placeholderBuilder:
                 (context) => const Center(child: CircularProgressIndicator()),
-            // overlayBuilder:
-            //     (context, constraints) => Container(
-            //       color: const Color.fromARGB(49, 33, 149, 243),
-            //       height: 250,
-            //       width: 250,
-            //     ),
+
             onDetect: (barcodes) {
               final value = barcodes.barcodes.firstOrNull;
               if (value == null) return;
@@ -121,25 +115,27 @@ class AttendanceScannerQr extends ConsumerWidget {
           ),
 
           Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              alignment: Alignment.topRight,
-              height: 165,
-              width: 125,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: TeacherSlideshow(
-                        idAttendance: idAttendance,
-                        width: 80,
-                        height: 80,
-                        cardIsJustAvatar: true,
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.topLeft,
+                height: layoutSize.height * 0.15,
+                width: layoutSize.width * 0.65,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: TeacherSlideshow(
+                          idAttendance: idAttendance,
+                          widthAvatar: layoutSize.height * 0.055,
+                          heightAvatar: layoutSize.height * 0.055,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -147,8 +143,8 @@ class AttendanceScannerQr extends ConsumerWidget {
             alignment: Alignment.bottomCenter,
             child: Container(
               alignment: Alignment.bottomCenter,
-              height: 255,
-              width: 420,
+              height: layoutSize.height * 0.24,
+              width: layoutSize.width * 0.65,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -205,10 +201,9 @@ class _QrTeacher extends StatelessWidget {
         TeacherCard(
           teacher: qrTeacherState.teacher!,
           accessToken: accessToken,
-          height: 85,
-          width: 85,
-          isJustAvatar: false,
-          backGroundColor: '#4c0c20',
+          heightAvatar: 85,
+          widthAvatar: 85,
+          backGroundColor: '#88163a',
           callBackAddTEacher: (qrTeacherState.isSummit) ? () {} : summit,
           callBackCancelTEacher:
               (qrTeacherState.isSummit) ? () {} : cancelSummit,

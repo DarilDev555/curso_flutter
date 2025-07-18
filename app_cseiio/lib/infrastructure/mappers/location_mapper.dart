@@ -14,8 +14,6 @@ class LocationMapper {
       description: locationCseiio.description,
       latitude: locationCseiio.latitude,
       longitude: locationCseiio.longitude,
-      createdAt: locationCseiio.createdAt,
-      updatedAt: locationCseiio.updatedAt,
     );
   }
 }

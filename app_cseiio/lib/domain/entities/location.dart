@@ -7,8 +7,6 @@ class Location {
   final String description;
   final String latitude;
   final String longitude;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
   Location({
     required this.id,
@@ -19,7 +17,5 @@ class Location {
     required this.description,
     required this.latitude,
     required this.longitude,
-    required this.createdAt,
-    required this.updatedAt,
   });
 }

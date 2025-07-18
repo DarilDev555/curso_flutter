@@ -1,4 +1,5 @@
 import '../../presentations/screens/auth/register_teacher_user_screen.dart';
+import '../../presentations/screens/event/event_create_update_screen.dart';
 import 'app_router_notifier.dart';
 import '../../presentations/providers/auth/auth_provider.dart';
 import '../../presentations/screens/screens.dart';
@@ -62,20 +63,26 @@ final goRouterProvider = Provider((ref) {
         name: EventDaysScreen.name,
         builder: (context, state) {
           final String idEvent = state.uri.queryParameters['event'] ?? 'no-id';
-          final String? mounth = state.uri.queryParameters['mounth'];
-          final String? year = state.uri.queryParameters['year'];
 
-          return EventDaysScreen(idEvent: idEvent, mounth: mounth, year: year);
+          return EventDaysScreen(idEvent: idEvent);
+        },
+      ),
+      GoRoute(
+        path: '/event-create-update-screen',
+        name: EventCreateUpdateScreen.name,
+        builder: (context, state) {
+          return EventCreateUpdateScreen();
         },
       ),
 
       GoRoute(
-        path: '/attendance-screen/:eventDay',
+        path: '/attendance-screen/:eventDay/:event',
         name: AttendanceScreen.name,
         builder: (context, state) {
-          final idEvent = state.pathParameters['eventDay'] ?? 'no-id';
+          final idEventDay = state.pathParameters['eventDay'] ?? 'no-id';
+          final idEvent = state.pathParameters['event'] ?? 'no-id';
 
-          return AttendanceScreen(idEventDay: idEvent);
+          return AttendanceScreen(idEventDay: idEventDay, idEvent: idEvent);
         },
       ),
       GoRoute(

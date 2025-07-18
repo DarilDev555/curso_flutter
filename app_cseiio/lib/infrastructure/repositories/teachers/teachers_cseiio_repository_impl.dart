@@ -24,11 +24,14 @@ class TeachersCseiioRepositoryImpl extends TeachersRepository {
   }
 
   @override
-  Future<List<Teacher>> getTeacherToAttendanceOrEvent({
+  Future<List<Teacher>> getTeacherAndAttendanceToEventDay({
     required String id,
     int page = 0,
   }) {
-    return teachersDatasource.getTeacherToAttendanceOrEvent(id: id, page: page);
+    return teachersDatasource.getTeacherAndAttendanceToEventDay(
+      id: id,
+      page: page,
+    );
   }
 
   @override
@@ -37,5 +40,38 @@ class TeachersCseiioRepositoryImpl extends TeachersRepository {
     int page = 0,
   }) {
     return teachersDatasource.getTeacherDetails(id: id, page: page);
+  }
+
+  @override
+  Future<Teacher> regiterAttendance({
+    required String idTeacher,
+    required String idAttendance,
+  }) {
+    return teachersDatasource.regiterAttendance(
+      idTeacher: idTeacher,
+      idAttendance: idAttendance,
+    );
+  }
+
+  @override
+  Future<List<Teacher>> getTeachersToattendance({
+    required String idAttendance,
+    int page = 0,
+  }) {
+    return teachersDatasource.getTeachersToattendance(
+      idAttendance: idAttendance,
+      page: page,
+    );
+  }
+
+  @override
+  Future<Teacher> summitTeacherToAttendance(
+    String idAttendance,
+    String idTeacher,
+  ) {
+    return teachersDatasource.summitTeacherToAttendance(
+      idAttendance,
+      idTeacher,
+    );
   }
 }

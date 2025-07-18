@@ -1,3 +1,5 @@
+import 'package:tinycolor2/tinycolor2.dart';
+
 import '../../../config/const/environment.dart';
 import '../../providers/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +27,26 @@ class CustomAvatarAppbar extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: CircleAvatar(
-          backgroundImage: NetworkImage(
-            '${Environment.apiUrl}/${userAuth.user!.profilePicture}',
-            headers: {'Authorization': 'Bearer $accessToken'},
+          radius: 20,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Image.network(
+              '${Environment.apiUrl}/${userAuth.user!.profilePicture}',
+              headers: {'Authorization': 'Bearer $accessToken'},
+              loadingBuilder: (context, child, progress) {
+                if (progress == null) return child;
+                return const CircularProgressIndicator();
+              },
+              errorBuilder: (context, error, stackTrace) {
+                print('${Environment.apiUrl}/${userAuth.user!.profilePicture}');
+                return Icon(
+                  size: 20,
+                  Icons.image_not_supported_rounded,
+                  color: TinyColor.fromString('#b65d79').color,
+                );
+              },
+              filterQuality: FilterQuality.none,
+            ),
           ),
         ),
       ),

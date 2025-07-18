@@ -8,14 +8,14 @@ final getTeachersAndAttendanceToEventDayProvider = StateNotifierProvider<
   Map<String, List<Teacher>>
 >((ref) {
   final fetchgetTeachers2 =
-      ref.watch(teacherRepositoryProvider).getTeacherToAttendanceOrEvent;
+      ref.watch(teacherRepositoryProvider).getTeacherAndAttendanceToEventDay;
 
   return TeachersAndAttendanceToEventDayNotifier(
     fetchgetTeachers: fetchgetTeachers2,
   );
 });
 
-typedef TeachersToAttendanceOrEventDayCallback =
+typedef TeachersAndAttendanceToEventDayCallback =
     Future<List<Teacher>> Function({required String id, int page});
 
 //Notifier
@@ -23,8 +23,8 @@ class TeachersAndAttendanceToEventDayNotifier
     extends StateNotifier<Map<String, List<Teacher>>> {
   Map<String, int> currentPage = {};
   bool isLoading = false;
-  int ultimaPeticon = 10;
-  TeachersToAttendanceOrEventDayCallback fetchgetTeachers;
+  Map<String, int> ultimaPeticon = {};
+  TeachersAndAttendanceToEventDayCallback fetchgetTeachers;
 
   TeachersAndAttendanceToEventDayNotifier({required this.fetchgetTeachers})
     : super({});
@@ -47,9 +47,10 @@ class TeachersAndAttendanceToEventDayNotifier
 
     final newState = Map<String, List<Teacher>>.from(state);
 
-    if (teachers.length == 10 && ultimaPeticon == 10) {
+    if (teachers.length == 10 &&
+        (ultimaPeticon[id] == null || ultimaPeticon[id] == 10)) {
       currentPage[id] = currentPage[id]! + 1;
-      ultimaPeticon = teachers.length;
+      ultimaPeticon[id] = teachers.length;
 
       newState[id] = [...?newState[id], ...teachers];
       state = newState;
@@ -57,27 +58,27 @@ class TeachersAndAttendanceToEventDayNotifier
       isLoading = false;
       return;
     }
-    if (teachers.length > ultimaPeticon) {
+    if (teachers.length > ultimaPeticon[id]!) {
       List<Teacher> teachersAux = [];
 
-      for (var i = ultimaPeticon; i < teachers.length; i++) {
+      for (var i = ultimaPeticon[id]!; i < teachers.length; i++) {
         teachersAux = [...teachersAux, teachers[i]];
       }
 
       newState[id] = [...?newState[id], ...teachersAux];
       state = newState;
 
-      ultimaPeticon = teachers.length;
+      ultimaPeticon[id] = teachers.length;
       isLoading = false;
       teachers.length == 10 ? currentPage[id] = currentPage[id]! + 1 : 0;
       return;
     }
     // ultima ueron 10 pero la entrega son menores
-    if (ultimaPeticon == 10) {
+    if (ultimaPeticon[id] == 10) {
       newState[id] = [...?newState[id], ...teachers];
       state = newState;
 
-      ultimaPeticon = teachers.length;
+      ultimaPeticon[id] = teachers.length;
       isLoading = false;
       return;
     }

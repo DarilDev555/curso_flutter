@@ -2,53 +2,32 @@ import 'package:go_router/go_router.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 import '../../../config/helpers/human_formats.dart';
+import '../../../domain/entities/entities.dart';
 import '../../providers/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/events/event_days_provider.dart';
-import '../../providers/events/events_provider.dart';
 import '../../widgets/shared/attendace_title.dart';
+import '../../widgets/shared/custom_appbar.dart';
 
 class EventDaysScreen extends ConsumerWidget {
   static const name = 'event-days-screen';
   final String idEvent;
-  final String? mounth;
-  final String? year;
 
-  const EventDaysScreen({
-    super.key,
-    required this.idEvent,
-    this.mounth,
-    this.year,
-  });
+  const EventDaysScreen({super.key, required this.idEvent});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(getEventDaysProvider.notifier).loadEventDays(idEvent: idEvent);
     final user = ref.watch(authProvider).user!;
-
-    if (mounth != null && year != null) {
-      ref
-          .read(getEventsProvider.notifier)
-          .loadEvents(month: mounth!, year: year!);
-
-      ref.read(getEventDaysProvider.notifier).loadEventDays(idEvent: idEvent);
-    }
-
-    final events = ref.watch(getEventsProvider);
-    final event =
-        events.where((e) => e.id == idEvent).isNotEmpty
-            ? events.firstWhere((e) => e.id == idEvent)
-            : null;
-
-    final eventDays = ref.watch(getEventDaysProvider)[idEvent] ?? [];
     final colors = Theme.of(context).colorScheme;
     final Size screenSize = MediaQuery.of(context).size;
+    final event = ref.watch(getEventDaysProvider)[idEvent];
 
     return Scaffold(
       body:
-          event == null
-              ? const Center(child: CircularProgressIndicator())
-              : Stack(
+          (event != null)
+              ? Stack(
                 children: [
                   Container(
                     height: screenSize.height,
@@ -73,189 +52,181 @@ class EventDaysScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // AppBar personalizado con botón de regreso
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 30,
-                          horizontal: 8,
-                        ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'Evento',
-                              style: TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Información del evento
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  event.name,
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  event.description,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.calendar_today,
-                                      color: colors.primary,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '${HumanFormats.formatDate(event.startDate)} - ${HumanFormats.formatDate(event.endDate)}',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Separador visual entre la info del evento y los días
-
-                      // Lista de días del evento
-                      Expanded(
-                        child: Container(
-                          decoration: const BoxDecoration(
+                      const AppBarCustom(
+                        title: Text(
+                          'Evento',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                            ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: ListView.builder(
-                            itemCount: eventDays.length,
-                            itemBuilder: (context, index) {
-                              final eventDay = eventDays[index];
-                              return Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 4,
-                                margin: const EdgeInsets.symmetric(vertical: 8),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (user.role.name == 'Manager') {
-                                      context.push(
-                                        '/attendance-events-screen/${eventDay.id}',
-                                      );
-                                    }
-                                  },
-                                  child: ExpansionTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: event.background
-                                          .withValues(alpha: 0.8),
-                                      child: Text(
-                                        '${eventDay.numDay}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      'Día ${eventDay.numDay} - ${HumanFormats.formatDate(eventDay.dateDayEvent, nameDay: true)}',
-                                    ),
-                                    subtitle: Text(
-                                      'Horario: ${eventDay.startTime} - ${eventDay.endTime}',
-                                    ),
-                                    trailing: const Icon(
-                                      Icons.arrow_forward_ios,
-                                      size: 16,
-                                      color: Colors.grey,
-                                    ),
-                                    children:
-                                        (user.role.name == 'Register')
-                                            ? [
-                                              if (eventDay.attendances != null)
-                                                ...eventDay.attendances!.map((
-                                                  attendande,
-                                                ) {
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      context.push(
-                                                        '/attendance-record-screen?idAttendance=${attendande.id}',
-                                                      );
-                                                    },
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            8.0,
-                                                          ),
-                                                      child: AttendanceTile(
-                                                        attendance: attendande,
-                                                        colorBackground:
-                                                            TinyColor.fromColor(
-                                                              event.background,
-                                                            ).darken(5).color,
-                                                        isUser: false,
-                                                      ),
-                                                    ),
-                                                  );
-                                                })
-                                              else
-                                                const Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    'Sin días registrados',
-                                                  ),
-                                                ),
-                                            ]
-                                            : [],
-                                  ),
-                                ),
-                              );
-                            },
                           ),
                         ),
+                      ),
+                      // Información del evento
+                      _InfoEvent(event: event, colors: colors),
+                      // Separador visual entre la info del evento y los días
+                      // Lista de días del evento
+                      _ListEventDays(
+                        user: user,
+                        eventColor: event.background,
+                        eventDays: event.eventdays!,
+                        event: event,
                       ),
                     ],
                   ),
                 ],
+              )
+              : const Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class _ListEventDays extends StatelessWidget {
+  final List<EventDay> eventDays;
+  final Color eventColor;
+  final User user;
+  final Event event;
+  const _ListEventDays({
+    required this.user,
+    required this.eventDays,
+    required this.eventColor,
+    required this.event,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ListView.builder(
+          itemCount: eventDays.length,
+          itemBuilder: (context, index) {
+            final eventDay = eventDays[index];
+            return GestureDetector(
+              onTap: () {
+                if (user.role.name == 'Manager') {
+                  context.push('/attendance-screen/${eventDay.id}/${event.id}');
+                }
+              },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                child: ExpansionTile(
+                  enabled: (user.role.name != 'Manager'),
+                  leading: CircleAvatar(
+                    backgroundColor: eventColor.withValues(alpha: 0.8),
+                    child: Text(
+                      '${eventDay.numDay}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  title: Text(
+                    'Día ${eventDay.numDay} - ${HumanFormats.formatDate(eventDay.dateDayEvent, nameDay: true)}',
+                  ),
+                  subtitle: Text(
+                    'Horario: ${eventDay.startTime} - ${eventDay.endTime}',
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
+                  children:
+                      (user.role.name == 'Register')
+                          ? [
+                            if (eventDay.attendances != null)
+                              ...eventDay.attendances!.map((attendande) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.push(
+                                      '/attendance-record-screen?idAttendance=${attendande.id}',
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: AttendanceTile(
+                                      attendance: attendande,
+                                      colorBackground:
+                                          TinyColor.fromColor(
+                                            eventColor,
+                                          ).darken(5).color,
+                                      isUser: false,
+                                    ),
+                                  ),
+                                );
+                              })
+                            else
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text('Sin días registrados'),
+                              ),
+                          ]
+                          : [],
+                ),
               ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoEvent extends StatelessWidget {
+  final Event event;
+  const _InfoEvent({required this.colors, required this.event});
+
+  final ColorScheme colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                event.name,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                event.description,
+                style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(Icons.calendar_today, color: colors.primary),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${HumanFormats.formatDate(event.startDate)} - ${HumanFormats.formatDate(event.endDate)}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

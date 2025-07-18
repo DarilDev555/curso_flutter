@@ -19,7 +19,7 @@ typedef TeacherDetailsCallback =
 class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
   Map<String, int> currentPage = {};
   bool isLoading = false;
-  int ultimaPeticon = 10;
+  Map<String, int> ultimaPeticon = {};
   TeacherDetailsCallback fetchgetTeacherDetails;
 
   TeacherDetailsNotifier({required this.fetchgetTeacherDetails}) : super({});
@@ -30,6 +30,7 @@ class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
     isLoading = true;
 
     currentPage[id] = currentPage[id] ?? 0;
+    ultimaPeticon[id] = ultimaPeticon[id] ?? 10;
 
     final Map<String, dynamic> teacherDetails = await fetchgetTeacherDetails(
       id: id,
@@ -50,7 +51,7 @@ class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
     /// IF 1: Exactamente 10 eventos y fue la primera vez también con 10
     if (newEvents.length == 10 && ultimaPeticon == 10) {
       currentPage[id] = currentPage[id]! + 1;
-      ultimaPeticon = newEvents.length;
+      ultimaPeticon[id] = newEvents.length;
 
       newState[id] = {
         'institution':
@@ -64,7 +65,7 @@ class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
     }
 
     /// IF 2: Recibimos más eventos que la última vez
-    if (newEvents.length > ultimaPeticon) {
+    if (newEvents.length > ultimaPeticon[id]!) {
       newState[id] = {
         'institution':
             newState[id]?['institution'] ?? teacherDetails['institution'],
@@ -73,7 +74,7 @@ class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
       };
       state = newState;
 
-      ultimaPeticon = newEvents.length;
+      ultimaPeticon[id] = newEvents.length;
       if (newEvents.length == 10) {
         currentPage[id] = currentPage[id]! + 1;
       }
@@ -83,7 +84,7 @@ class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
     }
 
     /// IF 3: Última petición fue de 10, pero esta ya no
-    if (ultimaPeticon == 10) {
+    if (ultimaPeticon[id] == 10) {
       newState[id] = {
         'institution':
             newState[id]?['institution'] ?? teacherDetails['institution'],
@@ -91,7 +92,7 @@ class TeacherDetailsNotifier extends StateNotifier<Map<String, dynamic>> {
       };
       state = newState;
 
-      ultimaPeticon = newEvents.length;
+      ultimaPeticon[id] = newEvents.length;
       isLoading = false;
       return;
     }

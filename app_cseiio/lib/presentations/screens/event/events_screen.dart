@@ -1,4 +1,5 @@
 import '../../../domain/entities/event.dart';
+import '../../providers/auth/auth_provider.dart';
 import '../../providers/events/events_provider.dart';
 import 'event_days_screen.dart';
 import '../../widgets/shared/custom_avatar_appbar.dart';
@@ -23,15 +24,21 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   @override
   void initState() {
+    super.initState();
     _calendarController.selectedDate = DateTime.now();
     _calendarController.displayDate = DateTime.now();
     ref
         .read(getEventsProvider.notifier)
-        .loadEvents(
+        .loadFirstEvents(
           month: DateTime.now().month.toString(),
           year: DateTime.now().year.toString(),
         );
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _calendarController.dispose();
+    super.dispose();
   }
 
   void _toggleView() {
@@ -42,13 +49,21 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final events = ref.watch(getEventsProvider);
-
+    final stateEvents = ref.watch(getEventsProvider);
+    final events = stateEvents.events;
+    final isLoading = stateEvents.isLoading;
+    final user = ref.watch(authProvider).user;
     return Scaffold(
       appBar: AppBar(
         leading: const CustomAvatarAppbar(),
         title: const Text('Eventos'),
         actions: [
+          (user != null && user.role.name == 'Manager')
+              ? IconButton(
+                onPressed: () => context.push('/event-create-update-screen'),
+                icon: Icon(Icons.create_new_folder),
+              )
+              : const SizedBox.shrink(),
           IconButton(
             icon: Icon(_isCalendarView ? Icons.list : Icons.calendar_month),
             onPressed: _toggleView,
@@ -60,60 +75,75 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child:
               _isCalendarView
-                  ? SfCalendar(
-                    headerDateFormat: 'MMMM',
-                    controller: _calendarController,
-                    onViewChanged: (viewChangedDetails) {
-                      ref
-                          .read(getEventsProvider.notifier)
-                          .loadEvents(
-                            month:
-                                _calendarController.displayDate!.month
-                                    .toString(),
-                            year:
-                                _calendarController.displayDate!.year
-                                    .toString(),
+                  ? Stack(
+                    children: [
+                      if (isLoading)
+                        Container(
+                          color: Colors.black12,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      SfCalendar(
+                        showDatePickerButton: true,
+                        showTodayButton: true,
+                        headerDateFormat: 'MMMM',
+                        controller: _calendarController,
+                        onViewChanged: (viewChangedDetails) {
+                          Future.microtask(() {
+                            ref
+                                .read(getEventsProvider.notifier)
+                                .loadEvents(
+                                  month:
+                                      _calendarController.displayDate!.month
+                                          .toString(),
+                                  year:
+                                      _calendarController.displayDate!.year
+                                          .toString(),
+                                );
+                          });
+                        },
+                        view: CalendarView.month,
+                        showNavigationArrow: true,
+                        onTap: (calendarTapDetails) {
+                          if (calendarTapDetails.appointments == null) return;
+                          if (calendarTapDetails.appointments!.isEmpty ||
+                              calendarTapDetails.targetElement !=
+                                  CalendarElement.appointment) {
+                            return;
+                          }
+                          final Event meeting =
+                              calendarTapDetails.appointments!.first as Event;
+                          ref
+                              .read(getEventDaysProvider.notifier)
+                              .loadEventDays(idEvent: meeting.id);
+                          context.pushNamed(
+                            EventDaysScreen.name,
+                            queryParameters: {'event': meeting.id},
                           );
-                    },
-                    view: CalendarView.month,
-                    showNavigationArrow: true,
-                    onTap: (calendarTapDetails) {
-                      if (calendarTapDetails.appointments == null) return;
-                      if (calendarTapDetails.appointments!.isEmpty ||
-                          calendarTapDetails.targetElement !=
-                              CalendarElement.appointment) {
-                        return;
-                      }
-                      final Event meeting =
-                          calendarTapDetails.appointments!.first as Event;
-                      ref
-                          .read(getEventDaysProvider.notifier)
-                          .loadEventDays(idEvent: meeting.id);
-                      context.pushNamed(
-                        EventDaysScreen.name,
-                        queryParameters: {'event': meeting.id},
-                      );
-                    },
-                    dataSource: MeetingDataSource(events),
-                    headerStyle: const CalendarHeaderStyle(
-                      backgroundColor: Colors.transparent,
-                      textStyle: TextStyle(fontSize: 25),
-                      textAlign: TextAlign.center,
-                    ),
-                    monthViewSettings: const MonthViewSettings(
-                      appointmentDisplayMode:
-                          MonthAppointmentDisplayMode.appointment,
-                      showAgenda: true,
-                      agendaItemHeight: 60,
-                      dayFormat: 'EEE  ',
-                      agendaStyle: AgendaStyle(
-                        appointmentTextStyle: TextStyle(
-                          fontSize: 17,
-                          overflow: TextOverflow.visible,
-                          color: Colors.black,
+                        },
+                        dataSource: MeetingDataSource(events),
+                        headerStyle: const CalendarHeaderStyle(
+                          backgroundColor: Colors.transparent,
+                          textStyle: TextStyle(fontSize: 25),
+                          textAlign: TextAlign.center,
+                        ),
+                        monthViewSettings: const MonthViewSettings(
+                          appointmentDisplayMode:
+                              MonthAppointmentDisplayMode.appointment,
+                          showAgenda: true,
+                          agendaItemHeight: 60,
+                          dayFormat: 'EEE  ',
+                          agendaStyle: AgendaStyle(
+                            appointmentTextStyle: TextStyle(
+                              fontSize: 17,
+                              overflow: TextOverflow.visible,
+                              color: Colors.black,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   )
                   : ListView.builder(
                     padding: const EdgeInsets.all(10),

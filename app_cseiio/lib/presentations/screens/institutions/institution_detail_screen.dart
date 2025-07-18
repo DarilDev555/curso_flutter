@@ -1,3 +1,5 @@
+import 'package:tinycolor2/tinycolor2.dart';
+
 import '../../../domain/entities/institution.dart';
 import '../../providers/institutions/institutions_provider.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +50,12 @@ class InstitutionDetailScreen extends ConsumerWidget {
                 fit: BoxFit.cover,
                 color: Colors.black.withValues(alpha: 0.3),
                 colorBlendMode: BlendMode.darken,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.image_not_supported_rounded,
+                    color: TinyColor.fromString('#b65d79').color,
+                  );
+                },
               ),
             ),
             backgroundColor: colorScheme.primary,
