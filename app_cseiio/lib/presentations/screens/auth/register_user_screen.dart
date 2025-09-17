@@ -85,7 +85,7 @@ class _RegisterForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final registerForm = ref.watch(registerUserFormProvider);
+    final registerFormProvider = ref.watch(registerUserFormProvider);
 
     final textStyles = Theme.of(context).textTheme;
 
@@ -115,17 +115,17 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Nombre de usuario',
             keyboardType: TextInputType.text,
-            inicialValue: registerForm.userName.value,
+            inicialValue: registerFormProvider.userName.value,
             onChanged: (value) {
               ref.read(registerUserFormProvider.notifier).onNameChange(value);
             },
             disableSpace: true,
             errorMessage:
-                registerForm.isFormPosted
+                registerFormProvider.isFormPosted
                     // ? registerForm.userName.errorMessage
                     ? errorMessageToCheckUserApi(
-                      errorMessage: registerForm.userName.errorMessage,
-                      errors: registerForm.errors?['userName'],
+                      errorMessage: registerFormProvider.userName.errorMessage,
+                      errors: registerFormProvider.errors?['userName'],
                     )
                     : null,
           ),
@@ -135,16 +135,16 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
-            inicialValue: registerForm.email.value,
+            inicialValue: registerFormProvider.email.value,
             onChanged:
                 ref.read(registerUserFormProvider.notifier).onEmailChange,
             disableSpace: true,
             errorMessage:
-                registerForm.isFormPosted
+                registerFormProvider.isFormPosted
                     // ? registerForm.email.errorMessage
                     ? errorMessageToCheckUserApi(
-                      errorMessage: registerForm.email.errorMessage,
-                      errors: registerForm.errors?['email'],
+                      errorMessage: registerFormProvider.email.errorMessage,
+                      errors: registerFormProvider.errors?['email'],
                     )
                     : null,
           ),
@@ -153,15 +153,15 @@ class _RegisterForm extends ConsumerWidget {
 
           CustomTextFormField(
             label: 'Contraseña',
-            inicialValue: registerForm.password.value,
+            inicialValue: registerFormProvider.password.value,
             obscureText: true,
             onChanged:
                 ref.read(registerUserFormProvider.notifier).onPasswordChange,
             errorMessage:
-                registerForm.isFormPosted
+                registerFormProvider.isFormPosted
                     ? errorMessageToCheckUserApi(
-                      errorMessage: registerForm.password.errorMessage,
-                      errors: registerForm.errors?['password'],
+                      errorMessage: registerFormProvider.password.errorMessage,
+                      errors: registerFormProvider.errors?['password'],
                     )
                     : null,
           ),
@@ -171,20 +171,20 @@ class _RegisterForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Repita la contraseña',
             obscureText: true,
-            inicialValue: registerForm.password.value,
+            inicialValue: registerFormProvider.password.value,
             onChanged:
                 ref
                     .read(registerUserFormProvider.notifier)
                     .onSecondPasswordChange,
             errorMessage:
-                registerForm.isFormPosted
-                    ? registerForm.secondPassword.errorMessage
+                registerFormProvider.isFormPosted
+                    ? registerFormProvider.secondPassword.errorMessage
                     : null,
           ),
 
           const SizedBox(height: 30),
 
-          registerForm.isCheckingUser
+          registerFormProvider.isCheckingUser
               ? Container(
                 width: double.infinity,
                 height: 35,

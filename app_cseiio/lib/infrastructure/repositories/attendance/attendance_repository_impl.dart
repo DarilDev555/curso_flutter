@@ -11,4 +11,17 @@ class AttendanceRepositoryImpl extends AttendanceRepository {
   Future<Attendance> getAttendance(String idAttendance) {
     return attendanceDatasource.getAttendance(idAttendance);
   }
+
+  @override
+  Future<Map<String, dynamic>> checkAttendance(
+    String name,
+    String description,
+    String attendanceTime,
+  ) {
+    return attendanceDatasource.checkAttendance(
+      name,
+      description,
+      attendanceTime,
+    );
+  }
 }

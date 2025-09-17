@@ -69,7 +69,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       _setLoggedUser(user);
       return null;
-    } on FormErrors catch (e) {
+    } on FormErrorsListErros catch (e) {
       return e.errors;
     } on CustomError catch (e) {
       logout(e.message);
@@ -94,7 +94,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
 
       return errors;
-    } on FormErrors catch (e) {
+    } on FormErrorsListErros catch (e) {
       return e.errors;
     } on Exception catch (_) {
       logout('Error no controlado');

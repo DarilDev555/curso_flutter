@@ -42,4 +42,22 @@ class Event {
     final int index = hash.abs() % _accentColors.length;
     return _accentColors[index];
   }
+
+  Event copyWith({
+    String? id,
+    String? name,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? description,
+    List<EventDay>? eventdays,
+  }) {
+    return Event(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      description: description ?? this.description,
+      eventdays: eventdays ?? this.eventdays,
+    );
+  }
 }

@@ -8,7 +8,7 @@ class Name extends FormzInput<String, NameError> {
   static final RegExp nameRegExp = RegExp(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$");
 
   // Representa un campo sin modificar
-  const Name.pure() : super.pure('');
+  const Name.pure([String? value]) : super.pure(value ?? '');
 
   // Representa un campo modificado
   const Name.dirty(super.value) : super.dirty();

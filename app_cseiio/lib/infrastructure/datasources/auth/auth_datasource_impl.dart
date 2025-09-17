@@ -116,7 +116,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         final errors = ErrorsMapper.errorsUserRegisterFormCseiioToEntity(
           errorsCseiio,
         );
-        throw FormErrors(errors: errors);
+        throw FormErrorsListErros(errors: errors);
       }
       throw Exception();
     } on Exception catch (_) {
@@ -161,7 +161,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         final errors = ErrorsMapper.errorsUserRegisterFormCseiioToEntity(
           errorsCseiio,
         );
-        throw FormErrors(errors: errors);
+        throw FormErrorsListErros(errors: errors);
       }
       throw Exception();
     } on Exception catch (_) {

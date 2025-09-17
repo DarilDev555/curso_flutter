@@ -1,5 +1,7 @@
 import '../../presentations/screens/auth/register_teacher_user_screen.dart';
 import '../../presentations/screens/event/event_create_update_screen.dart';
+import '../../presentations/screens/event/event_days_create_update_screen.dart';
+import '../../presentations/screens/event/events_incomplete_screen.dart';
 import 'app_router_notifier.dart';
 import '../../presentations/providers/auth/auth_provider.dart';
 import '../../presentations/screens/screens.dart';
@@ -68,10 +70,25 @@ final goRouterProvider = Provider((ref) {
         },
       ),
       GoRoute(
+        path: '/events-incomplete-screen',
+        name: IncompleteEventsScreen.name,
+        builder: (context, state) {
+          return const IncompleteEventsScreen();
+        },
+      ),
+      GoRoute(
         path: '/event-create-update-screen',
         name: EventCreateUpdateScreen.name,
         builder: (context, state) {
-          return EventCreateUpdateScreen();
+          return const EventCreateUpdateScreen();
+        },
+      ),
+
+      GoRoute(
+        path: '/event-days-create-update-screen',
+        name: EventDaysCreateUpdateScreen.name,
+        builder: (context, state) {
+          return const EventDaysCreateUpdateScreen();
         },
       ),
 

@@ -5,6 +5,7 @@ import '../../../domain/datasources/attendance/attendance_datasource.dart';
 import '../../../domain/entities/attendance.dart';
 import '../../mappers/attendance_mapper.dart';
 import '../../models/api_cseiio/api_cseiio.dart';
+import '../../models/api_cseiio/attendance/attendance_isvalidate_form_response_cseiio.dart';
 
 class AttendanceDatasourceImpl extends AttendanceDatasource {
   final String accessToken;
@@ -29,5 +30,34 @@ class AttendanceDatasourceImpl extends AttendanceDatasource {
         AttendanceResponseCseiio.fromJson(response.data);
 
     return AttendanceMapper.attendanceCseiioToEntity(attendanceResponseCseiio);
+  }
+
+  @override
+  Future<Map<String, dynamic>> checkAttendance(
+    String name,
+    String description,
+    String attendanceTime,
+  ) async {
+    final response = await dio.post(
+      '/attendanceIsValidate',
+      data: {
+        'name': name,
+        'description': description,
+        'attendance_time': attendanceTime,
+      },
+    );
+
+    final attendanceResponse = AttendanceIsValidateFormResponseCseiio.fromJson(
+      response.data,
+    );
+    if (attendanceResponse.valid) {
+      return {};
+    }
+    return {
+      'isValid': attendanceResponse.valid,
+      'name': attendanceResponse.errors!.name,
+      'description': attendanceResponse.errors!.descripcion,
+      'attendance_time': attendanceResponse.errors!.attendanceTime,
+    };
   }
 }

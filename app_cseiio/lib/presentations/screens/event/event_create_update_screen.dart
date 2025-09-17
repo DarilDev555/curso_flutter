@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-
+import '../../providers/events/event_create_from_provider.dart';
+import '../../widgets/shared/custom_filled_button.dart';
 import '../../widgets/shared/custom_text_form_field.dart';
 import '../../widgets/shared/geometrical_background.dart';
 import '../../widgets/shared/text_frave.dart';
 
 class EventCreateUpdateScreen extends StatelessWidget {
   static const name = 'event-create-update-screen';
+
   const EventCreateUpdateScreen({super.key});
 
   @override
@@ -32,7 +36,7 @@ class EventCreateUpdateScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        // context.go('/register');
+                        context.go('/events-screen');
                       },
                       icon: const Icon(
                         Icons.arrow_back_rounded,
@@ -41,7 +45,7 @@ class EventCreateUpdateScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Crear cuenta',
+                      'Crear evento',
                       style: textStyles.titleLarge?.copyWith(
                         color: Colors.white,
                       ),
@@ -52,7 +56,7 @@ class EventCreateUpdateScreen extends StatelessWidget {
                 SizedBox(height: size.height * 0.01),
 
                 Container(
-                  height: size.height, // 80 los dos sizebox y 100 el ícono
+                  // 80 los dos sizebox y 100 el ícono
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: scaffoldBackgroundColor,
@@ -60,56 +64,45 @@ class EventCreateUpdateScreen extends StatelessWidget {
                       topLeft: Radius.circular(100),
                     ),
                   ),
-                  child: _CreateUpdateEventRegister(),
+                  child: const _CreateUpdateEventRegister(),
                 ),
               ],
             ),
           ),
         ),
-        // appBar: AppBar(
-        //   title: const TextFrave(
-        //     text: 'Creacion de Evento',
-        //     fontSize: 32,
-        //     color: Colors.white,
-        //   ),
-        //   iconTheme: const IconThemeData(color: Colors.white, size: 32),
-        //   backgroundColor: TinyColor.fromString('#18976f').color,
-        // ),
-        // body: const Column(
-        //   children: [
-        //     Padding(
-        //       padding: EdgeInsets.only(left: 32.0, top: 16, bottom: 8),
-        //       child: TextFrave(text: 'Nuevo Evento', fontSize: 30),
-        //     ),
-        //     SizedBox(height: 20),
-        //     Padding(
-        //       padding: EdgeInsets.all(32.0),
-        //       child: CustomTextFormField(label: 'Nombre'),
-        //     ),
-        //     Padding(
-        //       padding: EdgeInsets.all(32.0),
-        //       child: CustomTextFormField(label: 'Descripcion'),
-        //     ),
-        //   ],
-        // ),
       ),
     );
   }
 }
 
-class _CreateUpdateEventRegister extends StatelessWidget {
-  const _CreateUpdateEventRegister({super.key});
+class _CreateUpdateEventRegister extends ConsumerWidget {
+  const _CreateUpdateEventRegister();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(eventCreateFromProvider, (previous, next) {
+      if (previous == null) return;
+      if (!previous.isValidEvent && next.isValidEvent) {
+        if (context.mounted) {
+          context.go('/event-days-create-update-screen');
+        }
+      }
+    });
+
+    final createEventFormProvider = ref.watch(eventCreateFromProvider);
     final textStyles = Theme.of(context).textTheme;
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    final errorDate = errorMessageToCheckEventApi(
+      errorMessage: createEventFormProvider.daysEvent.errorMessage,
+      errorApi: createEventFormProvider.errors?['event_dates'],
+    );
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         children: [
           const SizedBox(height: 20),
-          Text('Datos Personales', style: textStyles.titleMedium),
+          Text('Datos del evento', style: textStyles.titleMedium),
           const SizedBox(height: 20),
 
           SizedBox(
@@ -122,49 +115,115 @@ class _CreateUpdateEventRegister extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          CustomTextFormField(label: 'Nombre'),
+          CustomTextFormField(
+            label: 'Nombre',
+            keyboardType: TextInputType.text,
+            inicialValue: createEventFormProvider.name.value,
+            onChanged: (value) {
+              ref.read(eventCreateFromProvider.notifier).onNameChange(value);
+            },
+            errorMessage:
+                createEventFormProvider.isFormPosted
+                    ? errorMessageToCheckEventApi(
+                      errorApi: createEventFormProvider.errors?['name'],
+                      errorMessage: createEventFormProvider.name.errorMessage,
+                    )
+                    : null,
+          ),
           const SizedBox(height: 30),
           CustomTextFormField(
             label: 'Descripcion',
             keyboardType: TextInputType.text,
             heigth: 95,
             maxLines: 3,
+            inicialValue: createEventFormProvider.description.value,
+            onChanged: (value) {
+              ref
+                  .read(eventCreateFromProvider.notifier)
+                  .onDescriptionChange(value);
+            },
+            errorMessage:
+                createEventFormProvider.isFormPosted
+                    ? errorMessageToCheckEventApi(
+                      errorApi: createEventFormProvider.errors?['description'],
+                      errorMessage:
+                          createEventFormProvider.description.errorMessage,
+                    )
+                    : null,
           ),
 
           const SizedBox(height: 30),
-          CustomTextFormField(label: 'Fecha'),
+          SfDateRangePicker(
+            initialDisplayDate:
+                (createEventFormProvider.daysEvent.value.isNotEmpty)
+                    ? createEventFormProvider.daysEvent.value.first
+                    : null,
+            enablePastDates: false,
+            selectionMode: DateRangePickerSelectionMode.multiple,
+            initialSelectedDates:
+                createEventFormProvider.daysEvent.value.isEmpty
+                    ? null
+                    : createEventFormProvider.daysEvent.value,
+            initialSelectedRange:
+                createEventFormProvider.daysEvent.isPure ||
+                        createEventFormProvider.daysEvent.value.isEmpty
+                    ? null
+                    : PickerDateRange(
+                      createEventFormProvider.daysEvent.value.first,
+                      createEventFormProvider.daysEvent.value.last,
+                    ),
+            onSelectionChanged: (dateRangePickerSelectionChangedArgs) {
+              final value =
+                  dateRangePickerSelectionChangedArgs.value as List<DateTime>;
+
+              value.sort((a, b) => a.compareTo(b));
+              ref
+                  .read(eventCreateFromProvider.notifier)
+                  .onDaysEventChange(value);
+            },
+          ),
+
+          Container(
+            height:
+                createEventFormProvider.isFormPosted
+                    ? errorDate != null
+                        ? 25
+                        : 0
+                    : 0,
+            width: double.infinity,
+            color: TinyColor.fromString("#eee9f5").color,
+            child:
+                errorDate != null
+                    ? Text(errorDate, style: TextStyle(color: colors.error))
+                    : const SizedBox.shrink(),
+          ),
           const SizedBox(height: 30),
           SizedBox(
             width: double.infinity,
-            child: Row(
-              children: [
-                Text(
-                  'Dias del evento',
-                  style: textStyles.titleLarge,
-                  textAlign: TextAlign.start,
-                ),
-                SizedBox(width: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    color: TinyColor.fromString('#46ac8c').color,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    iconSize: 30,
-                    onPressed: () {},
-                    icon: const Icon(Icons.add_outlined),
-                  ),
-                ),
-              ],
+            height: 35,
+            child: CustomFilledButton(
+              text: 'Siguiente',
+              buttonColor: Colors.black,
+              onPressed: () {
+                ref.read(eventCreateFromProvider.notifier).onFormSumit();
+              },
             ),
           ),
-          const SizedBox(height: 10),
-
-          // const SizedBox(height: 30),
-          Column(spacing: 10, children: [DayView(), DayView()]),
         ],
       ),
     );
+  }
+
+  String? errorMessageToCheckEventApi({
+    String? errorApi,
+    String? secondErrorApi,
+    String? errorMessage,
+    String? donde,
+  }) {
+    return errorMessage ??
+        (errorApi != null && secondErrorApi != null
+            ? '$errorApi/n$secondErrorApi'
+            : errorApi ?? secondErrorApi);
   }
 }
 
@@ -202,17 +261,6 @@ class DayView extends StatelessWidget {
                 icon: const Icon(Icons.edit_note_outlined),
               ),
             ),
-            const SizedBox(width: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: TinyColor.fromString('#46ac8c').color,
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.delete_forever_rounded),
-              ),
-            ),
           ],
         ),
         const SizedBox(height: 5),
@@ -224,7 +272,7 @@ class DayView extends StatelessWidget {
           ),
           curve: Curves.bounceOut,
           padding: const EdgeInsets.all(8),
-          height: 100,
+          height: 0,
         ),
       ],
     );

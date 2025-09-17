@@ -6,8 +6,8 @@ class AttendanceMapper {
   static Attendance attendanceCseiioToEntity(
     AttendanceResponseCseiio attendanceResponseCseiio,
   ) => Attendance(
-    id: attendanceResponseCseiio.id,
-    eventDayId: attendanceResponseCseiio.eventDayId,
+    id: attendanceResponseCseiio.id.toString(),
+    eventDayId: attendanceResponseCseiio.eventDayId.toString(),
     name: attendanceResponseCseiio.name,
     descripcion: attendanceResponseCseiio.descripcion,
     attendanceTime: attendanceResponseCseiio.attendanceTime,

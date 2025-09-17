@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class HumanFormats {
@@ -27,9 +28,40 @@ class HumanFormats {
     return DateFormat('yyyy-MM-dd').format(date);
   }
 
+  static String formatDateForSumitApi(DateTime datetime) {
+    return DateFormat('yyyy-MM-dd').format(datetime);
+  }
+
+  static String formatDateWithNameDay(DateTime datetime) {
+    return DateFormat.yMMMMEEEEd('es_ES').format(datetime);
+  }
+
+  static String formatTimeForSumitApi(DateTime datetime) {
+    return DateFormat('Hm').format(datetime);
+  }
+
+  static String formatTimeAttendanceToSumit(TimeOfDay time) {
+    final now = DateTime.now();
+    final date = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    return DateFormat('yyyy-MM-dd hh:mm:ss').format(date);
+  }
+
   static String formateHour(String? date) {
     if (date == null) return '--';
     return DateFormat('jm').format(DateTime.parse(date));
+  }
+
+  static String formateHourToTimeOfDay(TimeOfDay timeOfDay) {
+    final now = DateTime.now();
+    final date = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      timeOfDay.hour,
+      timeOfDay.minute,
+    );
+
+    return DateFormat('jm').format(date);
   }
 
   static String timeStringToDateTimeFormat(String timeString) {

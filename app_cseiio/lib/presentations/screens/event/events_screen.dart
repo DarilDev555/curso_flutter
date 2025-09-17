@@ -1,5 +1,6 @@
 import '../../../domain/entities/event.dart';
 import '../../providers/auth/auth_provider.dart';
+import '../../providers/events/events_incomplete_provider.dart';
 import '../../providers/events/events_provider.dart';
 import 'event_days_screen.dart';
 import '../../widgets/shared/custom_avatar_appbar.dart';
@@ -25,10 +26,11 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
   @override
   void initState() {
     super.initState();
-    _calendarController.selectedDate = DateTime.now();
-    _calendarController.displayDate = DateTime.now();
+    final DateTime? date = ref.read(eventsProvider).lastEventCreate;
+    _calendarController.selectedDate = date ?? DateTime.now();
+    _calendarController.displayDate = date ?? DateTime.now();
     ref
-        .read(getEventsProvider.notifier)
+        .read(eventsProvider.notifier)
         .loadFirstEvents(
           month: DateTime.now().month.toString(),
           year: DateTime.now().year.toString(),
@@ -49,7 +51,13 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final stateEvents = ref.watch(getEventsProvider);
+    // ref.listen(eventsProvider, (previous, next) {
+    //   if (previous?.lastEventCreate != next.lastEventCreate) {
+    //     _calendarController.selectedDate = next.lastEventCreate;
+    //     _calendarController.displayDate = next.lastEventCreate;
+    //   }
+    // });
+    final stateEvents = ref.watch(eventsProvider);
     final events = stateEvents.events;
     final isLoading = stateEvents.isLoading;
     final user = ref.watch(authProvider).user;
@@ -60,7 +68,12 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
         actions: [
           (user != null && user.role.name == 'Manager')
               ? IconButton(
-                onPressed: () => context.push('/event-create-update-screen'),
+                onPressed: () {
+                  ref
+                      .read(incompleteEventsProvider.notifier)
+                      .loadEventsIncomplets();
+                  context.push('/events-incomplete-screen');
+                },
                 icon: Icon(Icons.create_new_folder),
               )
               : const SizedBox.shrink(),
@@ -92,7 +105,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                         onViewChanged: (viewChangedDetails) {
                           Future.microtask(() {
                             ref
-                                .read(getEventsProvider.notifier)
+                                .read(eventsProvider.notifier)
                                 .loadEvents(
                                   month:
                                       _calendarController.displayDate!.month

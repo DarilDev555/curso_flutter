@@ -10,4 +10,11 @@ class Register {
     required this.userId,
     required this.registerTime,
   });
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "attendance_teacher_id": attendanceTeacherId,
+    "user_id": userId,
+    "register_time": registerTime.toIso8601String(),
+  };
 }

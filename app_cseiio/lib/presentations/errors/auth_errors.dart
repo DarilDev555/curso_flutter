@@ -11,8 +11,14 @@ class CustomError implements Exception {
   CustomError({required this.message});
 }
 
-class FormErrors implements Exception {
+class FormErrorsListErros implements Exception {
   final Map<String, List<String>> errors;
 
-  FormErrors({required this.errors});
+  FormErrorsListErros({required this.errors});
+}
+
+class FormErrorsStrings implements Exception {
+  final Map<String, String> errors;
+
+  FormErrorsStrings({required this.errors});
 }

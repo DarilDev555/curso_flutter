@@ -6,6 +6,7 @@ import '../../../domain/entities/entities.dart';
 import '../../providers/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/events/event_create_from_provider.dart';
 import '../../providers/events/event_days_provider.dart';
 import '../../widgets/shared/attendace_title.dart';
 import '../../widgets/shared/custom_appbar.dart';
@@ -63,7 +64,11 @@ class EventDaysScreen extends ConsumerWidget {
                         ),
                       ),
                       // Información del evento
-                      _InfoEvent(event: event, colors: colors),
+                      _InfoEvent(
+                        event: event,
+                        colors: colors,
+                        isManager: user.role.name == 'Manager',
+                      ),
                       // Separador visual entre la info del evento y los días
                       // Lista de días del evento
                       _ListEventDays(
@@ -179,14 +184,19 @@ class _ListEventDays extends StatelessWidget {
   }
 }
 
-class _InfoEvent extends StatelessWidget {
+class _InfoEvent extends ConsumerWidget {
   final Event event;
-  const _InfoEvent({required this.colors, required this.event});
+  final bool isManager;
+  const _InfoEvent({
+    required this.colors,
+    required this.event,
+    required this.isManager,
+  });
 
   final ColorScheme colors;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Card(
@@ -197,12 +207,31 @@ class _InfoEvent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                event.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    event.name,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      ref.watch(eventCreateFromProvider);
+
+                      ref
+                          .read(eventCreateFromProvider.notifier)
+                          .editEvent(
+                            event,
+                            isEditEventCreatedWithAttendance: true,
+                          );
+                      context.go('/event-create-update-screen');
+                    },
+                    icon: Icon(Icons.edit_square),
+                  ),
+                ],
               ),
               const SizedBox(height: 8),
               Text(

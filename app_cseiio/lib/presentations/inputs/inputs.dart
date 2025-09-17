@@ -6,3 +6,5 @@ export 'electoral_code.dart';
 export 'username.dart';
 export 'institution_input.dart';
 export 'gender.dart';
+export 'description.dart';
+export 'time_input.dart';
