@@ -31,5 +31,6 @@ abstract class TeachersDatasource {
   Future<Teacher> summitTeacherToAttendance(
     String idAttendance,
     String idTeacher,
+    String idEvent,
   );
 }

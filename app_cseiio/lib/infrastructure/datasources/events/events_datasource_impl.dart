@@ -210,4 +210,30 @@ class EventsDatasourceImpl extends EventsDatasource {
       throw Exception();
     }
   }
+
+  @override
+  Future<Event> registerEventByInvitationCode({required String code}) async {
+    try {
+      final response = await dio.post(
+        '/events/register-with-code',
+        data: {'code': code},
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      final EventResponceCseiio eventResponceCseiio =
+          EventResponceCseiio.fromJson(response.data['event']);
+
+      final newEvent = EventMapper.eventCseiioToEntity(eventResponceCseiio);
+
+      return newEvent;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        final message = e.response?.data['message'];
+        throw CustomError(message: message);
+      }
+      throw Exception();
+    } on Exception catch (_) {
+      throw Exception();
+    }
+  }
 }

@@ -16,6 +16,8 @@ class CustomTextFormField extends StatelessWidget {
   final double? heigth;
   final int maxLines;
   final bool readOnly;
+  final bool enable;
+  final TextEditingController? controller;
 
   const CustomTextFormField({
     super.key,
@@ -33,6 +35,8 @@ class CustomTextFormField extends StatelessWidget {
     this.heigth,
     this.maxLines = 1,
     this.readOnly = false,
+    this.enable = true,
+    this.controller,
   });
 
   @override
@@ -67,13 +71,15 @@ class CustomTextFormField extends StatelessWidget {
         ],
       ),
       child: TextFormField(
+        controller: controller,
         maxLines: maxLines,
-        initialValue: inicialValue,
+        initialValue: controller == null ? inicialValue : null,
         onChanged: onChanged,
         validator: validator,
         obscureText: obscureText,
         onFieldSubmitted: onFieldSubmitted,
         readOnly: readOnly,
+        enabled: enable,
         inputFormatters:
             disableSpace
                 ? [FilteringTextInputFormatter.deny(RegExp(r'\s'))]

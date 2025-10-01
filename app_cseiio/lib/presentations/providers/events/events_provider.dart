@@ -45,11 +45,11 @@ typedef CreateEvent =
 class EventsNotifier extends StateNotifier<EventsState> {
   bool isLoading = false;
 
-  EventCallback fetchGetEvents;
-  EventByIdCallback fetchGetEventById;
-  Logout logout;
-  CreateEvent createEventCallback;
-  ResetEventToProvider resetEventToProvider;
+  final EventCallback fetchGetEvents;
+  final EventByIdCallback fetchGetEventById;
+  final Logout logout;
+  final CreateEvent createEventCallback;
+  final ResetEventToProvider resetEventToProvider;
 
   EventsNotifier({
     required this.fetchGetEvents,

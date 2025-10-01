@@ -17,8 +17,13 @@ class AttendanceRecordScreen extends ConsumerStatefulWidget {
   static const String name = 'attendance-record-screen';
 
   final int idAttendance;
+  final String idEvent;
 
-  const AttendanceRecordScreen({super.key, required this.idAttendance});
+  const AttendanceRecordScreen({
+    super.key,
+    required this.idAttendance,
+    required this.idEvent,
+  });
 
   @override
   AttendanceRecordScreenState createState() => AttendanceRecordScreenState();
@@ -120,6 +125,7 @@ class AttendanceRecordScreenState
                       .summitTeahcers(
                         teachersLocal,
                         widget.idAttendance.toString(),
+                        widget.idEvent,
                       );
                 },
       ),

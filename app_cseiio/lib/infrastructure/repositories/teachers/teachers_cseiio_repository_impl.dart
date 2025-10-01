@@ -68,10 +68,12 @@ class TeachersCseiioRepositoryImpl extends TeachersRepository {
   Future<Teacher> summitTeacherToAttendance(
     String idAttendance,
     String idTeacher,
+    String idEvent,
   ) {
     return teachersDatasource.summitTeacherToAttendance(
       idAttendance,
       idTeacher,
+      idEvent,
     );
   }
 }

@@ -112,6 +112,17 @@ class AttendanceTile extends StatelessWidget {
                       formattedAttendanceTime,
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
+                    if (status == 'on_time') ...[
+                      Text(
+                        'Hora de registro',
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                      Text(
+                        formattedRegisterTime!,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ] else
+                      const SizedBox.shrink(),
                   ],
                 ),
                 (isUser)

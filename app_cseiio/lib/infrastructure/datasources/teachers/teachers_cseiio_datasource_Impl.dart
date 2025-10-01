@@ -83,7 +83,7 @@ class TeachersCseiioDatasourceImpl extends TeachersDatasource {
   @override
   Future<Teacher> getTeacherById({required String id}) async {
     try {
-      final response = await dio.get('/teacher/$id');
+      final response = await dio.get('/teacherByIdUser/$id');
 
       if (response.statusCode != 200) {
         throw Exception('Teacher with id: $id not found');
@@ -214,11 +214,16 @@ class TeachersCseiioDatasourceImpl extends TeachersDatasource {
   Future<Teacher> summitTeacherToAttendance(
     String idAttendance,
     String idTeacher,
+    String idEvent,
   ) async {
     try {
       final response = await dio.post(
         '/summitTeacherToAttendance',
-        data: {'id_attendance': idAttendance, 'id_teacher': idTeacher},
+        data: {
+          'id_attendance': idAttendance,
+          'id_teacher': idTeacher,
+          'id_event': idEvent,
+        },
       );
       final teacherResponse = TeacherResponseCseiio.fromJson(
         response.data['teacher'],

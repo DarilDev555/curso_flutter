@@ -74,7 +74,7 @@ class EventsScreenState extends ConsumerState<EventsScreen> {
                       .loadEventsIncomplets();
                   context.push('/events-incomplete-screen');
                 },
-                icon: Icon(Icons.create_new_folder),
+                icon: const Icon(Icons.create_new_folder),
               )
               : const SizedBox.shrink(),
           IconButton(

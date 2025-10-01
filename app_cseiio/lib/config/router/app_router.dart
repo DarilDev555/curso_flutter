@@ -43,6 +43,7 @@ final goRouterProvider = Provider((ref) {
               idAttendance: int.parse(
                 state.uri.queryParameters['idAttendance'] ?? '-1',
               ),
+              idEvent: state.uri.queryParameters['idEvent'] ?? 'no-id',
             ),
       ),
       GoRoute(

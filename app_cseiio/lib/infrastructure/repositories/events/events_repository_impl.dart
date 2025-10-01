@@ -50,4 +50,9 @@ class EventsRepositoryImpl extends EventsRepository {
   Future<Event> updateEvent({required Event event}) {
     return eventsDatasource.updateEvent(event: event);
   }
+
+  @override
+  Future<Event> registerEventByInvitationCode({required String code}) {
+    return eventsDatasource.registerEventByInvitationCode(code: code);
+  }
 }

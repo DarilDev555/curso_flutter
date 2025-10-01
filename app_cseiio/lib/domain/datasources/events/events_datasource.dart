@@ -19,4 +19,6 @@ abstract class EventsDatasource {
   Future<Event> completeEvet({required Event event});
 
   Future<Event> updateEvent({required Event event});
+
+  Future<Event> registerEventByInvitationCode({required String code});
 }

@@ -16,20 +16,7 @@ class MenuRegisterDashboardScreen extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme;
     return Wrap(
       direction: Axis.horizontal,
-      children:
-      // appMenuItemss
-      //     .map(
-      //       (e) => ItemMenu(
-      //         icon: e.icon,
-      //         title: e.title,
-      //         subTitle: e.subTitle,
-      //         link: e.link,
-      //         colors: colors,
-      //         textStyle: textStyle,
-      //       ),
-      //     )
-      //     .toList(),
-      [
+      children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: DecoratedBox(

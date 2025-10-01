@@ -32,7 +32,11 @@ typedef TeachersToAttendanceCallBack =
     Future<List<Teacher>> Function({required String idAttendance, int page});
 
 typedef TeacherSummitToAttendance =
-    Future<Teacher> Function(String idAttendance, String idTeacher);
+    Future<Teacher> Function(
+      String idAttendance,
+      String idTeacher,
+      String idEvent,
+    );
 
 typedef RemoveTeacherToLocalStorage = Future<void> Function(Teacher teacher);
 
@@ -156,6 +160,7 @@ class TeachersToAttendanceNotifier
   Future<void> summitTeahcers(
     List<Teacher> teachersToSummit,
     String idAttendance,
+    String idEvent,
   ) async {
     if (isLoading) return;
     isLoading = true;
@@ -180,15 +185,16 @@ class TeachersToAttendanceNotifier
       final teacherSummit = await teacherSummitToAttendanceCallBack(
         idAttendance,
         teacher.id.toString(),
+        idEvent,
       );
 
       summitOneTeacher(teacherSummit, idAttendance);
-      summitTeahcers(teachersToSummit, idAttendance);
+      summitTeahcers(teachersToSummit, idAttendance, idEvent);
 
       // state = {...state, idAttendance: state}
     } on TeacherSummitError catch (e) {
       summitOneTeacher(e.teahcer, idAttendance);
-      summitTeahcers(teachersToSummit, idAttendance);
+      summitTeahcers(teachersToSummit, idAttendance, idEvent);
     } on CustomError catch (e) {
       logoutCallBack(e.message);
     } on Exception catch (_) {

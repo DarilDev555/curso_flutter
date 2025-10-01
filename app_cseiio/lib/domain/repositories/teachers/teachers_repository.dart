@@ -31,5 +31,6 @@ abstract class TeachersRepository {
   Future<Teacher> summitTeacherToAttendance(
     String idAttendance,
     String idTeacher,
+    String idEvent,
   );
 }
